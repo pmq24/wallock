@@ -1,18 +1,17 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
+
+	auth "main/auth"
 )
 
 func main() {
 	router := mux.NewRouter()
 
-	router.HandleFunc("/", func(writer http.ResponseWriter, req *http.Request) {
-		fmt.Fprintf(writer, "Hello, World!")
-	})
+	auth.SetUpRoutes(router.PathPrefix("/auth").Subrouter())
 
 	http.ListenAndServe(":3000", router)
 }
