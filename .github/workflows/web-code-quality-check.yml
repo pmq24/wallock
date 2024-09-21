@@ -30,3 +30,31 @@ jobs:
       - name: Lint
         run: npm run lint
         working-directory: ./web/
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get NodeJS version
+        id: get_nodejs_version
+        shell: bash -leo pipefail {0}
+        run: |
+          nodejs_version="$(grep nodejs ./.tool-versions | awk '{print $2}')"
+          echo "nodejs_version=${nodejs_version}" >> $GITHUB_OUTPUT
+
+      - name: Set up NodeJS
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ steps.get_nodejs_version.outputs.nodejs_version }}
+
+      - name: Install NPM dependencies
+        run: npm install
+        working-directory: ./web/
+
+      - name: Test
+        run: npm test
+        working-directory: ./web/
