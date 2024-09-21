@@ -24,6 +24,11 @@
     "lib": ["es2022", "dom", "dom.iterable"],
 
 		// JSX
-		"jsx": "react-jsx"
+		"jsx": "react-jsx",
+
+		//Path aliases
+		"paths": {
+			"~/*": ["./src/*"]
+		}
   }
 }
