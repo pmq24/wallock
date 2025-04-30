@@ -24,9 +24,15 @@ class SettingService {
   }
 
   private getSchema() {
-    return v.object({
-      timeZone: v.pipe(v.string(), v.values(Setting.TIME_ZONES)),
-    });
+    return v.object(
+      {
+        timeZone: v.pipe(
+          v.string(),
+          v.values(Setting.TIME_ZONES, "Invalid time zone"),
+        ),
+      },
+      "Missing details",
+    );
   }
 }
 
