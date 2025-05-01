@@ -5,7 +5,13 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [tailwindcss(), vue(), tsconfigPaths({ loose: true })],
+  plugins: [
+    tailwindcss(),
+    vue(),
+    // Why `loose`?
+    // https://github.com/aleclarson/vite-tsconfig-paths#%EF%B8%8F-non-typescript-modules-need-special-configuration
+    tsconfigPaths({ loose: true }),
+  ],
   server: {
     port: 3100,
   },
