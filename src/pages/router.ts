@@ -1,8 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import GettingStarted from './gettingStarted/WlPage.vue'
 
-import HealthView from './views/HealthView.vue'
-
-const routes = [{ path: '/health', component: HealthView }]
+const routes = [
+  {
+    path: '/getting-started',
+    component: GettingStarted,
+  },
+]
 
 const router = createRouter({
   history: createWebHistory(),
