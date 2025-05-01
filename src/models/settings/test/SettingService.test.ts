@@ -29,6 +29,23 @@ describe('SettingService', () => {
       })
     })
 
+    describe('when setting already exists', () => {
+      beforeEach(async () => {
+        await service.create({ timeZone: 'UTC' })
+      })
+
+      it("returns correct error and doesns't create new setting", async () => {
+        const result = await service.create({ timeZone: 'UTC' })
+
+        expect(result.success).toBe(false)
+        expect(result.errors?.root).toContain(
+          'The setting has already been created'
+        )
+        const settingCount = await dexie.settings.count()
+        expect(settingCount).toBe(1)
+      })
+    })
+
     describe('when data is not an object', () => {
       it('returns correct error', async () => {
         const data: any = 123
