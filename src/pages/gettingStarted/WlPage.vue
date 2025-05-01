@@ -1,11 +1,11 @@
 <template>
-  <header class="navbar prose">
+  <header class="navbar lg:w-xl lg:mx-auto prose">
     <h1>
       First, we need a few things
     </h1>
   </header>
 
-  <main class="p-2">
+  <main class="p-2 lg:w-xl lg:mx-auto">
     <form
       class=" flex flex-col gap-4"
       @submit.prevent="submit"
