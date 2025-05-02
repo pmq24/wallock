@@ -25,6 +25,10 @@ class WalletService {
 
   constructor (private dexie: AppDexie) {}
 
+  async count () {
+    return await this.dexie.wallets.count()
+  }
+
   async create (data: WalletService.CreateData) {
     const validation = v.safeParse(await this.getSchema(), data)
 
