@@ -17,48 +17,48 @@ const routes = [
     component: CategoriesNew,
   },
   {
-    path: "/default-wallet",
-    name: "defaultWallet",
+    path: '/default-wallet',
+    name: 'defaultWallet',
     component: DefaultWallet,
   },
   {
-    path: "/getting-started",
-    name: "gettingStarted",
+    path: '/getting-started',
+    name: 'gettingStarted',
     component: GettingStarted,
   },
-];
+]
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
-});
+})
 
 router.beforeEach(async (to) => {
   if (await api.settings.isCreated()) {
-    return true;
+    return true
   }
 
-  if (to.name === "gettingStarted") {
-    return true;
+  if (to.name === 'gettingStarted') {
+    return true
   }
 
-  return { name: "gettingStarted" };
-});
+  return { name: 'gettingStarted' }
+})
 
 router.beforeEach(async (to, from) => {
   if (await api.wallets.count()) {
-    return true;
+    return true
   }
 
-  if (to.name === "defaultWallet") {
-    return true;
+  if (to.name === 'defaultWallet') {
+    return true
   }
 
-  if (from.name === "gettingStarted") {
-    return true;
+  if (from.name === 'gettingStarted') {
+    return true
   }
 
-  return { name: "defaultWallet" };
-});
+  return { name: 'defaultWallet' }
+})
 
-export default router;
+export default router
