@@ -3,6 +3,7 @@ import Categories from './categories/WlPage.vue'
 import CategoriesNew from './categories.new/WlPage.vue'
 import DefaultWallet from './defaultWallet/WlPage.vue'
 import GettingStarted from './gettingStarted/WlPage.vue'
+import Wallets from './wallets/WlPage.vue'
 import { api } from 'providers/api'
 
 const routes = [
@@ -25,6 +26,11 @@ const routes = [
     path: '/getting-started',
     name: 'gettingStarted',
     component: GettingStarted,
+  },
+  {
+    path: '/wallets',
+    name: 'wallets',
+    component: Wallets,
   },
 ]
 

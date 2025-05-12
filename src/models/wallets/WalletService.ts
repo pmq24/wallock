@@ -29,6 +29,17 @@ class WalletService {
     return await this.dexie.wallets.count()
   }
 
+  async all () {
+    return (await this.dexie.wallets.orderBy('name').toArray()).map(
+      (walletRecord) =>
+        new Wallet(
+          walletRecord.id,
+          walletRecord.name,
+          walletRecord.currencyCode
+        )
+    )
+  }
+
   async create (data: WalletService.CreateData) {
     const validation = v.safeParse(await this.getSchema(), data)
 
