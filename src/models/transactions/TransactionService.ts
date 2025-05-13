@@ -11,7 +11,7 @@ export default class TransactionService {
   }
 
   async creationForm () {
-    return TransactionCreationForm.prepare({
+    return TransactionCreationForm.create({
       transactionTable: this.transactionTable,
       categoryService: this.categoryService,
       walletService: this.walletService,

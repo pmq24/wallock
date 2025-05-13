@@ -8,7 +8,7 @@ import type WalletService from 'models/wallets/WalletService'
 import { nanoid } from 'nanoid'
 
 export default class TransactionCreationForm {
-  static async prepare (params: {
+  static async create (params: {
     transactionTable: TransactionTable;
     categoryService: CategoryService;
     walletService: WalletService;
@@ -62,18 +62,18 @@ export default class TransactionCreationForm {
     }
   }
 
-  set timestamp (isoDate: string) {
-    const parsed = dayjs(isoDate)
+  set time (value: string) {
+    const parsed = dayjs(value)
 
     if (!parsed.isValid()) {
-      this._timestamp = dayjs().unix()
+      this._time = dayjs().format()
     }
 
-    this._timestamp = parsed.unix()
+    this._time = parsed.format()
   }
 
-  get timestamp () {
-    return dayjs.unix(this._timestamp).format('YYYY-MM-DDTHH:mm:ss')
+  get time () {
+    return this._time
   }
 
   set categoryId (value: string) {
@@ -125,7 +125,7 @@ export default class TransactionCreationForm {
     const data = {
       amount: this.amount,
       categoryId: this.categoryId,
-      timestamp: this._timestamp,
+      time: this._time,
       walletId: this.walletId,
     }
 
@@ -140,7 +140,7 @@ export default class TransactionCreationForm {
   private readonly transactionTable: TransactionTable
 
   private _amount = 0
-  private _timestamp: number = dayjs().unix()
+  private _time: string = dayjs().format()
   private _categoryId: string = ''
   private _walletId: string = ''
 

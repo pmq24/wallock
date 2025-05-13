@@ -1,6 +1,5 @@
 import Dexie, { type DexieOptions, type EntityTable } from 'dexie'
 import type Category from './categories/Category'
-import type Setting from 'models/settings/Setting'
 import type Wallet from './wallets/Wallet'
 
 export function createAppDexie (opts?: DexieOptions) {
@@ -8,7 +7,6 @@ export function createAppDexie (opts?: DexieOptions) {
 
   d.version(1).stores({
     categories: 'id, &name',
-    settings: 'id',
     transactions: 'id',
     wallets: 'id, &name',
   })
@@ -18,7 +16,6 @@ export function createAppDexie (opts?: DexieOptions) {
 
 export type AppDexie = Dexie & {
   categories: CategoryTable;
-  settings: SettingTable;
   transactions: TransactionTable;
   wallets: WalletTable;
 }
@@ -30,18 +27,12 @@ export type CategoryRecord = {
   type: Category.Type;
 }
 
-export type SettingTable = EntityTable<SettingRecord, 'id'>
-export type SettingRecord = {
-  id: string;
-  timeZone: Setting.TimeZone;
-}
-
 export type TransactionTable = EntityTable<TransactionRecord, 'id'>
 export type TransactionRecord = {
   id: string;
   amount: number;
   categoryId: string;
-  timestamp: number;
+  time: string;
   walletId: string;
 }
 

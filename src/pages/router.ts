@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Categories from './categories/WlPage.vue'
 import CategoriesNew from './categories.new/WlPage.vue'
 import DefaultWallet from './defaultWallet/WlPage.vue'
-import GettingStarted from './gettingStarted/WlPage.vue'
 import TransactionsNew from './transactions.new/WlPage.vue'
 import Wallets from './wallets/WlPage.vue'
 import { api } from 'providers/api'
@@ -24,11 +23,6 @@ const routes = [
     component: DefaultWallet,
   },
   {
-    path: '/getting-started',
-    name: 'gettingStarted',
-    component: GettingStarted,
-  },
-  {
     path: '/transactions/new',
     name: 'transactionsNew',
     component: TransactionsNew,
@@ -46,20 +40,9 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to) => {
-  const settingsCreated = await api.settings.isCreated()
-  if (!settingsCreated && to.name !== 'gettingStarted') {
-    return { name: 'gettingStarted' }
-  }
-
-  if (settingsCreated) {
-    const walletsExist = (await api.wallets.count()) > 0
-    if (
-      !walletsExist &&
-      to.name !== 'defaultWallet' &&
-      to.name !== 'gettingStarted'
-    ) {
-      return { name: 'defaultWallet' }
-    }
+  const walletsExist = (await api.wallets.count()) > 0
+  if (!walletsExist && to.name !== 'defaultWallet') {
+    return { name: 'defaultWallet' }
   }
 
   return true

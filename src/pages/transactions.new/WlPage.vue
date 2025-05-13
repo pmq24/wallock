@@ -88,10 +88,10 @@
         </legend>
 
         <input
-          :value="form.timestamp"
+          v-model="form.time"
+          step="1"
           type="datetime-local"
           class="input w-full"
-          @change="(event) => form.timestamp = (event.target as HTMLInputElement).value"
         >
       </fieldset>
 
@@ -116,5 +116,4 @@ import { reactive } from 'vue'
 const api = injectApi()
 const transactionService = api.transactions
 const form = reactive(await transactionService.creationForm())
-console.log(form.timestamp)
 </script>
