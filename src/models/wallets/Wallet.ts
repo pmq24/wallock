@@ -16,6 +16,10 @@ class Wallet {
     ))!
   }
 
+  get currencyDivisor () {
+    return 10 ** this.currency.decimalDigits
+  }
+
   private cachedCurrency: Wallet.Currency | undefined = undefined
 }
 

@@ -9,6 +9,7 @@ export function createAppDexie (opts?: DexieOptions) {
   d.version(1).stores({
     categories: 'id, &name',
     settings: 'id',
+    transactions: 'id',
     wallets: 'id, &name',
   })
 
@@ -18,6 +19,7 @@ export function createAppDexie (opts?: DexieOptions) {
 export type AppDexie = Dexie & {
   categories: CategoryTable;
   settings: SettingTable;
+  transactions: TransactionTable;
   wallets: WalletTable;
 }
 
@@ -32,6 +34,15 @@ export type SettingTable = EntityTable<SettingRecord, 'id'>
 export type SettingRecord = {
   id: string;
   timeZone: Setting.TimeZone;
+}
+
+export type TransactionTable = EntityTable<TransactionRecord, 'id'>
+export type TransactionRecord = {
+  id: string;
+  amount: number;
+  categoryId: string;
+  timestamp: number;
+  walletId: string;
 }
 
 export type WalletTable = EntityTable<WalletRecord, 'id'>
