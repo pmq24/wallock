@@ -40,31 +40,23 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to) => {
-  if (await api.settings.isCreated()) {
-    return true
+  const settingsCreated = await api.settings.isCreated()
+  if (!settingsCreated && to.name !== 'gettingStarted') {
+    return { name: 'gettingStarted' }
   }
 
-  if (to.name === 'gettingStarted') {
-    return true
+  if (settingsCreated) {
+    const walletsExist = (await api.wallets.count()) > 0
+    if (
+      !walletsExist &&
+      to.name !== 'defaultWallet' &&
+      to.name !== 'gettingStarted'
+    ) {
+      return { name: 'defaultWallet' }
+    }
   }
 
-  return { name: 'gettingStarted' }
-})
-
-router.beforeEach(async (to, from) => {
-  if (await api.wallets.count()) {
-    return true
-  }
-
-  if (to.name === 'defaultWallet') {
-    return true
-  }
-
-  if (from.name === 'gettingStarted') {
-    return true
-  }
-
-  return { name: 'defaultWallet' }
+  return true
 })
 
 export default router
