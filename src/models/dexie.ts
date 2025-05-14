@@ -7,7 +7,7 @@ export function createAppDexie (opts?: DexieOptions) {
 
   d.version(1).stores({
     categories: 'id, &name',
-    transactions: 'id',
+    transactions: 'id, time',
     wallets: 'id, &name',
   })
 

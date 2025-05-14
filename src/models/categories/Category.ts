@@ -6,6 +6,14 @@ class Category {
     public readonly name: string,
     public readonly type: Category.Type
   ) {}
+
+  get isExpense () {
+    return this.type === 'expense'
+  }
+
+  get isIncome () {
+    return this.type === 'income'
+  }
 }
 
 namespace Category {
