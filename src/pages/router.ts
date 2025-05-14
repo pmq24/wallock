@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Categories from './categories/WlPage.vue'
 import CategoriesNew from './categories.new/WlPage.vue'
-import DefaultWallet from './defaultWallet/WlPage.vue'
 import Settings from './settings/WlPage.vue'
 import Transactions from './transactions/WlPage.vue'
 import TransactionsNew from './transactions.new/WlPage.vue'
@@ -19,11 +18,6 @@ const routes = [
     path: '/categories/new',
     name: 'categoriesNew',
     component: CategoriesNew,
-  },
-  {
-    path: '/default-wallet',
-    name: 'defaultWallet',
-    component: DefaultWallet,
   },
   {
     path: '/settings',
@@ -59,8 +53,8 @@ const router = createRouter({
 
 router.beforeEach(async (to) => {
   const walletsExist = (await api.wallets.count()) > 0
-  if (!walletsExist && to.name !== 'defaultWallet') {
-    return { name: 'defaultWallet' }
+  if (!walletsExist && to.name !== 'walletsNew') {
+    return { name: 'walletsNew', query: { redirectOnSuccess: 'transactions' } }
   }
 
   return true

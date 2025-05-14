@@ -70,10 +70,11 @@ import Wallet from 'models/wallets/Wallet'
 import WalletService from 'models/wallets/WalletService'
 import { injectApi } from 'providers/api'
 import { computed, reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { WlBackIcon } from 'components/icons'
 
 const router = useRouter()
+const route = useRoute()
 
 const data = reactive<WalletService.CreateData>({
   name: '',
@@ -90,7 +91,13 @@ async function submit () {
   isLoading.value = true
   const validation = await walletService.create(data)
   errors.value = validation.errors
-  router.push({ name: 'wallets' })
+
+  const redirectOnSuccess = route.query.redirectOnSuccess
+  if (typeof redirectOnSuccess === 'string') {
+    router.push({ name: redirectOnSuccess })
+  } else {
+    router.push({ name: 'wallets' })
+  }
   isLoading.value = false
 }
 </script>
