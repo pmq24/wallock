@@ -24,7 +24,7 @@
       <RouterLink
         v-for="navItemType in ['expense', 'income']"
         :key="navItemType"
-        :class="['tab', route.query.type === navItemType && 'tab-active']"
+        :class="['tab', type === navItemType && 'tab-active']"
         :to="{ query: { type: navItemType } }"
         replace
       >
@@ -56,15 +56,16 @@ const route = useRoute()
 const api = injectApi()
 const categories = ref<Category[]>([])
 
-watch(() => route.query.type, async (type) => {
-  let sanitizedType
-  if (Category.TYPES.includes(type as any)) {
-    sanitizedType = type
+const type = ref<Category.Type>('expense')
+
+watch(() => route.query.type, async (newType) => {
+  if (Category.TYPES.includes(newType as any)) {
+    type.value = newType as Category.Type
   } else {
     window.history.replaceState({}, '', '/categories?type=expense')
-    sanitizedType = 'expense'
+    type.value = 'expense'
   }
 
-  categories.value = await api.categories.all().then(categories => categories.filter(category => category.type === sanitizedType))
+  categories.value = await api.categories.all().then(categories => categories.filter(category => category.type === type.value))
 }, { immediate: true })
 </script>
