@@ -29,14 +29,15 @@ class WalletService {
     return await this.dexie.wallets.count()
   }
 
+  async id (id: string) {
+    return await this.dexie.wallets
+      .get(id)
+      .then((record) => (record ? new Wallet(record) : undefined))
+  }
+
   async all () {
     return (await this.dexie.wallets.orderBy('name').toArray()).map(
-      (walletRecord) =>
-        new Wallet(
-          walletRecord.id,
-          walletRecord.name,
-          walletRecord.currencyCode
-        )
+      (walletRecord) => new Wallet(walletRecord)
     )
   }
 

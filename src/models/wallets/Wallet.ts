@@ -4,11 +4,15 @@ class Wallet {
   static CURRENCIES = CURRENCIES
   static CURRENCY_CODES = CURRENCIES.map((c) => c.code)
 
-  constructor (
-    public readonly id: string,
-    public readonly name: string,
-    public readonly currencyCode: Wallet.CurrencyCode
-  ) {}
+  constructor (params: {
+    id: string;
+    name: string;
+    currencyCode: Wallet.CurrencyCode;
+  }) {
+    this.id = params.id
+    this.name = params.name
+    this.currencyCode = params.currencyCode
+  }
 
   get currency (): Wallet.Currency {
     return (this.cachedCurrency ??= CURRENCIES.find(
@@ -19,6 +23,10 @@ class Wallet {
   get currencyDivisor () {
     return 10 ** this.currency.decimalDigits
   }
+
+  public readonly id: string
+  public readonly name: string
+  public readonly currencyCode: Wallet.CurrencyCode
 
   private cachedCurrency: Wallet.Currency | undefined = undefined
 }
