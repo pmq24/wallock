@@ -4,6 +4,7 @@ import CategoriesNew from './categories.new/WlPage.vue'
 import DefaultWallet from './defaultWallet/WlPage.vue'
 import Transactions from './transactions/WlPage.vue'
 import TransactionsNew from './transactions.new/WlPage.vue'
+import WalletsNew from './wallets.new/WlPage.vue'
 import Wallets from './wallets/WlPage.vue'
 import { api } from 'providers/api'
 
@@ -32,6 +33,11 @@ const routes = [
     path: '/transactions/new',
     name: 'transactionsNew',
     component: TransactionsNew,
+  },
+  {
+    path: '/wallets/new',
+    name: 'walletsNew',
+    component: WalletsNew,
   },
   {
     path: '/wallets',
