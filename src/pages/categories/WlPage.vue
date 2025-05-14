@@ -1,55 +1,52 @@
 <template>
-  <WlMainNav hide-on-mobile>
-    <header class="navbar lg:w-xl lg:mx-auto gap-2">
-      <button
-        class="btn btn-ghost btn-square"
-        @click="router.back"
-      >
-        <WlBackIcon />
-      </button>
+  <header class="navbar lg:w-xl lg:mx-auto gap-2">
+    <button
+      class="btn btn-ghost btn-square"
+      @click="router.back"
+    >
+      <WlBackIcon />
+    </button>
 
-      <h1 class="text-xl font-bold flex-1">
-        Categories
-      </h1>
+    <h1 class="text-xl font-bold flex-1">
+      Categories
+    </h1>
 
+    <RouterLink
+      :to="{ name: 'categoriesNew' }"
+      class="btn btn-square btn-ghost"
+    >
+      <WlAddIcon />
+    </RouterLink>
+  </header>
+
+  <main class="p-2 lg:w-xl lg:mx-auto">
+    <nav class="tabs">
       <RouterLink
-        :to="{ name: 'categoriesNew' }"
-        class="btn btn-square btn-ghost"
+        v-for="navItemType in ['expense', 'income']"
+        :key="navItemType"
+        :class="['tab', route.query.type === navItemType && 'tab-active']"
+        :to="{ query: { type: navItemType } }"
+        replace
       >
-        <WlAddIcon />
+        {{ navItemType.at(0)!.toUpperCase() + navItemType.slice(1) }}
       </RouterLink>
-    </header>
-
-    <main class="p-2 lg:w-xl lg:mx-auto">
-      <nav class="tabs">
-        <RouterLink
-          v-for="navItemType in ['expense', 'income']"
-          :key="navItemType"
-          :class="['tab', route.query.type === navItemType && 'tab-active']"
-          :to="{ query: { type: navItemType } }"
-          replace
-        >
-          {{ navItemType.at(0)!.toUpperCase() + navItemType.slice(1) }}
-        </RouterLink>
-      </nav>
-      <ul class="list">
-        <li
-          v-for="category in categories"
-          :key="category.id"
-          class="list-row"
-        >
-          {{ category.name }}
-        </li>
-      </ul>
-    </main>
-  </WlMainNav>
+    </nav>
+    <ul class="list">
+      <li
+        v-for="category in categories"
+        :key="category.id"
+        class="list-row"
+      >
+        {{ category.name }}
+      </li>
+    </ul>
+  </main>
 </template>
 
 <script lang="ts" setup>
 import Category from 'models/categories/Category'
 import { injectApi } from 'providers/api'
 import { useRoute, useRouter } from 'vue-router'
-import WlMainNav from 'components/WlMainNav/WlMainNav.vue'
 import { WlAddIcon, WlBackIcon } from 'components/icons'
 import { ref, watch } from 'vue'
 

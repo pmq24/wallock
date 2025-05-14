@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Categories from './categories/WlPage.vue'
 import CategoriesNew from './categories.new/WlPage.vue'
 import DefaultWallet from './defaultWallet/WlPage.vue'
+import Settings from './settings/WlPage.vue'
 import Transactions from './transactions/WlPage.vue'
 import TransactionsNew from './transactions.new/WlPage.vue'
 import WalletsNew from './wallets.new/WlPage.vue'
@@ -23,6 +24,11 @@ const routes = [
     path: '/default-wallet',
     name: 'defaultWallet',
     component: DefaultWallet,
+  },
+  {
+    path: '/settings',
+    name: 'settings',
+    component: Settings,
   },
   {
     path: '/transactions',

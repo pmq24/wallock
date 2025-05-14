@@ -24,8 +24,7 @@
 import { useRoute } from 'vue-router'
 import type { NavItem } from './common'
 
-const { primaryNavItems, secondaryNavItems } = defineProps<{ primaryNavItems: NavItem[], secondaryNavItems: NavItem[] }>()
-const navItems = [...primaryNavItems, ...secondaryNavItems]
+const { navItems } = defineProps<{ navItems: NavItem[] }>()
 
 const currentRoute = useRoute()
 </script>

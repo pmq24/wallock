@@ -1,15 +1,11 @@
 <template>
-  <div v-if="activeBreakpoint === ''">
-    <WlMainNavMobile
-      v-if="!hideOnMobile"
-      :primary-nav-items
-      :secondary-nav-items
-    />
-  </div>
+  <WlMainNavMobile
+    v-if="activeBreakpoint === ''"
+    :nav-items
+  />
   <WlMainNavDesktop
     v-else
-    :primary-nav-items
-    :secondary-nav-items
+    :nav-items
   />
   <slot />
 </template>
@@ -18,14 +14,12 @@
 import { useBreakpoints } from 'common'
 import WlMainNavMobile from './WlMainNavMobile.vue'
 import WlMainNavDesktop from './WlMainNavDesktop.vue'
-import { WlCategoryIcon, WlCategoryIconFilled, WlTransactionIcon, WlTransactionIconFilled, WlWalletIcon } from 'components/icons'
-import WlWalletIconFilled from 'components/icons/WlWalletIconFilled.vue'
-
-const { hideOnMobile } = defineProps<{ hideOnMobile?: boolean }>()
+import { WlSettingIcon, WlTransactionIcon, WlTransactionIconFilled } from 'components/icons'
+import WlSettingIconFilled from 'components/icons/WlSettingIconFilled.vue'
 
 const { activeBreakpoint } = useBreakpoints()
 
-const primaryNavItems = [
+const navItems = [
   {
     name: 'transactions',
     label: 'Transactions',
@@ -34,22 +28,12 @@ const primaryNavItems = [
       inactive: WlTransactionIcon
     }
   },
-]
-const secondaryNavItems = [
   {
-    name: 'categories',
-    label: 'Categories',
+    name: 'settings',
+    label: 'Settings',
     icons: {
-      active: WlCategoryIconFilled,
-      inactive: WlCategoryIcon
-    }
-  },
-  {
-    name: 'wallets',
-    label: 'Wallets',
-    icons: {
-      active: WlWalletIconFilled,
-      inactive: WlWalletIcon
+      active: WlSettingIconFilled,
+      inactive: WlSettingIcon
     }
   }
 ]
