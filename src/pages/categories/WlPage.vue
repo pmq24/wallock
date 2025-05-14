@@ -1,48 +1,73 @@
 <template>
-  <header class="navbar lg:w-xl lg:mx-auto prose">
-    <h1>
-      Categories
-    </h1>
-  </header>
+  <WlMainNav hide-on-mobile>
+    <header class="navbar lg:w-xl lg:mx-auto gap-2">
+      <button
+        class="btn btn-ghost btn-square"
+        @click="router.back"
+      >
+        <WlBackIcon />
+      </button>
 
-  <main class="p-2 lg:w-xl lg:mx-auto">
-    <nav class="tabs">
-      <a
-        v-for="navItemType in ['expense', 'income']"
-        :key="navItemType"
-        :class="['tab', type === navItemType && 'tab-active']"
-        :href="`?type=${navItemType}`"
+      <h1 class="text-xl font-bold flex-1">
+        Categories
+      </h1>
+
+      <RouterLink
+        :to="{ name: 'categoriesNew' }"
+        class="btn btn-square btn-ghost"
       >
-        {{ navItemType.at(0)!.toUpperCase() + navItemType.slice(1) }}
-      </a>
-    </nav>
-    <ul class="list">
-      <li
-        v-for="category in categories"
-        :key="category.id"
-      >
-        <a
-          :href="`/categories/${category.id}`"
+        <WlAddIcon />
+      </RouterLink>
+    </header>
+
+    <main class="p-2 lg:w-xl lg:mx-auto">
+      <nav class="tabs">
+        <RouterLink
+          v-for="navItemType in ['expense', 'income']"
+          :key="navItemType"
+          :class="['tab', route.query.type === navItemType && 'tab-active']"
+          :to="{ query: { type: navItemType } }"
+          replace
+        >
+          {{ navItemType.at(0)!.toUpperCase() + navItemType.slice(1) }}
+        </RouterLink>
+      </nav>
+      <ul class="list">
+        <li
+          v-for="category in categories"
+          :key="category.id"
           class="list-row"
         >
           {{ category.name }}
-        </a>
-      </li>
-    </ul>
-  </main>
+        </li>
+      </ul>
+    </main>
+  </WlMainNav>
 </template>
 
 <script lang="ts" setup>
 import Category from 'models/categories/Category'
 import { injectApi } from 'providers/api'
+import { useRoute, useRouter } from 'vue-router'
+import WlMainNav from 'components/WlMainNav/WlMainNav.vue'
+import { WlAddIcon, WlBackIcon } from 'components/icons'
+import { ref, watch } from 'vue'
 
-const qs = new URLSearchParams(window.location.search)
-let type = qs.get('type')
-if (!Category.TYPES.includes(type as any)) {
-  type = 'expense'
-  window.history.replaceState(null, '', `/categories?type=${type}`)
-}
+const router = useRouter()
+const route = useRoute()
 
 const api = injectApi()
-const categories = (await api.categories.all()).filter(category => category.type === type)
+const categories = ref<Category[]>([])
+
+watch(() => route.query.type, async (type) => {
+  let sanitizedType
+  if (Category.TYPES.includes(type as any)) {
+    sanitizedType = type
+  } else {
+    window.history.replaceState({}, '', '/categories?type=expense')
+    sanitizedType = 'expense'
+  }
+
+  categories.value = await api.categories.all().then(categories => categories.filter(category => category.type === sanitizedType))
+}, { immediate: true })
 </script>

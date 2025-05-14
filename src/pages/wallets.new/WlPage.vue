@@ -1,6 +1,13 @@
 <template>
-  <header class="navbar lg:w-xl lg:mx-auto prose">
-    <h1>
+  <header class="navbar lg:w-xl lg:mx-auto">
+    <button
+      class="btn btn-ghost btn-square"
+      @click="router.back"
+    >
+      <WlBackIcon />
+    </button>
+
+    <h1 class="text-xl font-bold flex-1">
       New Wallet
     </h1>
   </header>
@@ -63,6 +70,10 @@ import Wallet from 'models/wallets/Wallet'
 import WalletService from 'models/wallets/WalletService'
 import { injectApi } from 'providers/api'
 import { computed, reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { WlBackIcon } from 'components/icons'
+
+const router = useRouter()
 
 const data = reactive<WalletService.CreateData>({
   name: '',
@@ -79,6 +90,7 @@ async function submit () {
   isLoading.value = true
   const validation = await walletService.create(data)
   errors.value = validation.errors
+  router.push({ name: 'wallets' })
   isLoading.value = false
 }
 </script>

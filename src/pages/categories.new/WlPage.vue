@@ -1,6 +1,12 @@
 <template>
-  <header class="navbar lg:w-xl lg:mx-auto prose">
-    <h1>
+  <header class="navbar lg:w-xl lg:mx-auto gap-2">
+    <button
+      class="btn btn-ghost btn-square"
+      @click="router.back"
+    >
+      <WlBackIcon />
+    </button>
+    <h1 class="text-xl font-bold flex-1">
       New Category
     </h1>
   </header>
@@ -66,6 +72,10 @@
 import type CategoryService from 'models/categories/CategoryService'
 import { injectApi } from 'providers/api'
 import { computed, reactive, ref } from 'vue'
+import { WlBackIcon } from 'components/icons'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const data = reactive<CategoryService.CreateData>({
   name: '',
@@ -83,6 +93,7 @@ async function submit () {
   isLoading.value = true
   const validation = await categoryService.create(data)
   errors.value = validation.errors
+  router.push({ name: 'categories' })
   isLoading.value = false
 }
 </script>

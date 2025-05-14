@@ -1,6 +1,12 @@
 <template>
-  <header class="navbar lg:w-xl lg:mx-auto prose">
-    <h1>
+  <header class="navbar lg:w-xl lg:mx-auto">
+    <button
+      class="btn btn-ghost btn-square"
+      @click="router.back"
+    >
+      <WlBackIcon />
+    </button>
+    <h1 class="text-xl font-bold flex-1">
       New Transaction
     </h1>
   </header>
@@ -112,6 +118,10 @@
 <script lang="ts" setup>
 import { injectApi } from 'providers/api'
 import { reactive } from 'vue'
+import { useRouter } from 'vue-router'
+import { WlBackIcon } from 'components/icons'
+
+const router = useRouter()
 
 const api = injectApi()
 const transactionService = api.transactions
