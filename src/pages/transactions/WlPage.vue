@@ -35,13 +35,6 @@
           </article>
         </li>
       </ul>
-
-      <RouterLink
-        :to="{name: 'transactionsNew'}"
-        class="btn btn-circle btn-primary btn-xl fixed bottom-20 right-4"
-      >
-        <WlAddIcon />
-      </RouterLink>
     </main>
   </WlMainNav>
 </template>
@@ -50,7 +43,6 @@
 import dayjs from 'dayjs'
 import { injectApi } from 'providers/api'
 import WlMainNav from 'components/WlMainNav/WlMainNav.vue'
-import { WlAddIcon } from 'components/icons'
 import { useRoute } from 'vue-router'
 import { ref, watch } from 'vue'
 import type Transaction from 'models/transactions/Transaction'
