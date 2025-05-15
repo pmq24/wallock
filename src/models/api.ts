@@ -3,6 +3,7 @@ import { createAppDexie, type AppDexie } from './dexie'
 import WalletService from './wallets/WalletService'
 import CategoryService from './categories/CategoryService'
 import TransactionService from './transactions/TransactionService'
+import I18n from './i18n/I18n'
 
 export default class Api {
   constructor (opts: { dexieOpts?: DexieOptions } = {}) {
@@ -10,10 +11,15 @@ export default class Api {
     this.categories = new CategoryService(this.dexie)
     this.transactions = new TransactionService(this.dexie)
     this.wallets = new WalletService(this.dexie)
+
+    this.i18n = new I18n()
   }
 
   public readonly categories: CategoryService
   public readonly transactions: TransactionService
   public readonly wallets: WalletService
+
+  public readonly i18n: I18n
+
   private readonly dexie: AppDexie
 }

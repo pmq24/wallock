@@ -16,6 +16,14 @@ export default class Transaction {
     this.wallet = params.wallet
   }
 
+  get netAmount () {
+    return this.category.isExpense ? -this.amount : this.amount
+  }
+
+  get netAmountFloat () {
+    return this.netAmount / this.wallet.currencyDivisor
+  }
+
   get displayAmount () {
     const unsignedDisplayAmount =
       (this.amount / this.wallet.currencyDivisor).toFixed(
