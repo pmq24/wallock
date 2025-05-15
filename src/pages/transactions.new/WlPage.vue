@@ -1,11 +1,11 @@
 <template>
   <header class="navbar lg:w-xl lg:mx-auto">
-    <button
+    <RouterLink
       class="btn btn-ghost btn-square"
-      @click="router.back"
+      :to="{ name: 'transactions' }"
     >
       <WlBackIcon />
-    </button>
+    </RouterLink>
     <h1 class="text-xl font-bold flex-1">
       New Transaction
     </h1>
@@ -15,7 +15,7 @@
     <form
       id="new-transaction-form"
       :disabled="form.submitting"
-      @submit.prevent="form.submit"
+      @submit.prevent="submitForm"
     >
       <fieldset class="fieldset w-full">
         <legend class="fieldset-legend">
@@ -126,4 +126,12 @@ const router = useRouter()
 const api = injectApi()
 const transactionService = api.transactions
 const form = reactive(await transactionService.creationForm())
+
+async function submitForm () {
+  const { success } = await form.submit()
+
+  if (success) {
+    router.push({ name: 'transactions' })
+  }
+}
 </script>
