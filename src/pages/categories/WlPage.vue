@@ -1,11 +1,11 @@
 <template>
   <header class="navbar lg:w-xl lg:mx-auto gap-2">
-    <button
+    <RouterLink
+      :to="{ name: 'settings'}"
       class="btn btn-ghost btn-square"
-      @click="router.back"
     >
       <WlBackIcon />
-    </button>
+    </RouterLink>
 
     <h1 class="text-xl font-bold flex-1">
       Categories
@@ -31,7 +31,10 @@
         {{ navItemType.at(0)!.toUpperCase() + navItemType.slice(1) }}
       </RouterLink>
     </nav>
-    <ul class="list">
+    <ul
+      v-if="isReady && categories.length"
+      class="list"
+    >
       <li
         v-for="category in categories"
         :key="category.id"
@@ -40,21 +43,37 @@
         {{ category.name }}
       </li>
     </ul>
+    <div
+      v-else
+      class="flex flex-col justify-center items-center gap-2 h-25"
+    >
+      <span>There are no categories</span>
+      <RouterLink
+        :to="{name: 'categoriesNew'}"
+        class="btn btn-ghost"
+      >
+        <WlAddIcon />
+        New category
+      </RouterLink>
+    </div>
   </main>
 </template>
 
 <script lang="ts" setup>
 import Category from 'models/categories/Category'
 import { injectApi } from 'providers/api'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { WlAddIcon, WlBackIcon } from 'components/icons'
 import { ref, watch } from 'vue'
+import { useAsyncState } from '@vueuse/core'
 
-const router = useRouter()
 const route = useRoute()
 
 const api = injectApi()
-const categories = ref<Category[]>([])
+const { state: categories, isReady, execute: refetchCategories } = useAsyncState(
+  () => api.categories.all().then(categories => categories.filter(category => category.type === type.value)),
+  []
+)
 
 const type = ref<Category.Type>('expense')
 
@@ -66,6 +85,6 @@ watch(() => route.query.type, async (newType) => {
     type.value = 'expense'
   }
 
-  categories.value = await api.categories.all().then(categories => categories.filter(category => category.type === type.value))
+  refetchCategories()
 }, { immediate: true })
 </script>
