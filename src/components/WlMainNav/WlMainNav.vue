@@ -7,7 +7,9 @@
     v-else
     :nav-items
   />
-  <slot />
+  <div class="mb-30 lg:mb-0">
+    <slot />
+  </div>
 </template>
 
 <script setup lang="ts">
