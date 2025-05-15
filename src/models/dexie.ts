@@ -41,4 +41,5 @@ export type WalletRecord = {
   id: string;
   name: string;
   currencyCode: Wallet.CurrencyCode;
+  isDefault: boolean;
 }

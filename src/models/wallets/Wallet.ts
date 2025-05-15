@@ -8,10 +8,12 @@ class Wallet {
     id: string;
     name: string;
     currencyCode: Wallet.CurrencyCode;
+    isDefault: boolean;
   }) {
     this.id = params.id
     this.name = params.name
     this.currencyCode = params.currencyCode
+    this.isDefault = params.isDefault
   }
 
   get currency (): Wallet.Currency {
@@ -27,6 +29,7 @@ class Wallet {
   public readonly id: string
   public readonly name: string
   public readonly currencyCode: Wallet.CurrencyCode
+  public readonly isDefault: boolean
 
   private cachedCurrency: Wallet.Currency | undefined = undefined
 }

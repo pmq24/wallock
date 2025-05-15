@@ -28,7 +28,7 @@
           :href="`/wallets/${wallet.id}`"
           class="list-row"
         >
-          {{ wallet.name }}
+          {{ wallet.name + ( wallet.isDefault ? ' (default)' : '' ) }}
         </a>
       </li>
     </ul>
