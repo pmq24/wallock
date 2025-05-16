@@ -24,19 +24,6 @@ export default class Transaction {
     return this.netAmount / this.wallet.currencyDivisor
   }
 
-  get displayAmount () {
-    const unsignedDisplayAmount =
-      (this.amount / this.wallet.currencyDivisor).toFixed(
-        this.wallet.currency.decimalDigits
-      ) +
-      ' ' +
-      this.wallet.currencyCode
-
-    return this.category.isExpense
-      ? '-' + unsignedDisplayAmount
-      : unsignedDisplayAmount
-  }
-
   public readonly id: string
   public readonly amount: number
   public readonly time: string

@@ -23,23 +23,15 @@ export default class TransactionCreationForm {
     return form
   }
 
-  private constructor (params: {
-    availableCategories: Category[];
-    availableWallets: Wallet[];
-    transactionTable: TransactionTable;
-  }) {
-    this.transactionTable = params.transactionTable
-    this.availableCategories = params.availableCategories
-    this.availableWallets = params.availableWallets
-
-    this._categoryId = this.availableCategories.at(0)!.id
-    this._walletId = this.availableWallets.at(0)!.id
-  }
-
   set amount (value: number) {
     const parsed = parseInt(value.toString().replace('.', ''))
 
     if (isNaN(parsed)) {
+      this._amount = 0
+      return
+    }
+
+    if (parsed < 0) {
       this._amount = 0
       return
     }
@@ -52,7 +44,7 @@ export default class TransactionCreationForm {
   }
 
   get netAmount () {
-    const netAmount = this.amount / (this.wallet.currencyDivisor ?? 1)
+    const netAmount = this.amount / this.wallet.currencyDivisor
     const formatted = netAmount.toFixed(this.wallet.currency.decimalDigits)
 
     if (this.category.type === 'expense') {
@@ -67,6 +59,7 @@ export default class TransactionCreationForm {
 
     if (!parsed.isValid()) {
       this._time = dayjs().format()
+      return
     }
 
     this._time = parsed.format()
@@ -132,6 +125,19 @@ export default class TransactionCreationForm {
     const id = await this.transactionTable.add({ id: nanoid(), ...data })
     this._submitting = false
     return createStandardSuccess(id)
+  }
+
+  private constructor (params: {
+    availableCategories: Category[];
+    availableWallets: Wallet[];
+    transactionTable: TransactionTable;
+  }) {
+    this.transactionTable = params.transactionTable
+    this.availableCategories = params.availableCategories
+    this.availableWallets = params.availableWallets
+
+    this._categoryId = this.availableCategories.at(0)!.id
+    this._walletId = this.availableWallets.at(0)!.id
   }
 
   readonly availableCategories: Category[]
