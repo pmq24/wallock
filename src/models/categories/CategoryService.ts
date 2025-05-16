@@ -10,20 +10,12 @@ class CategoryService {
   async all () {
     return this.dexie.categories.toArray().then((categoryRecords) =>
       categoryRecords
-        .sort((categoryRecord1, categoryRecord2) => {
-          if (categoryRecord1.type !== categoryRecord2.type) {
-            if (categoryRecord1.type === 'expense') {
-              return -1
-            } else {
-              return 1
-            }
-          } else {
-            if (categoryRecord1.name < categoryRecord2.name) {
-              return -1
-            } else {
-              return 1
-            }
-          }
+        .sort((a, b) => {
+          return a.type === b.type
+            ? a.name.localeCompare(b.name)
+            : a.type === 'expense'
+              ? -1
+              : 1
         })
         .map(
           (categoryRecord) =>
