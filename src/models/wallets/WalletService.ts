@@ -5,24 +5,6 @@ import { nanoid } from 'nanoid'
 import Wallet from './Wallet'
 
 class WalletService {
-  async getSchema () {
-    const names = (await this.dexie.wallets
-      .orderBy('name')
-      .uniqueKeys()) as string[]
-
-    return v.object({
-      name: v.pipe(
-        v.string(),
-        v.minLength(1, 'Required'),
-        v.notValues(names, 'Already exists')
-      ),
-      currencyCode: v.pipe(
-        v.string(),
-        v.values(Wallet.CURRENCY_CODES, 'Invalid currency code')
-      ),
-    })
-  }
-
   constructor (private dexie: AppDexie) {}
 
   async count () {
@@ -70,11 +52,11 @@ class WalletService {
     const wallet = wallets.find((w) => w.id === id)
 
     if (!wallet) {
-      return createStandardError('Wallet not found')
+      return createStandardError('Wallet not found' as const)
     }
 
     if (wallet.isDefault) {
-      return createStandardError(wallet)
+      return createStandardError('Wallet is already default' as const)
     }
 
     const currentDefaultWallet = wallets.find((w) => w.isDefault)
@@ -85,6 +67,24 @@ class WalletService {
     }
     await this.dexie.wallets.update(id, { isDefault: true })
     return createStandardSuccess(await this.id(id))
+  }
+
+  async getSchema () {
+    const names = (await this.dexie.wallets
+      .orderBy('name')
+      .uniqueKeys()) as string[]
+
+    return v.object({
+      name: v.pipe(
+        v.string(),
+        v.minLength(1, 'Required'),
+        v.notValues(names, 'Already exists')
+      ),
+      currencyCode: v.pipe(
+        v.string(),
+        v.values(Wallet.CURRENCY_CODES, 'Invalid currency code')
+      ),
+    })
   }
 }
 
