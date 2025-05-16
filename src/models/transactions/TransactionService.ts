@@ -36,7 +36,7 @@ export default class TransactionService {
       .value()
   }
 
-  async query () {
+  query () {
     return new TransactionQuery({
       transactionTable: this.transactionTable,
       categoryService: this.categoryService,

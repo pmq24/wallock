@@ -3,6 +3,8 @@ import type { TransactionTable } from 'models/dexie'
 import Transaction from './Transaction'
 import type CategoryService from 'models/categories/CategoryService'
 import type WalletService from 'models/wallets/WalletService'
+import { createStandardError, createStandardSuccess } from 'models/common'
+import type Wallet from 'models/wallets/Wallet'
 
 class TransactionQuery {
   constructor (params: {
@@ -15,22 +17,57 @@ class TransactionQuery {
     this.walletService = params.walletService
   }
 
-  set period (value: TransactionQuery.PeriodFilter | undefined) {
-    if (!value) {
+  filterByPeriod (period: TransactionQuery.PeriodFilter | undefined) {
+    if (!period) {
       this._period = undefined
-    } else if (TransactionQuery.MONTH_PERIOD_FILTER_REGEX.test(value)) {
-      this._period = value
-    } else {
-      this._period = undefined
+      return createStandardSuccess(undefined)
     }
+
+    if (TransactionQuery.MONTH_PERIOD_FILTER_REGEX.test(period)) {
+      this._period = period
+      return createStandardSuccess(period)
+    }
+
+    return createStandardError('Invalid period filter')
   }
 
-  get period () {
+  get periodFilter () {
     return this._period
   }
 
-  async submit () {
-    let collection = this.transactionTable.toCollection()
+  async filterByWallet (id: string | undefined) {
+    if (!id) {
+      this._wallet = undefined
+      return createStandardSuccess(undefined)
+    }
+
+    const wallets = await this.walletService.all()
+    const wallet = wallets.find((w) => w.id === id)
+    if (wallet) {
+      this._wallet = wallet
+      return createStandardSuccess(wallet.id)
+    }
+
+    return createStandardError('Wallet not found')
+  }
+
+  get walletFilter () {
+    return this._wallet
+  }
+
+  async execute () {
+    const queryObject = {} as Record<string, any>
+    if (this._wallet) {
+      queryObject['walletId'] = this._wallet.id
+    }
+
+    let collection
+    if (Object.keys(queryObject).length > 0) {
+      collection = this.transactionTable.where(queryObject)
+    } else {
+      collection = this.transactionTable.toCollection()
+    }
+
     if (this._period) {
       collection = collection.filter(
         (record) =>
@@ -81,6 +118,7 @@ class TransactionQuery {
   private readonly walletService: WalletService
 
   private _period: TransactionQuery.PeriodFilter | undefined
+  private _wallet: Wallet | undefined
 }
 
 namespace TransactionQuery {

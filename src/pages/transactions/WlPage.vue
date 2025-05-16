@@ -1,19 +1,62 @@
 <template>
   <WlMainNav>
     <header class="navbar lg:w-xl lg:mx-auto">
-      <h1 class="text-xl font-bold flex-1">
+      <h1 class="flex-grow-1">
         Transactions
       </h1>
+
+      <button
+        v-if="walletsAreReady"
+        class="btn"
+        @click="() => walletSelector?.showModal()"
+      >
+        {{ query.walletFilter?.name }}
+        <WlUnfoldIcon class="size-4" />
+      </button>
+      <dialog
+        ref="wallet-selector"
+        class="modal"
+        closeBy="any"
+      >
+        <section class="modal-box">
+          <header class="navbar">
+            <button
+              class="btn btn-ghost btn-square mr-2"
+              @click="() => walletSelector?.close()"
+            >
+              <WlCloseIcon />
+            </button>
+
+            <h1 class="text-lg font-bold">
+              Filter by wallet
+            </h1>
+          </header>
+
+          <ul class="menu w-full">
+            <li
+              v-for="wallet in wallets"
+              :key="wallet.id"
+            >
+              <RouterLink :to="{ query: { ...route.query, walletId: wallet.id } }">
+                {{ wallet.name }}
+              </RouterLink>
+            </li>
+          </ul>
+        </section>
+      </dialog>
     </header>
 
     <main class="p-2 lg:w-xl lg:mx-auto flex flex-col gap-2">
-      <div class="overflow-x-auto">
+      <div
+        v-if="visibleMonthsAreReady"
+        class="overflow-x-auto"
+      >
         <nav class="tabs">
           <RouterLink
-            v-for="month in months"
+            v-for="month in visibleMonths"
             :key="month"
-            :class="['tab', query.period === month && 'tab-active']"
-            :to="{ query: { period: month } }"
+            :class="['tab', query.periodFilter === month && 'tab-active']"
+            :to="{ query: { ...route.query, period: month } }"
           >
             {{ month }}
           </RouterLink>
@@ -46,7 +89,7 @@
       </section>
 
       <div
-        v-if="isReady && !transactions.length"
+        v-if="transactionsAreReady && !transactions.length"
         class="flex flex-col justify-center items-center gap-2 h-25"
       >
         <span>There are no transaction</span>
@@ -100,22 +143,27 @@
 import dayjs from 'dayjs'
 import { injectApi } from 'providers/api'
 import WlMainNav from 'components/WlMainNav/WlMainNav.vue'
-import { useRoute } from 'vue-router'
-import { computed, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { computed, useTemplateRef, watch } from 'vue'
 import { useAsyncState } from '@vueuse/core'
 import { groupBy } from 'lodash'
-import { WlAddIcon } from 'components/icons'
+import { WlAddIcon, WlCloseIcon, WlUnfoldIcon } from 'components/icons'
 import WlFormattedAmount from 'components/WlFormattedAmount.vue'
 
+const router = useRouter()
 const route = useRoute()
 
 const api = injectApi()
 const transactionService = api.transactions
+const walletService = api.wallets
 
-const months = await transactionService.visibleMonths()
+const { state: wallets, isReady: walletsAreReady } = useAsyncState(() => walletService.all(), [])
+const { state: visibleMonths, isReady: visibleMonthsAreReady } = useAsyncState(() => transactionService.visibleMonths(), [])
 
-const query = await transactionService.query()
-const { state: transactions, isReady, execute: refetchTransactions } = useAsyncState(() => query.submit(), [])
+const walletSelector = useTemplateRef<HTMLDialogElement>('wallet-selector')
+
+const query = transactionService.query()
+const { state: transactions, isReady: transactionsAreReady, execute: refetchTransactions } = useAsyncState(() => query.execute(), [])
 
 const overview = computed(() => {
   return [
@@ -141,14 +189,21 @@ const balancesByDay = computed(
     acc.set(day, transactions.reduce((acc, t) => acc + t.netAmountFloat, 0))
   , new Map<string, number>()))
 
-watch(() => route.query.period, async (period) => {
-  query.period = period as any
-  if (!query.period) {
+watch(() => [route.query.period, route.query.walletId, walletsAreReady], async ([period, walletId]) => {
+  let result
+
+  result = query.filterByPeriod(String(period))
+  if (!result.success) {
     const currentMonth = dayjs().format('YYYY-MM')
-    window.location.replace(`/transactions?period=${currentMonth}`)
-    query.period = currentMonth
+    router.push({ query: { ...route.query, period: currentMonth } })
+  }
+
+  result = await query.filterByWallet(String(walletId))
+  if (!result.success) {
+    router.push({ query: { ...route.query, walletId: wallets.value.find(w => w.isDefault)?.id } })
   }
 
   refetchTransactions()
+  walletSelector.value?.close()
 }, { immediate: true })
 </script>

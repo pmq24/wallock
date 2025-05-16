@@ -1,11 +1,11 @@
 <template>
   <header class="navbar lg:w-xl lg:mx-auto">
-    <button
+    <RouterLink
+      :to="{ name: 'settings' }"
       class="btn btn-ghost btn-square"
-      @click="router.back"
     >
       <WlBackIcon />
-    </button>
+    </RouterLink>
     <h1 class="text-xl font-bold flex-1">
       Wallets
     </h1>
@@ -37,10 +37,7 @@
 
 <script lang="ts" setup>
 import { injectApi } from 'providers/api'
-import { useRouter } from 'vue-router'
 import { WlAddIcon, WlBackIcon } from 'components/icons'
-
-const router = useRouter()
 
 const api = injectApi()
 const wallets = await api.wallets.all()
