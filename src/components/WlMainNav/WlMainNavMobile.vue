@@ -1,5 +1,5 @@
 <template>
-  <nav class="dock fixed bottom-0">
+  <nav class="dock fixed bottom-0 z-10">
     <RouterLink
       v-for="{name, label, icons} in navItems"
       :key="name"
@@ -13,7 +13,7 @@
 
   <RouterLink
     :to="{name: 'transactionsNew'}"
-    class="btn btn-circle btn-primary btn-xl fixed bottom-20 right-4"
+    class="btn btn-circle btn-primary btn-xl fixed bottom-20 right-4 z-10"
   >
     <WlAddIcon />
   </RouterLink>

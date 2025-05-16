@@ -10,6 +10,7 @@
         class="btn"
         @click="() => walletSelector?.showModal()"
       >
+        <WlWalletIcon />
         {{ query.walletFilter?.name }}
         <WlUnfoldIcon class="size-4" />
       </button>
@@ -147,7 +148,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { computed, useTemplateRef, watch } from 'vue'
 import { useAsyncState } from '@vueuse/core'
 import { groupBy } from 'lodash'
-import { WlAddIcon, WlCloseIcon, WlUnfoldIcon } from 'components/icons'
+import { WlAddIcon, WlCloseIcon, WlUnfoldIcon, WlWalletIcon } from 'components/icons'
 import WlFormattedAmount from 'components/WlFormattedAmount.vue'
 
 const router = useRouter()

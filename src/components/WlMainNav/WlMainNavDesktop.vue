@@ -1,5 +1,5 @@
 <template>
-  <nav class="fixed left-0 top-0 bottom-0 flex flex-col gap-4">
+  <nav class="fixed left-0 top-0 bottom-0 flex flex-col gap-4 z-10">
     <RouterLink
       :to="{ name: 'transactionsNew' }"
       class="btn btn-lg btn-primary m-2"
