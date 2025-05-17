@@ -9,4 +9,5 @@ export type CategoryRecord = {
   id: string;
   name: string;
   type: Category.Type;
+  hash: string;
 }

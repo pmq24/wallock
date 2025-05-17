@@ -4,15 +4,17 @@ import WalletService from './wallets/WalletService'
 import CategoryService from './categories/CategoryService'
 import TransactionService from './transactions/TransactionService'
 import I18n from './i18n/I18n'
+import Hasher from './sync/Hasher'
 
 export default class Api {
   constructor (opts: { dexieOpts?: DexieOptions } = {}) {
+    this.hasher = new Hasher()
+    this.i18n = new I18n()
+
     this.dexie = createAppDexie(opts.dexieOpts)
     this.categories = new CategoryService({ api: this })
     this.transactions = new TransactionService({ api: this })
     this.wallets = new WalletService({ api: this })
-
-    this.i18n = new I18n()
   }
 
   public readonly categories: CategoryService
@@ -22,4 +24,6 @@ export default class Api {
   public readonly i18n: I18n
 
   public readonly dexie: AppDexie
+
+  public readonly hasher: Hasher
 }

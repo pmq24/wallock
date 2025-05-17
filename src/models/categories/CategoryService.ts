@@ -4,10 +4,12 @@ import { createStandardError, createStandardSuccess } from 'models/common'
 import { nanoid } from 'nanoid'
 import type Api from 'models/api'
 import type { CategoryTable } from './dexie'
+import type Hasher from 'models/sync/Hasher'
 
 class CategoryService {
   constructor (params: { api: Api }) {
     this.categoryTable = params.api.dexie.categories
+    this.hasher = params.api.hasher
   }
 
   async all () {
@@ -32,11 +34,13 @@ class CategoryService {
       return createStandardError(errors)
     }
 
-    const id = await this.categoryTable.add({
+    const record = {
       id: nanoid(),
       type: validation.output.type as Category.Type,
       name: validation.output.name,
-    })
+    }
+    const hash = await this.hasher.hashData(record)
+    const id = await this.categoryTable.add({ ...record, hash })
 
     return createStandardSuccess(id)
   }
@@ -57,6 +61,7 @@ class CategoryService {
   }
 
   private readonly categoryTable: CategoryTable
+  private readonly hasher: Hasher
 }
 
 namespace CategoryService {
