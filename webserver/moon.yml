@@ -1,0 +1,12 @@
+$schema: https://moonrepo.dev/schemas/workspace.json
+
+type: application
+
+project:
+  name: Webserver
+  description: The webserver
+
+tasks:
+  dev:
+    command: sudo caddy run --watch
+    local: true

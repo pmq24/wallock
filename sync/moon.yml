@@ -1,0 +1,13 @@
+$schema: https://moonrepo.dev/schemas/workspace.json
+
+type: application
+language: go
+
+project:
+  name: Sync
+  description: The backend for syncing the browser's IndexDB and remote storages
+
+tasks:
+  dev:
+    command: go run .
+    local: true

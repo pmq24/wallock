@@ -1,0 +1,17 @@
+$schema: https://moonrepo.dev/schemas/workspace.json
+
+type: application
+language: typescript
+
+project:
+  name: Web
+  description: The user-facing web application
+
+tasks:
+  dev:
+    command: npm run dev
+    local: true
+  lint:
+    command: npm run lint
+  lint-no-fix:
+    command: npm run lint-no-fix

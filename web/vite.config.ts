@@ -2,7 +2,6 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import tailwindcss from '@tailwindcss/vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
-import fs from 'fs'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -15,10 +14,6 @@ export default defineConfig({
   ],
   server: {
     host: true,
-    https: {
-      cert: fs.readFileSync('./localhost.pem'),
-      key: fs.readFileSync('./localhost-key.pem'),
-    },
     port: 3100,
   },
 })

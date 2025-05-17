@@ -1,0 +1,13 @@
+{
+	http_port 80
+}
+
+http://sync.localhost {
+	encode
+	reverse_proxy localhost:3200
+}
+
+http://app.localhost {
+	encode
+	reverse_proxy localhost:3100
+}
