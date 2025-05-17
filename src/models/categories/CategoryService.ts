@@ -1,14 +1,17 @@
-import type { AppDexie } from 'models/dexie'
 import Category from './Category'
 import * as v from 'valibot'
 import { createStandardError, createStandardSuccess } from 'models/common'
 import { nanoid } from 'nanoid'
+import type Api from 'models/api'
+import type { CategoryTable } from './dexie'
 
 class CategoryService {
-  constructor (private dexie: AppDexie) {}
+  constructor (params: { api: Api }) {
+    this.categoryTable = params.api.dexie.categories
+  }
 
   async all () {
-    return this.dexie.categories.toArray().then((categoryRecords) =>
+    return this.categoryTable.toArray().then((categoryRecords) =>
       categoryRecords
         .sort((a, b) => {
           return a.type === b.type
@@ -17,14 +20,7 @@ class CategoryService {
               ? -1
               : 1
         })
-        .map(
-          (categoryRecord) =>
-            new Category(
-              categoryRecord.id,
-              categoryRecord.name,
-              categoryRecord.type
-            )
-        )
+        .map((categoryRecord) => new Category(categoryRecord))
     )
   }
 
@@ -36,7 +32,7 @@ class CategoryService {
       return createStandardError(errors)
     }
 
-    const id = await this.dexie.categories.add({
+    const id = await this.categoryTable.add({
       id: nanoid(),
       type: validation.output.type as Category.Type,
       name: validation.output.name,
@@ -46,7 +42,7 @@ class CategoryService {
   }
 
   async getSchema () {
-    const names = (await this.dexie.categories
+    const names = (await this.categoryTable
       .orderBy('name')
       .uniqueKeys()) as string[]
 
@@ -59,6 +55,8 @@ class CategoryService {
       type: v.pipe(v.string(), v.values(Category.TYPES, 'Invalid type')),
     })
   }
+
+  private readonly categoryTable: CategoryTable
 }
 
 namespace CategoryService {

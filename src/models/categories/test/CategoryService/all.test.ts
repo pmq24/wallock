@@ -1,15 +1,16 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import CategoryService from '../../CategoryService'
 import { IDBFactory, IDBKeyRange } from 'fake-indexeddb'
-import { createAppDexie, type AppDexie } from 'models/dexie'
+import Api from 'models/api'
 
 describe('CategoryService - all', () => {
-  let dexie: AppDexie
   let service: CategoryService
 
   beforeEach(() => {
-    dexie = createAppDexie({ indexedDB: new IDBFactory(), IDBKeyRange })
-    service = new CategoryService(dexie)
+    const api = new Api({
+      dexieOpts: { indexedDB: new IDBFactory(), IDBKeyRange },
+    })
+    service = new CategoryService({ api })
   })
 
   beforeEach(async () => {

@@ -1,11 +1,13 @@
+import type { CategoryRecord } from './dexie'
+
 class Category {
   static TYPES = ['income', 'expense'] as const
 
-  constructor (
-    public readonly id: string,
-    public readonly name: string,
-    public readonly type: Category.Type
-  ) {}
+  constructor (record: CategoryRecord) {
+    this.id = record.id
+    this.name = record.name
+    this.type = record.type
+  }
 
   get isExpense () {
     return this.type === 'expense'
@@ -14,6 +16,10 @@ class Category {
   get isIncome () {
     return this.type === 'income'
   }
+
+  public readonly id: string
+  public readonly name: string
+  public readonly type: Category.Type
 }
 
 namespace Category {

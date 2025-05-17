@@ -8,7 +8,7 @@ import I18n from './i18n/I18n'
 export default class Api {
   constructor (opts: { dexieOpts?: DexieOptions } = {}) {
     this.dexie = createAppDexie(opts.dexieOpts)
-    this.categories = new CategoryService(this.dexie)
+    this.categories = new CategoryService({ api: this })
     this.transactions = new TransactionService({ api: this })
     this.wallets = new WalletService(this.dexie)
 
