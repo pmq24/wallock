@@ -1,24 +1,27 @@
-import type { AppDexie } from 'models/dexie'
 import * as v from 'valibot'
 import { createStandardError, createStandardSuccess } from 'models/common'
 import { nanoid } from 'nanoid'
 import Wallet from './Wallet'
+import type Api from 'models/api'
+import type { WalletTable } from './dexie'
 
 class WalletService {
-  constructor (private dexie: AppDexie) {}
+  constructor (params: { api: Api }) {
+    this.walletTable = params.api.dexie.wallets
+  }
 
   async count () {
-    return await this.dexie.wallets.count()
+    return await this.walletTable.count()
   }
 
   async id (id: string) {
-    return await this.dexie.wallets
+    return await this.walletTable
       .get(id)
       .then((record) => (record ? new Wallet(record) : undefined))
   }
 
   async all () {
-    return (await this.dexie.wallets.toArray())
+    return (await this.walletTable.toArray())
       .sort((w1, w2) => {
         if (w1.isDefault) return -1
         if (w2.isDefault) return 1
@@ -36,7 +39,7 @@ class WalletService {
       return createStandardError(errors)
     }
 
-    const id = await this.dexie.wallets.add({
+    const id = await this.walletTable.add({
       id: nanoid(),
       name: validation.output.name,
       currencyCode: validation.output.currencyCode as Wallet.CurrencyCode,
@@ -61,16 +64,16 @@ class WalletService {
 
     const currentDefaultWallet = wallets.find((w) => w.isDefault)
     if (currentDefaultWallet) {
-      await this.dexie.wallets.update(currentDefaultWallet.id, {
+      await this.walletTable.update(currentDefaultWallet.id, {
         isDefault: false,
       })
     }
-    await this.dexie.wallets.update(id, { isDefault: true })
+    await this.walletTable.update(id, { isDefault: true })
     return createStandardSuccess(await this.id(id))
   }
 
   async getSchema () {
-    const names = (await this.dexie.wallets
+    const names = (await this.walletTable
       .orderBy('name')
       .uniqueKeys()) as string[]
 
@@ -86,6 +89,8 @@ class WalletService {
       ),
     })
   }
+
+  private readonly walletTable: WalletTable
 }
 
 namespace WalletService {

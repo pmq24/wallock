@@ -1,15 +1,11 @@
 import CURRENCIES from './consts/CURRENCIES'
+import type { WalletRecord } from './dexie'
 
 class Wallet {
   static CURRENCIES = CURRENCIES
   static CURRENCY_CODES = CURRENCIES.map((c) => c.code)
 
-  constructor (params: {
-    id: string;
-    name: string;
-    currencyCode: Wallet.CurrencyCode;
-    isDefault: boolean;
-  }) {
+  constructor (params: WalletRecord) {
     this.id = params.id
     this.name = params.name
     this.currencyCode = params.currencyCode

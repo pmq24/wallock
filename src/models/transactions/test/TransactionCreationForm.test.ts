@@ -25,7 +25,7 @@ describe('TransactionCreationForm', () => {
     const categoryService = new CategoryService({ api })
     await mockCategories(categoryService)
 
-    const walletService = new WalletService(dexie)
+    const walletService = new WalletService({ api })
     await mockWallets(walletService)
 
     form = await TransactionCreationForm.create({

@@ -1,15 +1,16 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import WalletService from '../../WalletService'
 import { IDBFactory, IDBKeyRange } from 'fake-indexeddb'
-import { createAppDexie, type AppDexie } from 'models/dexie'
+import Api from 'models/api'
 
 describe('WalletService - count', () => {
-  let dexie: AppDexie
   let service: WalletService
 
   beforeEach(async () => {
-    dexie = createAppDexie({ indexedDB: new IDBFactory(), IDBKeyRange })
-    service = new WalletService(dexie)
+    const api = new Api({
+      dexieOpts: { indexedDB: new IDBFactory(), IDBKeyRange },
+    })
+    service = new WalletService({ api })
   })
 
   describe('when there is no wallet', async () => {

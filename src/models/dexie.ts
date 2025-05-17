@@ -1,10 +1,10 @@
-import Dexie, { type DexieOptions, type EntityTable } from 'dexie'
-import type Wallet from './wallets/Wallet'
+import Dexie, { type DexieOptions } from 'dexie'
 import {
   TRANSACTION_TABLE_INDICES,
   type TransactionTable,
 } from './transactions/dexie'
 import { CATEGORY_TABLE_INDICES, type CategoryTable } from './categories/dexie'
+import { WALLET_TABLE_INDICES, type WalletTable } from './wallets/dexie'
 
 export function createAppDexie (opts?: DexieOptions) {
   const d = new Dexie('Wallock Database', opts) as AppDexie
@@ -12,7 +12,7 @@ export function createAppDexie (opts?: DexieOptions) {
   d.version(1).stores({
     categories: CATEGORY_TABLE_INDICES,
     transactions: TRANSACTION_TABLE_INDICES,
-    wallets: 'id, &name',
+    wallets: WALLET_TABLE_INDICES,
   })
 
   return d
@@ -22,12 +22,4 @@ export type AppDexie = Dexie & {
   categories: CategoryTable;
   transactions: TransactionTable;
   wallets: WalletTable;
-}
-
-export type WalletTable = EntityTable<WalletRecord, 'id'>
-export type WalletRecord = {
-  id: string;
-  name: string;
-  currencyCode: Wallet.CurrencyCode;
-  isDefault: boolean;
 }

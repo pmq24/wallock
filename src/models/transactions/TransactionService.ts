@@ -11,7 +11,7 @@ export default class TransactionService {
   constructor (params: { api: Api }) {
     this.transactionTable = params.api.dexie.transactions
     this.categoryService = new CategoryService({ api: params.api })
-    this.walletService = new WalletService(params.api.dexie)
+    this.walletService = new WalletService({ api: params.api })
   }
 
   /**
