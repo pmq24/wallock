@@ -1,13 +1,17 @@
 import Dexie, { type DexieOptions, type EntityTable } from 'dexie'
 import type Category from './categories/Category'
 import type Wallet from './wallets/Wallet'
+import {
+  TRANSACTION_TABLE_INDICES,
+  type TransactionTable,
+} from './transactions/dexie'
 
 export function createAppDexie (opts?: DexieOptions) {
   const d = new Dexie('Wallock Database', opts) as AppDexie
 
   d.version(1).stores({
     categories: 'id, &name',
-    transactions: 'id, time, categoryId, walletId',
+    transactions: TRANSACTION_TABLE_INDICES,
     wallets: 'id, &name',
   })
 
@@ -25,15 +29,6 @@ export type CategoryRecord = {
   id: string;
   name: string;
   type: Category.Type;
-}
-
-export type TransactionTable = EntityTable<TransactionRecord, 'id'>
-export type TransactionRecord = {
-  id: string;
-  amount: number;
-  categoryId: string;
-  time: string;
-  walletId: string;
 }
 
 export type WalletTable = EntityTable<WalletRecord, 'id'>

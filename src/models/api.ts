@@ -9,7 +9,7 @@ export default class Api {
   constructor (opts: { dexieOpts?: DexieOptions } = {}) {
     this.dexie = createAppDexie(opts.dexieOpts)
     this.categories = new CategoryService(this.dexie)
-    this.transactions = new TransactionService(this.dexie)
+    this.transactions = new TransactionService({ api: this })
     this.wallets = new WalletService(this.dexie)
 
     this.i18n = new I18n()
@@ -21,5 +21,5 @@ export default class Api {
 
   public readonly i18n: I18n
 
-  private readonly dexie: AppDexie
+  public readonly dexie: AppDexie
 }
