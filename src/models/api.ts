@@ -5,6 +5,7 @@ import CategoryService from './categories/CategoryService'
 import TransactionService from './transactions/TransactionService'
 import I18n from './i18n/I18n'
 import Hasher from './sync/Hasher'
+import SyncHashService from './sync/SyncHashService'
 
 export default class Api {
   constructor (opts: { dexieOpts?: DexieOptions } = {}) {
@@ -15,7 +16,11 @@ export default class Api {
     this.categories = new CategoryService({ api: this })
     this.transactions = new TransactionService({ api: this })
     this.wallets = new WalletService({ api: this })
+
+    this.syncHashes = new SyncHashService({ api: this })
   }
+
+  public readonly syncHashes: SyncHashService
 
   public readonly categories: CategoryService
   public readonly transactions: TransactionService
