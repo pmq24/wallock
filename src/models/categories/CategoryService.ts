@@ -5,11 +5,13 @@ import { nanoid } from 'nanoid'
 import type Api from 'models/api'
 import type { CategoryTable } from './dexie'
 import type Hasher from 'models/sync/Hasher'
+import type SyncHashService from 'models/sync/SyncHashService'
 
 class CategoryService {
   constructor (params: { api: Api }) {
     this.categoryTable = params.api.dexie.categories
     this.hasher = params.api.hasher
+    this.syncHashService = params.api.syncHashes
   }
 
   async all () {
@@ -24,6 +26,12 @@ class CategoryService {
         })
         .map((categoryRecord) => new Category(categoryRecord))
     )
+  }
+
+  async id (id: string) {
+    return await this.categoryTable
+      .get(id)
+      .then((record) => (record ? new Category(record) : undefined))
   }
 
   async create (data: CategoryService.CreateData) {
@@ -41,8 +49,15 @@ class CategoryService {
     }
     const hash = await this.hasher.hashData(record)
     const id = await this.categoryTable.add({ ...record, hash })
+    const category = await this.id(id)
+
+    this.onCreateListeners.forEach((listener) => listener(category!))
 
     return createStandardSuccess(id)
+  }
+
+  addOnCreateListener (listener: CategoryService.OnCreateListener) {
+    this.onCreateListeners.push(listener)
   }
 
   async getSchema () {
@@ -62,6 +77,9 @@ class CategoryService {
 
   private readonly categoryTable: CategoryTable
   private readonly hasher: Hasher
+  private readonly syncHashService: SyncHashService
+
+  private readonly onCreateListeners: CategoryService.OnCreateListener[] = []
 }
 
 namespace CategoryService {
@@ -72,6 +90,8 @@ namespace CategoryService {
   export type CreateErrors = v.FlatErrors<
     Awaited<ReturnType<CategoryService['getSchema']>>
   >
+
+  export type OnCreateListener = (category: Category) => void
 }
 
 export default CategoryService

@@ -8,10 +8,10 @@ import Hasher from './sync/Hasher'
 
 export default class Api {
   constructor (opts: { dexieOpts?: DexieOptions } = {}) {
+    this.dexie = createAppDexie(opts.dexieOpts)
     this.hasher = new Hasher()
     this.i18n = new I18n()
 
-    this.dexie = createAppDexie(opts.dexieOpts)
     this.categories = new CategoryService({ api: this })
     this.transactions = new TransactionService({ api: this })
     this.wallets = new WalletService({ api: this })

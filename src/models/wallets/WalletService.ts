@@ -4,10 +4,12 @@ import { nanoid } from 'nanoid'
 import Wallet from './Wallet'
 import type Api from 'models/api'
 import type { WalletTable } from './dexie'
+import type Hasher from 'models/sync/Hasher'
 
 class WalletService {
   constructor (params: { api: Api }) {
     this.walletTable = params.api.dexie.wallets
+    this.hasher = params.api.hasher
   }
 
   async count () {
@@ -39,14 +41,22 @@ class WalletService {
       return createStandardError(errors)
     }
 
-    const id = await this.walletTable.add({
+    const record = {
       id: nanoid(),
       name: validation.output.name,
       currencyCode: validation.output.currencyCode as Wallet.CurrencyCode,
       isDefault: (await this.count()) === 0,
-    })
+    }
+    const hash = await this.hasher.hashData(record)
+    const id = await this.walletTable.add({ ...record, hash })
+
+    this.onChangeListeners.forEach((listener) => listener())
 
     return createStandardSuccess(id)
+  }
+
+  addOnChangeListener (listener: WalletService.OnChangeListener) {
+    this.onChangeListeners.push(listener)
   }
 
   async makeDefault (id: string) {
@@ -69,6 +79,7 @@ class WalletService {
       })
     }
     await this.walletTable.update(id, { isDefault: true })
+    this.onChangeListeners.forEach((listener) => listener())
     return createStandardSuccess(await this.id(id))
   }
 
@@ -91,6 +102,9 @@ class WalletService {
   }
 
   private readonly walletTable: WalletTable
+  private readonly hasher: Hasher
+
+  private onChangeListeners: WalletService.OnChangeListener[] = []
 }
 
 namespace WalletService {
@@ -101,6 +115,7 @@ namespace WalletService {
   export type CreateErrors = v.FlatErrors<
     Awaited<ReturnType<WalletService['getSchema']>>
   >
+  export type OnChangeListener = () => void
 }
 
 export default WalletService
