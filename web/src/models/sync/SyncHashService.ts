@@ -18,14 +18,14 @@ export default class SyncHashService {
 
   async updateCategoriesHash () {
     const categories = await this.categoryService.all()
-    const hash = await this.hasher.hashDataCollection(categories)
+    const hash = this.hasher.hashDataCollection(categories)
     await this.syncHashTable.put({ name: 'categories', hash })
     await this.updateRootHash()
   }
 
   async updateWalletsHash () {
     const wallets = await this.walletService.all()
-    const hash = await this.hasher.hashDataCollection(wallets)
+    const hash = this.hasher.hashDataCollection(wallets)
     await this.syncHashTable.put({ name: 'wallets', hash })
     await this.updateRootHash()
   }
@@ -34,7 +34,7 @@ export default class SyncHashService {
     const hashes = await this.syncHashTable
       .toArray()
       .then((records) => records.filter((record) => record.name !== 'root'))
-    const hash = await this.hasher.hashDataCollection(hashes)
+    const hash = this.hasher.hashDataCollection(hashes)
     await this.syncHashTable.put({ name: 'root', hash })
   }
 

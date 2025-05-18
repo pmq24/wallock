@@ -5,13 +5,11 @@ import { nanoid } from 'nanoid'
 import type Api from 'models/api'
 import type { CategoryTable } from './dexie'
 import type Hasher from 'models/sync/Hasher'
-import type SyncHashService from 'models/sync/SyncHashService'
 
 class CategoryService {
   constructor (params: { api: Api }) {
     this.categoryTable = params.api.dexie.categories
     this.hasher = params.api.hasher
-    this.syncHashService = params.api.syncHashes
   }
 
   async all () {
@@ -47,7 +45,7 @@ class CategoryService {
       type: validation.output.type as Category.Type,
       name: validation.output.name,
     }
-    const hash = await this.hasher.hashData(record)
+    const hash = this.hasher.hashData(record)
     const id = await this.categoryTable.add({ ...record, hash })
     const category = await this.id(id)
 
@@ -77,7 +75,6 @@ class CategoryService {
 
   private readonly categoryTable: CategoryTable
   private readonly hasher: Hasher
-  private readonly syncHashService: SyncHashService
 
   private readonly onCreateListeners: CategoryService.OnCreateListener[] = []
 }

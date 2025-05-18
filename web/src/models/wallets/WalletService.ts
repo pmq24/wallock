@@ -47,7 +47,7 @@ class WalletService {
       currencyCode: validation.output.currencyCode as Wallet.CurrencyCode,
       isDefault: (await this.count()) === 0,
     }
-    const hash = await this.hasher.hashData(record)
+    const hash = this.hasher.hashData(record)
     const id = await this.walletTable.add({ ...record, hash })
 
     this.onChangeListeners.forEach((listener) => listener())

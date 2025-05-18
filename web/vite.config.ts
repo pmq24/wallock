@@ -13,6 +13,7 @@ export default defineConfig({
     tsconfigPaths({ loose: true }),
   ],
   server: {
+    allowedHosts: ['app-dev.wallock.xyz'],
     host: true,
     port: 3100,
   },
