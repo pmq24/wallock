@@ -14,6 +14,7 @@ export default defineConfig({
   ],
   server: {
     allowedHosts: ['app-dev.wallock.xyz'],
+    cors: { origin: ['http://sync-dev.wallock.xyz:3000'] },
     host: true,
     port: 3100,
   },

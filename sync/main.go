@@ -1,15 +1,23 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
+	"os"
+
+	_ "github.com/joho/godotenv/autoload"
+	"github.com/rs/cors"
+	"sync.wallock.xyz/auth"
 )
 
 func main() {
-	http.HandleFunc("/", HelloServer)
-	http.ListenAndServe(":3200", nil)
-}
+	mux := http.NewServeMux()
+	mux.HandleFunc("/auth", auth.HandleAuthRequest)
+	mux.HandleFunc("/auth-callback", auth.HandleAuthCallback)
 
-func HelloServer(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello, %s!", r.URL.Path[1:])
+	handler := cors.New(cors.Options{
+		AllowedOrigins:   []string{os.Getenv("WEB_APP_BASE_URL")},
+		AllowCredentials: true,
+	}).Handler(mux)
+
+	http.ListenAndServe(":3200", handler)
 }

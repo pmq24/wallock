@@ -11,3 +11,5 @@ tasks:
   dev:
     command: go run .
     local: true
+  lint:
+    command: go fmt

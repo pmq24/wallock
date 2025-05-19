@@ -8,5 +8,5 @@ project:
 
 tasks:
   dev:
-    command: sudo caddy run --watch
+    command: caddy run --watch
     local: true

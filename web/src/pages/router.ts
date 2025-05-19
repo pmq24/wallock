@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import AuthCallback from './auth-callback/WlPage.vue'
 import Categories from './categories/WlPage.vue'
 import CategoriesNew from './categories.new/WlPage.vue'
+import RemoteSync from './remote-sync/WlPage.vue'
 import Settings from './settings/WlPage.vue'
 import Transactions from './transactions/WlPage.vue'
 import TransactionsNew from './transactions.new/WlPage.vue'
@@ -11,6 +13,11 @@ import { api } from 'providers/api'
 
 const routes = [
   {
+    path: '/auth-callback',
+    name: 'authCallback',
+    component: AuthCallback,
+  },
+  {
     path: '/categories',
     name: 'categories',
     component: Categories,
@@ -19,6 +26,11 @@ const routes = [
     path: '/categories/new',
     name: 'categoriesNew',
     component: CategoriesNew,
+  },
+  {
+    path: '/remote-sync',
+    name: 'remoteSync',
+    component: RemoteSync,
   },
   {
     path: '/settings',
