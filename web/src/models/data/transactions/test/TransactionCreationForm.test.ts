@@ -2,10 +2,10 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import TransactionCreationForm from '../TransactionCreationForm'
 import { IDBFactory, IDBKeyRange } from 'fake-indexeddb'
 import { type AppDexie } from 'models/dexie'
-import CategoryService from 'models/categories/CategoryService'
-import WalletService from 'models/wallets/WalletService'
-import { mockCategories } from 'models/categories/test/common'
-import { mockWallets } from 'models/wallets/test/common'
+import CategoryService from 'models/data/categories/CategoryService'
+import WalletService from 'models/data/wallets/WalletService'
+import { mockCategories } from 'models/data/categories/test/common'
+import { mockWallets } from 'models/data/wallets/test/common'
 import dayjs from 'dayjs'
 import setUpEnv from 'setUpEnv'
 import Api from 'models/api'
@@ -22,7 +22,10 @@ describe('TransactionCreationForm', () => {
     })
     dexie = api.dexie
 
-    const categoryService = new CategoryService({ api })
+    const categoryService = new CategoryService({
+      categoryTable: dexie.categories,
+      hasher: api.hasher,
+    })
     await mockCategories(categoryService)
 
     const walletService = new WalletService({ api })

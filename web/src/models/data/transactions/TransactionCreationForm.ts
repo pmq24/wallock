@@ -1,10 +1,10 @@
 import dayjs from 'dayjs'
-import type Category from 'models/categories/Category'
-import type CategoryService from 'models/categories/CategoryService'
+import type Category from 'models/data/categories/Category'
+import type CategoryService from 'models/data/categories/CategoryService'
 import { createStandardSuccess } from 'models/common'
-import type { TransactionTable } from 'models/dexie'
-import type Wallet from 'models/wallets/Wallet'
-import type WalletService from 'models/wallets/WalletService'
+import type { TransactionTable } from 'models/data/transactions/dexie'
+import type Wallet from 'models/data/wallets/Wallet'
+import type WalletService from 'models/data/wallets/WalletService'
 import { nanoid } from 'nanoid'
 
 export default class TransactionCreationForm {

@@ -13,7 +13,10 @@ describe('WalletService - makeDefault', () => {
     const api = new Api({
       dexieOpts: { indexedDB: new IDBFactory(), IDBKeyRange },
     })
-    service = new WalletService({ api })
+    service = new WalletService({
+      walletTable: api.dexie.wallets,
+      hasher: api.hasher,
+    })
 
     let mockResult
     mockResult = await service.create({

@@ -69,7 +69,7 @@
 </template>
 
 <script lang="ts" setup>
-import type CategoryService from 'models/categories/CategoryService'
+import type CategoryService from 'models/data/categories/CategoryService'
 import { injectApi } from 'providers/api'
 import { computed, reactive, ref } from 'vue'
 import { WlBackIcon } from 'components/icons'

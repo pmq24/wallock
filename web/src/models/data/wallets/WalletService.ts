@@ -2,14 +2,13 @@ import * as v from 'valibot'
 import { createStandardError, createStandardSuccess } from 'models/common'
 import { nanoid } from 'nanoid'
 import Wallet from './Wallet'
-import type Api from 'models/api'
 import type { WalletTable } from './dexie'
-import type Hasher from 'models/sync/Hasher'
+import type Hasher from 'models/hashes/Hasher'
 
 class WalletService {
-  constructor (params: { api: Api }) {
-    this.walletTable = params.api.dexie.wallets
-    this.hasher = params.api.hasher
+  constructor (params: { walletTable: WalletTable; hasher: Hasher }) {
+    this.walletTable = params.walletTable
+    this.hasher = params.hasher
   }
 
   async count () {

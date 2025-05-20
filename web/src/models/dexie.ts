@@ -2,10 +2,13 @@ import Dexie, { type DexieOptions } from 'dexie'
 import {
   TRANSACTION_TABLE_INDICES,
   type TransactionTable,
-} from './transactions/dexie'
-import { CATEGORY_TABLE_INDICES, type CategoryTable } from './categories/dexie'
-import { WALLET_TABLE_INDICES, type WalletTable } from './wallets/dexie'
-import { SYNC_HASH_TABLE_INDICES, type SyncHashTable } from './sync/dexie'
+} from './data/transactions/dexie'
+import {
+  CATEGORY_TABLE_INDICES,
+  type CategoryTable,
+} from './data/categories/dexie'
+import { WALLET_TABLE_INDICES, type WalletTable } from './data/wallets/dexie'
+import { HASH_TABLE_INDICES, type HashTable } from './hashes/dexie'
 
 export function createAppDexie (opts?: DexieOptions) {
   const d = new Dexie('Wallock Database', opts) as AppDexie
@@ -15,7 +18,7 @@ export function createAppDexie (opts?: DexieOptions) {
     transactions: TRANSACTION_TABLE_INDICES,
     wallets: WALLET_TABLE_INDICES,
 
-    syncHashes: SYNC_HASH_TABLE_INDICES,
+    hashes: HASH_TABLE_INDICES,
   })
 
   return d
@@ -26,5 +29,5 @@ export type AppDexie = Dexie & {
   transactions: TransactionTable;
   wallets: WalletTable;
 
-  syncHashes: SyncHashTable;
+  hashes: HashTable;
 }

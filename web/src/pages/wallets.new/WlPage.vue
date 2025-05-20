@@ -66,8 +66,8 @@
 </template>
 
 <script lang="ts" setup>
-import Wallet from 'models/wallets/Wallet'
-import WalletService from 'models/wallets/WalletService'
+import Wallet from 'models/data/wallets/Wallet'
+import WalletService from 'models/data/wallets/WalletService'
 import { injectApi } from 'providers/api'
 import { computed, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'

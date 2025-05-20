@@ -60,7 +60,7 @@
 </template>
 
 <script lang="ts" setup>
-import Category from 'models/categories/Category'
+import Category from 'models/data/categories/Category'
 import { injectApi } from 'providers/api'
 import { useRoute } from 'vue-router'
 import { WlAddIcon, WlBackIcon } from 'components/icons'

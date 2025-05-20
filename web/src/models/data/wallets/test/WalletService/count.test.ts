@@ -10,7 +10,10 @@ describe('WalletService - count', () => {
     const api = new Api({
       dexieOpts: { indexedDB: new IDBFactory(), IDBKeyRange },
     })
-    service = new WalletService({ api })
+    service = new WalletService({
+      walletTable: api.dexie.wallets,
+      hasher: api.hasher,
+    })
   })
 
   describe('when there is no wallet', async () => {

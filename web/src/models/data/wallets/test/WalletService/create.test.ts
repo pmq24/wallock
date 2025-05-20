@@ -13,7 +13,10 @@ describe('WalletService - create', () => {
       dexieOpts: { indexedDB: new IDBFactory(), IDBKeyRange },
     })
     dexie = api.dexie
-    service = new WalletService({ api })
+    service = new WalletService({
+      walletTable: dexie.wallets,
+      hasher: api.hasher,
+    })
   })
 
   describe('when data is valid', () => {

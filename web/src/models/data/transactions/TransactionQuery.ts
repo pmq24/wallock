@@ -1,10 +1,10 @@
 import dayjs from 'dayjs'
-import type { TransactionTable } from 'models/dexie'
+import type { TransactionTable } from 'models/data/transactions/dexie'
 import Transaction from './Transaction'
-import type CategoryService from 'models/categories/CategoryService'
-import type WalletService from 'models/wallets/WalletService'
+import type CategoryService from 'models/data/categories/CategoryService'
+import type WalletService from 'models/data/wallets/WalletService'
 import { createStandardError, createStandardSuccess } from 'models/common'
-import type Wallet from 'models/wallets/Wallet'
+import type Wallet from 'models/data/wallets/Wallet'
 
 class TransactionQuery {
   constructor (params: {

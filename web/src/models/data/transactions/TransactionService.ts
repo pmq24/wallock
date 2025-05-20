@@ -1,17 +1,20 @@
-import CategoryService from 'models/categories/CategoryService'
-import WalletService from 'models/wallets/WalletService'
+import CategoryService from 'models/data/categories/CategoryService'
+import WalletService from 'models/data/wallets/WalletService'
 import TransactionCreationForm from './TransactionCreationForm'
 import TransactionQuery from './TransactionQuery'
 import _ from 'lodash'
 import dayjs from 'dayjs'
-import type Api from 'models/api'
 import type { TransactionTable } from './dexie'
 
 export default class TransactionService {
-  constructor (params: { api: Api }) {
-    this.transactionTable = params.api.dexie.transactions
-    this.categoryService = new CategoryService({ api: params.api })
-    this.walletService = new WalletService({ api: params.api })
+  constructor (params: {
+    transactionTable: TransactionTable;
+    categoryService: CategoryService;
+    walletService: WalletService;
+  }) {
+    this.transactionTable = params.transactionTable
+    this.categoryService = params.categoryService
+    this.walletService = params.walletService
   }
 
   /**

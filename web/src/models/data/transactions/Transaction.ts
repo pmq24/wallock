@@ -1,5 +1,5 @@
-import type Category from 'models/categories/Category'
-import type Wallet from 'models/wallets/Wallet'
+import type Category from 'models/data/categories/Category'
+import type Wallet from 'models/data/wallets/Wallet'
 
 export default class Transaction {
   constructor (params: {

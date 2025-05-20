@@ -14,7 +14,10 @@ describe('CategoryService - create', () => {
     })
 
     dexie = api.dexie
-    service = new CategoryService({ api })
+    service = new CategoryService({
+      categoryTable: api.dexie.categories,
+      hasher: api.hasher,
+    })
   })
 
   describe('when data is valid', () => {

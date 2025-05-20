@@ -10,7 +10,10 @@ describe('CategoryService - all', () => {
     const api = new Api({
       dexieOpts: { indexedDB: new IDBFactory(), IDBKeyRange },
     })
-    service = new CategoryService({ api })
+    service = new CategoryService({
+      categoryTable: api.dexie.categories,
+      hasher: api.hasher,
+    })
   })
 
   beforeEach(async () => {

@@ -2,14 +2,13 @@ import Category from './Category'
 import * as v from 'valibot'
 import { createStandardError, createStandardSuccess } from 'models/common'
 import { nanoid } from 'nanoid'
-import type Api from 'models/api'
 import type { CategoryTable } from './dexie'
-import type Hasher from 'models/sync/Hasher'
+import type Hasher from 'models/hashes/Hasher'
 
 class CategoryService {
-  constructor (params: { api: Api }) {
-    this.categoryTable = params.api.dexie.categories
-    this.hasher = params.api.hasher
+  constructor (params: { categoryTable: CategoryTable; hasher: Hasher }) {
+    this.categoryTable = params.categoryTable
+    this.hasher = params.hasher
   }
 
   async all () {

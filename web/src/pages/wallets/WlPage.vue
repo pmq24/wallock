@@ -38,7 +38,8 @@
 <script lang="ts" setup>
 import { injectApi } from 'providers/api'
 import { WlAddIcon, WlBackIcon } from 'components/icons'
+import { useAsyncState } from '@vueuse/core'
 
 const api = injectApi()
-const wallets = await api.wallets.all()
+const { state: wallets } = useAsyncState(async () => api.wallets.all(), [])
 </script>
