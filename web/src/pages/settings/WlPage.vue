@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { WlCategoryIcon, WlRemoteSyncIcon, WlWalletIcon } from 'components/icons'
+import { WlCategoryIcon, WlSyncIcon, WlWalletIcon } from 'components/icons'
 import WlMainNav from 'components/WlMainNav/WlMainNav.vue'
 
 const navItems = [
@@ -37,9 +37,9 @@ const navItems = [
     label: 'Wallets',
     icon: WlWalletIcon
   }, {
-    name: 'remoteSync',
-    label: 'Remote Sync',
-    icon: WlRemoteSyncIcon
+    name: 'sync',
+    label: 'Sync',
+    icon: WlSyncIcon
   }
 ]
 </script>

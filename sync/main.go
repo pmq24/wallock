@@ -11,13 +11,19 @@ import (
 
 func main() {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/auth", auth.HandleAuthRequest)
-	mux.HandleFunc("/auth-callback", auth.HandleAuthCallback)
 
-	handler := cors.New(cors.Options{
+	mux.HandleFunc("/auth", auth.HandleAuthRoute)
+	mux.HandleFunc("/auth/callback", auth.HandleAuthCallbackRoute)
+
+	handler := auth.AccessTokenAttachmentHandler(mux)
+
+	corsHandler := cors.New(cors.Options{
 		AllowedOrigins:   []string{os.Getenv("WEB_APP_BASE_URL")},
+		AllowedMethods:   []string{http.MethodGet, http.MethodPost, http.MethodPatch, http.MethodDelete},
+		AllowedHeaders:   []string{"*"},
 		AllowCredentials: true,
-	}).Handler(mux)
+	})
+	handler = corsHandler.Handler(handler)
 
 	http.ListenAndServe(":3200", handler)
 }

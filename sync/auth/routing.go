@@ -1,20 +1,35 @@
 package auth
 
 import (
+	"crypto/rand"
 	"encoding/json"
 	"net/http"
 	"os"
 
-	"crypto/rand"
-
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	drive "google.golang.org/api/drive/v3"
-
-	_ "github.com/joho/godotenv/autoload"
 )
 
-func HandleAuthRequest(w http.ResponseWriter, r *http.Request) {
+func HandleAuthRoute(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet {
+		handleGetIndexRoute(w, r)
+		return
+	}
+
+	w.WriteHeader(http.StatusMethodNotAllowed)
+}
+
+func HandleAuthCallbackRoute(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet {
+		handleGetCallbackRoute(w, r)
+		return
+	}
+
+	w.WriteHeader(http.StatusMethodNotAllowed)
+}
+
+func handleGetIndexRoute(w http.ResponseWriter, r *http.Request) {
 	state := rand.Text()
 	cookie := http.Cookie{
 		Name:     oauth2stateName,
@@ -29,14 +44,16 @@ func HandleAuthRequest(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, url, 301)
 }
 
-func HandleAuthCallback(w http.ResponseWriter, r *http.Request) {
+func handleGetCallbackRoute(w http.ResponseWriter, r *http.Request) {
 	expectedState, err := r.Cookie(oauth2stateName)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("State mismatched"))
 		return
 	}
 	if expectedState.Value != r.FormValue("state") {
 		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("State mismatched"))
 		return
 	}
 
