@@ -6,7 +6,9 @@ import (
 
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/rs/cors"
+
 	"sync.wallock.xyz/auth"
+	"sync.wallock.xyz/vaults"
 )
 
 func main() {
@@ -14,6 +16,8 @@ func main() {
 
 	mux.HandleFunc("/auth", auth.HandleAuthRoute)
 	mux.HandleFunc("/auth/callback", auth.HandleAuthCallbackRoute)
+
+	mux.HandleFunc("/vaults", vault.HandleVaultRoute)
 
 	handler := auth.AccessTokenAttachmentHandler(mux)
 
