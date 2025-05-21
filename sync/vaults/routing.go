@@ -5,16 +5,16 @@ import (
 	"net/http"
 )
 
-func HandleVaultRoute(w http.ResponseWriter, r *http.Request) {
+func HandleVaultsRoute(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
-		handleCreateRequest(w, r)
+		handleCreateVaultRequest(w, r)
 		return
 	}
 
 	w.WriteHeader(http.StatusMethodNotAllowed)
 }
 
-func handleCreateRequest(w http.ResponseWriter, r *http.Request) {
+func handleCreateVaultRequest(w http.ResponseWriter, r *http.Request) {
 	accessToken := r.Context().Value("accessToken").(string)
 	if accessToken == "" {
 		w.WriteHeader(http.StatusUnauthorized)
@@ -47,4 +47,42 @@ func handleCreateRequest(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&result)
 	w.Write([]byte(resPayload))
 	w.WriteHeader(http.StatusCreated)
+}
+
+func HandleVaultRoute(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet {
+		handleGetVaultRequest(w, r)
+		return
+	}
+
+	w.WriteHeader(http.StatusMethodNotAllowed)
+}
+
+func handleGetVaultRequest(w http.ResponseWriter, r *http.Request) {
+	accessToken := r.Context().Value("accessToken").(string)
+	if accessToken == "" {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	service, err := NewService(accessToken)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	vaultId := r.PathValue("id")
+	vault, err := service.Get(vaultId)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	payload, err := json.Marshal(vault)
+	if err != nil {
+		panic(err)
+	}
+	w.Write(payload)
 }

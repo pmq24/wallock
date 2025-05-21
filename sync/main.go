@@ -17,7 +17,8 @@ func main() {
 	mux.HandleFunc("/auth", auth.HandleAuthRoute)
 	mux.HandleFunc("/auth/callback", auth.HandleAuthCallbackRoute)
 
-	mux.HandleFunc("/vaults", vault.HandleVaultRoute)
+	mux.HandleFunc("/vaults", vault.HandleVaultsRoute)
+	mux.HandleFunc("/vaults/{id}", vault.HandleVaultRoute)
 
 	handler := auth.AccessTokenAttachmentHandler(mux)
 

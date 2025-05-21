@@ -38,3 +38,12 @@ type createData struct {
 type createResult struct {
 	Id string `json:"id"`
 }
+
+func (s *Service) Get(vaultId string) (vault *drive.File, err error) {
+	file, err := s.drive.Files.Get(vaultId).Do()
+	if err != nil {
+		return nil, err
+	}
+
+	return file, nil
+}

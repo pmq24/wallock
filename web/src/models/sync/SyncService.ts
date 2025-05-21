@@ -11,7 +11,17 @@ class SyncService {
   }
 
   async getVault () {
-    return this.vaultService.get()
+    return await this.vaultService.get()
+  }
+
+  async getRemoteVault () {
+    const vault = await this.getVault()
+    if (!vault) return undefined
+
+    const res = await this.fetchSyncApp(`/vaults/${vault.remoteId}`)
+    const payload: { id: string; name: string; url: string } = await res.json()
+    payload.url = `https://drive.google.com/drive/folders/${payload.id}`
+    return payload
   }
 
   async createVault (data: SyncService.CreateVaultData) {
@@ -79,14 +89,17 @@ class SyncService {
     return createStandardSuccess(validation.output.access_token)
   }
 
-  private fetchSyncApp (endpoint: string, init: RequestInit) {
+  private fetchSyncApp (
+    endpoint: string,
+    init: RequestInit | undefined = undefined
+  ) {
     return window.fetch(import.meta.env.VITE_SYNC_APP_BASE_URL + endpoint, {
       ...init,
       headers: {
         ...(this.accessToken
           ? { Authorization: `Bearer ${this.accessToken}` }
           : {}),
-        ...init.headers,
+        ...init?.headers,
       },
     })
   }
