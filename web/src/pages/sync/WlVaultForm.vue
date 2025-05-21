@@ -21,16 +21,16 @@
 </template>
 
 <script setup lang="ts">
-import type SyncService from 'models/sync/SyncService'
+import type VaultService from 'models/sync/vaults/VaultService'
 import { injectApi } from 'providers/api'
 import { reactive } from 'vue'
 
-const data = reactive<SyncService.CreateVaultData>({ name: '' })
+const data = reactive<VaultService.CreateData>({ name: '' })
 
 const api = injectApi()
-const syncService = api.sync
+const vaultService = api.vaultService
 
 async function submit () {
-  await syncService.createVault(data)
+  await vaultService.create(data)
 }
 </script>

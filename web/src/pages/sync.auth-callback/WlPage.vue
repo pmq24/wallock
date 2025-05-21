@@ -50,7 +50,7 @@ const api = injectApi()
 const { state, code } = route.query
 
 const { state: accessToken, isLoading, error } = useAsyncState(() => {
-  return api.sync.handleAuthCallback({ state: state?.toString() ?? '', code: code?.toString() ?? '' })
+  return api.authService.handleAuthCallback({ state: state?.toString() ?? '', code: code?.toString() ?? '' })
 }, undefined)
 
 const failed = ref(false)

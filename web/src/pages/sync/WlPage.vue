@@ -15,7 +15,7 @@
     v-if="vaultIsReady"
     class="p-2 lg:w-xl lg:mx-auto"
   >
-    <template v-if="vault">
+    <template v-if="authService.isAuthenticated">
       <template v-if="vaultIsReady">
         <section v-if="vault">
           This vault is currently in sync with your Google Drive at
@@ -45,13 +45,14 @@ import WlGoogleLogInButton from './WlGoogleLogInButton.vue'
 import WlVaultForm from './WlVaultForm.vue'
 
 const api = injectApi()
-const syncService = api.sync
+const authService = api.authService
+const vaultService = api.vaultService
 
 const { state: vault, isReady: vaultIsReady } = useAsyncState(async () => {
-  if (!syncService.isAuthenticated) {
+  if (!authService.isAuthenticated) {
     return undefined
   }
 
-  return await syncService.getRemoteVault()
+  return await vaultService.getRemote()
 }, undefined)
 </script>
