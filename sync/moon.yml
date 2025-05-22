@@ -1,15 +1,13 @@
 $schema: https://moonrepo.dev/schemas/workspace.json
 
 type: application
-language: go
+language: ruby
 
 project:
   name: Sync
-  description: The backend for syncing the browser's IndexDB and remote storages
+  description: Syncing the browser's IndexedDB with Google Drive
 
 tasks:
   dev:
-    command: go run .
+    command: bin/rails server --port 3200
     local: true
-  lint:
-    command: go fmt
