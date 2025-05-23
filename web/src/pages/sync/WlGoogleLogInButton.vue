@@ -9,9 +9,9 @@
 </template>
 
 <script setup lang="ts">
-import SyncService from 'models/sync/SyncService'
 import { WlGoogleIcon } from 'components/icons'
+import AuthService from 'models/sync/AuthService'
 
 const syncAppBaseUrl: string = import.meta.env.VITE_SYNC_APP_BASE_URL
-const href = `${syncAppBaseUrl}/auth?redirect_uri=${SyncService.REDIRECT_URI}`
+const href = `${syncAppBaseUrl}/auth?redirect_uri=${AuthService.REDIRECT_URI}`
 </script>

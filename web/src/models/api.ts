@@ -7,8 +7,8 @@ import I18n from './i18n/I18n'
 import Hasher from './sync/hashes/Hasher'
 import HashService from './sync/hashes/HashService'
 import SyncService from './sync/SyncService'
-import AuthService from './sync/auth/AuthService'
-import VaultService from './sync/vaults/VaultService'
+import AuthService from './sync/AuthService'
+import RootFolderService from './sync/RootFolderService'
 
 export default class Api {
   constructor (opts: { dexieOpts?: DexieOptions } = {}) {
@@ -16,13 +16,8 @@ export default class Api {
 
     this.hasher = new Hasher()
     this.authService = new AuthService()
-    this.vaultService = new VaultService({
-      vaultTable: this.dexie.vaults,
-      authService: this.authService,
-    })
 
-    this.sync = new SyncService({
-      vaultService: this.vaultService,
+    this.rootFolderService = new RootFolderService({
       authService: this.authService,
     })
 
@@ -48,12 +43,17 @@ export default class Api {
       categoryService: this.categories,
       walletService: this.wallets,
     })
+    this.sync = new SyncService({
+      authService: this.authService,
+      hashService: this.hashes,
+      categoryService: this.categories,
+    })
   }
 
   public readonly hashes: HashService
   public readonly hasher: Hasher
   public readonly authService: AuthService
-  public readonly vaultService: VaultService
+  public readonly rootFolderService: RootFolderService
 
   public readonly sync: SyncService
 
