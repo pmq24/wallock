@@ -47,3 +47,9 @@ group :development, :test do
 end
 
 gem "google-apis-drive_v3", "~> 0.66.0"
+
+gem "dotenv-rails", "~> 3.1"
+
+gem "rack-cors", "~> 3.0"
+
+gem "csv", "~> 3.3"

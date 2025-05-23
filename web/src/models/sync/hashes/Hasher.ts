@@ -1,15 +1,11 @@
 import bencode from 'bencode'
-import { Base64 } from 'js-base64'
 import { sha1 } from 'js-sha1'
 
 export default class Hasher {
   hashData (data: Omit<Record<string, any>, 'hash'>) {
     const bencoded = bencode.encode(data)
 
-    const sha256 = sha1(bencoded)
-    return Base64.fromUint8Array(
-      new Uint8Array(this.textEncoder.encode(sha256))
-    )
+    return sha1(bencoded)
   }
 
   hashDataCollection (collection: { hash: string }[]) {
@@ -17,12 +13,6 @@ export default class Hasher {
       .map((item) => item.hash)
       .sort()
       .join(' ')
-    const sha256 = sha1(joined)
-
-    return Base64.fromUint8Array(
-      new Uint8Array(this.textEncoder.encode(sha256))
-    )
+    return sha1(joined)
   }
-
-  private readonly textEncoder = new TextEncoder()
 }

@@ -9,5 +9,7 @@ project:
 
 tasks:
   dev:
-    command: bin/rails server --port 3200
+    command: bin/bundle e rdbg --open --nonstop -- bin/rails server --port 3200
     local: true
+  lint:
+    command: bin/bundle exec rubocop --autocorrect
