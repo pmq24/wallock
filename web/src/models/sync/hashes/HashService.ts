@@ -20,6 +20,10 @@ export default class HashService {
     this.walletService.addOnChangeListener(() => this.updateWalletsHash())
   }
 
+  async getHash (name: string) {
+    return await this.hashTable.get({ name }).then((record) => record?.hash)
+  }
+
   async updateCategoriesHash () {
     const categories = await this.categoryService.all()
     const hash = this.hasher.hashDataCollection(categories)
