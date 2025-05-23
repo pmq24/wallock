@@ -3,7 +3,7 @@ import * as v from 'valibot'
 import { createStandardError, createStandardSuccess } from 'models/common'
 import { nanoid } from 'nanoid'
 import type { CategoryTable } from './dexie'
-import type Hasher from 'models/hashes/Hasher'
+import type Hasher from 'models/sync/hashes/Hasher'
 
 class CategoryService {
   constructor (params: { categoryTable: CategoryTable; hasher: Hasher }) {
@@ -23,6 +23,14 @@ class CategoryService {
         })
         .map((categoryRecord) => new Category(categoryRecord))
     )
+  }
+
+  async byHashes (hashes: string[]) {
+    return this.categoryTable
+      .where('hash')
+      .anyOf(hashes)
+      .toArray()
+      .then((records) => records.map((record) => new Category(record)))
   }
 
   async id (id: string) {
