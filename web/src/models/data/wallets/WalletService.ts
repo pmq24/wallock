@@ -3,7 +3,7 @@ import { createStandardError, createStandardSuccess } from 'models/common'
 import { nanoid } from 'nanoid'
 import Wallet from './Wallet'
 import type { WalletTable } from './dexie'
-import type Hasher from 'models/hashes/Hasher'
+import type Hasher from 'models/sync/hashes/Hasher'
 
 class WalletService {
   constructor (params: { walletTable: WalletTable; hasher: Hasher }) {

@@ -155,8 +155,8 @@ const router = useRouter()
 const route = useRoute()
 
 const api = injectApi()
-const transactionService = api.transactions
-const walletService = api.wallets
+const transactionService = api.transactionService
+const walletService = api.walletService
 
 const { state: wallets, isReady: walletsAreReady } = useAsyncState(() => walletService.all(), [])
 const { state: visibleMonths, isReady: visibleMonthsAreReady } = useAsyncState(() => transactionService.visibleMonths(), [])

@@ -86,7 +86,7 @@ const errors = ref<WalletService.CreateErrors>()
 const nameError = computed(() => errors.value?.nested?.name?.at(0))
 const currencyCodeError = computed(() => errors.value?.nested?.currencyCode?.at(0))
 
-const walletService = injectApi().wallets
+const walletService = injectApi().walletService
 async function submit () {
   isLoading.value = true
   const validation = await walletService.create(data)

@@ -88,7 +88,7 @@ const errors = ref<CategoryService.CreateErrors>()
 const nameError = computed(() => errors.value?.nested?.name?.at(0))
 const typeError = computed(() => errors.value?.nested?.type?.at(0))
 
-const categoryService = injectApi().categories
+const categoryService = injectApi().categoryService
 async function submit () {
   isLoading.value = true
   const validation = await categoryService.create(data)

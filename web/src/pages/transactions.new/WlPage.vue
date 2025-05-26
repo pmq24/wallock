@@ -124,7 +124,7 @@ import { WlBackIcon } from 'components/icons'
 const router = useRouter()
 
 const api = injectApi()
-const transactionService = api.transactions
+const transactionService = api.transactionService
 const form = reactive(await transactionService.creationForm())
 
 async function submitForm () {

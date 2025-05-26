@@ -23,30 +23,30 @@ export default class Api {
 
     this.i18n = new I18n()
 
-    this.categories = new CategoryService({
+    this.categoryService = new CategoryService({
       categoryTable: this.dexie.categories,
       hasher: this.hasher,
     })
-    this.wallets = new WalletService({
+    this.walletService = new WalletService({
       walletTable: this.dexie.wallets,
       hasher: this.hasher,
     })
-    this.transactions = new TransactionService({
+    this.transactionService = new TransactionService({
       transactionTable: this.dexie.transactions,
-      categoryService: this.categories,
-      walletService: this.wallets,
+      categoryService: this.categoryService,
+      walletService: this.walletService,
     })
 
     this.hashes = new HashService({
       hashTable: this.dexie.hashes,
       hasher: this.hasher,
-      categoryService: this.categories,
-      walletService: this.wallets,
+      categoryService: this.categoryService,
+      walletService: this.walletService,
     })
-    this.sync = new SyncService({
+    this.syncService = new SyncService({
       authService: this.authService,
       hashService: this.hashes,
-      categoryService: this.categories,
+      categoryService: this.categoryService,
     })
   }
 
@@ -55,11 +55,11 @@ export default class Api {
   public readonly authService: AuthService
   public readonly rootFolderService: RootFolderService
 
-  public readonly sync: SyncService
+  public readonly syncService: SyncService
 
-  public readonly categories: CategoryService
-  public readonly transactions: TransactionService
-  public readonly wallets: WalletService
+  public readonly categoryService: CategoryService
+  public readonly transactionService: TransactionService
+  public readonly walletService: WalletService
 
   public readonly i18n: I18n
 

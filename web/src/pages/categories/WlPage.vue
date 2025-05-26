@@ -71,7 +71,7 @@ const route = useRoute()
 
 const api = injectApi()
 const { state: categories, isReady, execute: refetchCategories } = useAsyncState(
-  () => api.categories.all().then(categories => categories.filter(category => category.type === type.value)),
+  () => api.categoryService.all().then(categories => categories.filter(category => category.type === type.value)),
   []
 )
 

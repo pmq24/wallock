@@ -70,7 +70,7 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to) => {
-  const walletsExist = (await api.wallets.count()) > 0
+  const walletsExist = (await api.walletService.count()) > 0
   if (!walletsExist && to.name !== 'walletsNew') {
     return { name: 'walletsNew', query: { redirectOnSuccess: 'transactions' } }
   }

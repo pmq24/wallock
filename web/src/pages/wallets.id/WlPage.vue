@@ -50,7 +50,7 @@ import { useAsyncState } from '@vueuse/core'
 const route = useRoute()
 const api = injectApi()
 
-const { state: wallet, isLoading, execute: refetchWallet } = useAsyncState(() => api.wallets.id(route.params.id as any), undefined)
+const { state: wallet, isLoading, execute: refetchWallet } = useAsyncState(() => api.walletService.id(route.params.id as any), undefined)
 
 async function makeDefault () {
   if (!wallet.value?.id) {

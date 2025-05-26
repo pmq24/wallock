@@ -49,7 +49,7 @@ import WlGoogleLogInButton from './WlGoogleLogInButton.vue'
 import { useAsyncState } from '@vueuse/core'
 
 const api = injectApi()
-const syncService = api.sync
+const syncService = api.syncService
 const authService = api.authService
 const rootFolderService = api.rootFolderService
 
