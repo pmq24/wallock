@@ -31,18 +31,12 @@
         {{ navItemType.at(0)!.toUpperCase() + navItemType.slice(1) }}
       </RouterLink>
     </nav>
-    <ul
-      v-if="isReady && categories.length"
-      class="list"
-    >
-      <li
-        v-for="category in categories"
-        :key="category.id"
-        class="list-row"
-      >
-        {{ category.name }}
-      </li>
-    </ul>
+
+    <WlCategoryMenu
+      v-if="isReady && categories.length > 0"
+      :categories
+    />
+
     <div
       v-else
       class="flex flex-col justify-center items-center gap-2 h-25"
@@ -66,6 +60,7 @@ import { useRoute } from 'vue-router'
 import { WlAddIcon, WlBackIcon } from 'components/icons'
 import { ref, watch } from 'vue'
 import { useAsyncState } from '@vueuse/core'
+import WlCategoryMenu from './WlCategoryMenu.vue'
 
 const route = useRoute()
 

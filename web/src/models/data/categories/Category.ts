@@ -18,6 +18,14 @@ class Category {
     return this.type === 'income'
   }
 
+  get shortName () {
+    return this.name.split('/').at(-1)
+  }
+
+  get parent () {
+    return this.name.split('/').slice(0, -1).join('/')
+  }
+
   public readonly id: string
   public readonly name: string
   public readonly type: Category.Type
