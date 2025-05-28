@@ -1,5 +1,6 @@
 import { createStandardError, createStandardSuccess } from 'models/common'
 import * as v from 'valibot'
+import { UnauthorizedError } from './errors'
 
 export default class AuthService {
   static REDIRECT_URI = import.meta.env.VITE_BASE_URL + '/sync/auth-callback'
@@ -41,7 +42,7 @@ export default class AuthService {
     endpoint: string,
     init: RequestInit | undefined = undefined
   ) {
-    return window.fetch(import.meta.env.VITE_SYNC_APP_BASE_URL + endpoint, {
+    const res = await window.fetch(import.meta.env.VITE_SYNC_APP_BASE_URL + endpoint, {
       ...init,
       headers: {
         ...(this.accessToken
@@ -50,6 +51,13 @@ export default class AuthService {
         ...init?.headers,
       },
     })
+
+    if (res.status === 401) {
+      window.localStorage.removeItem('accessToken')
+      throw new UnauthorizedError()
+    }
+
+    return res
   }
 
   private get accessToken () {
