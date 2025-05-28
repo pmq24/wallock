@@ -45,7 +45,6 @@ export default class Api {
     })
     this.syncService = new SyncService({
       authService: this.authService,
-      hashService: this.hashes,
       categoryService: this.categoryService,
     })
   }

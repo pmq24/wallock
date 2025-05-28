@@ -7,8 +7,8 @@ class GoogleDrive
   end
 
   def update_file(name, content)
-    file = get_or_create_file(name)
-    drive.update_file(file.id, upload_source: StringIO.new(content.to_csv))
+    id = get_or_create_file(name, as: :id)
+    drive.update_file(id, upload_source: StringIO.new(content.to_csv))
   end
 
   def get_or_create_file_as_csv(name)
@@ -20,7 +20,7 @@ class GoogleDrive
     CSV.parse(file_content, headers: true)
   end
 
-  def get_or_create_file(name)
+  def get_or_create_file(name, as: :csv)
     ids = files.filter_map { |file| file.name == name ? file.id : nil }
 
     if ids.length > 1
@@ -44,9 +44,15 @@ class GoogleDrive
                                },
                                upload_source: StringIO.new(csv))
       remove_instance_variable(:@files)
-      file
     else
-      drive.get_file(ids.first)
+      file_id = ids.first
+    end
+
+    case as
+    when :csv
+      get_file_content_from_id(file&.id || file_id)
+    when :id
+      file&.id || file_id
     end
   end
 
@@ -72,5 +78,12 @@ class GoogleDrive
       fields: "files(id, name)"
     )
     @files = query.files
+  end
+
+  def get_file_content_from_id(id)
+    file_content = StringIO.new
+    drive.get_file(id, download_dest: file_content)
+    file_content = file_content.string
+    CSV.parse(file_content, headers: true)
   end
 end

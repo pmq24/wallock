@@ -37,7 +37,7 @@ export default class AuthService {
     return createStandardSuccess(validation.output.access_token)
   }
 
-  public fetchSyncApp (
+  public async fetchSyncApp (
     endpoint: string,
     init: RequestInit | undefined = undefined
   ) {
