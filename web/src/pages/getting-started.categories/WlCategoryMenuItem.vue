@@ -11,13 +11,13 @@
           class="checkbox"
           type="checkbox"
         >
-        {{ name }}
+        {{ name.split("/").at(-1) }}
       </label>
 
       <WlCategoryMenuItem
         v-model="selected"
         :category-names
-        :group="group ? [group, name].join('/') : name"
+        :group="group ? [group, name.split('/').at(-1)].join('/') : name"
         :type
       />
     </li>

@@ -4,8 +4,15 @@ import { createStandardError, createStandardSuccess } from 'models/common'
 import { nanoid } from 'nanoid'
 import type { CategoryTable } from './dexie'
 import type Hasher from 'models/sync/hashes/Hasher'
+import CategoryUpdateForm from './CategoryUpdateForm'
 
 class CategoryService {
+  static standardizeName (name: string) {
+    if (name.startsWith('/')) name = name.slice(1)
+    if (name.endsWith('/')) name = name.slice(0, -1)
+    return name.split('/').map(s => s.trim()).join('/')
+  }
+
   constructor (params: { categoryTable: CategoryTable; hasher: Hasher }) {
     this.categoryTable = params.categoryTable
     this.hasher = params.hasher
@@ -39,6 +46,11 @@ class CategoryService {
       .then((record) => (record ? new Category(record) : undefined))
   }
 
+  async findByNameAndType (name: string, type: Category.Type) {
+    const record = await this.categoryTable.get({ name, type })
+    return record ? new Category(record) : undefined
+  }
+
   async create (data: CategoryService.CreateData) {
     const validation = v.safeParse(await this.getSchema(), data)
 
@@ -54,21 +66,28 @@ class CategoryService {
     }
     const hash = this.hasher.hashData(record)
     const id = await this.categoryTable.add({ ...record, hash })
-    const category = await this.id(id)
 
-    this.onCreateListeners.forEach((listener) => listener(category!))
-
+    this.notifyOnChangeListener()
     return createStandardSuccess(id)
   }
 
-  addOnCreateListener (listener: CategoryService.OnCreateListener) {
-    this.onCreateListeners.push(listener)
+  addOnChangeListener (listener: CategoryService.OnChangeListener) {
+    this.onChangeListeners.push(listener)
+  }
+
+  async createUpdateForm (id: string) {
+    return CategoryUpdateForm.create({
+      id,
+      categoryTable: this.categoryTable,
+      categoryService: this,
+      hasher: this.hasher,
+      onSuccess: () => this.notifyOnChangeListener()
+
+    })
   }
 
   async getSchema () {
-    const names = (await this.categoryTable
-      .orderBy('name')
-      .uniqueKeys()) as string[]
+    const names = await this.allNames()
 
     return v.object({
       name: v.pipe(
@@ -80,10 +99,20 @@ class CategoryService {
     })
   }
 
+  private notifyOnChangeListener () {
+    this.onChangeListeners.forEach((listener) => listener())
+  }
+
+  private async allNames () {
+    return (await this.categoryTable
+      .orderBy('name')
+      .uniqueKeys()) as string[]
+  }
+
   private readonly categoryTable: CategoryTable
   private readonly hasher: Hasher
 
-  private readonly onCreateListeners: CategoryService.OnCreateListener[] = []
+  private readonly onChangeListeners: CategoryService.OnChangeListener[] = []
 }
 
 namespace CategoryService {
@@ -95,7 +124,7 @@ namespace CategoryService {
     Awaited<ReturnType<CategoryService['getSchema']>>
   >
 
-  export type OnCreateListener = (category: Category) => void
+  export type OnChangeListener = () => void
 }
 
 export default CategoryService

@@ -4,9 +4,9 @@
       v-for="category in categories"
       :key="category.id"
     >
-      <span>
+      <RouterLink :to="{ name: 'categoriesIdEdit', params: { id: category.id } }">
         {{ category.shortName }}
-      </span>
+      </RouterLink>
 
       <WlCategoryMenuItem
         :all-categories

@@ -14,7 +14,7 @@ export default class HashService {
     this.hashTable = params.hashTable
 
     this.categoryService = params.categoryService
-    this.categoryService.addOnCreateListener(() => this.updateCategoriesHash())
+    this.categoryService.addOnChangeListener(() => this.updateCategoriesHash())
 
     this.walletService = params.walletService
     this.walletService.addOnChangeListener(() => this.updateWalletsHash())

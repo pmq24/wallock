@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import GettingStartedCategories from './getting-started.categories/WlPage.vue'
 import Categories from './categories/WlPage.vue'
 import CategoriesNew from './categories.new/WlPage.vue'
+import CategoriesIdEdit from './categories.id.edit/WlPage.vue'
 import Sync from './sync/WlPage.vue'
 import SyncAuthCallback from './sync.auth-callback/WlPage.vue'
 import Settings from './settings/WlPage.vue'
@@ -28,6 +29,11 @@ const routes = [
     path: '/categories/new',
     name: 'categoriesNew',
     component: CategoriesNew,
+  },
+  {
+    path: '/categories/:id/edit',
+    name: 'categoriesIdEdit',
+    component: CategoriesIdEdit,
   },
   {
     path: '/sync',
