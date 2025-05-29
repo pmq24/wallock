@@ -1,56 +1,71 @@
 <template>
-  <header class="navbar lg:w-xl lg:mx-auto gap-2">
-    <RouterLink
-      :to="{ name: 'settings'}"
-      class="btn btn-ghost btn-square"
-    >
-      <WlBackIcon />
-    </RouterLink>
+  <div class="flex flex-col max-h-[100dvh] min-h-[100dvh]">
+    <header class="lg:w-xl lg:mx-auto">
+      <div class="navbar gap-2">
+        <RouterLink
+          :to="{ name: 'settings'}"
+          class="btn btn-ghost btn-square"
+        >
+          <WlBackIcon />
+        </RouterLink>
 
-    <h1 class="text-xl font-bold flex-1">
-      Categories
-    </h1>
+        <h1 class="text-xl font-bold flex-1">
+          Categories
+        </h1>
 
-    <RouterLink
-      :to="{ name: 'categoriesNew' }"
-      class="btn btn-square btn-ghost"
-    >
-      <WlAddIcon />
-    </RouterLink>
-  </header>
+        <RouterLink
+          :to="{ name: 'categoriesNew' }"
+          class="btn btn-square btn-ghost"
+        >
+          <WlAddIcon />
+        </RouterLink>
+      </div>
 
-  <main class="p-2 lg:w-xl lg:mx-auto">
-    <nav class="tabs">
-      <RouterLink
-        v-for="navItemType in ['expense', 'income']"
-        :key="navItemType"
-        :class="['tab', type === navItemType && 'tab-active']"
-        :to="{ query: { type: navItemType } }"
-        replace
+      <nav class="tabs p-2">
+        <RouterLink
+          v-for="navItemType in ['expense', 'income']"
+          :key="navItemType"
+          :to="{ query: { type: navItemType } }"
+          :class="type === navItemType && 'tab-active'"
+          class="tab"
+          replace
+        >
+          {{ navItemType.at(0)!.toUpperCase() + navItemType.slice(1) }}
+        </RouterLink>
+      </nav>
+    </header>
+
+    <main class="p-2 lg:w-xl lg:mx-auto flex-auto overflow-y-auto">
+      <WlCategoryMenu
+        v-if="isReady && categories.length > 0"
+        :categories
+      />
+
+      <div
+        v-else
+        class="flex flex-col justify-center items-center gap-2 h-25"
       >
-        {{ navItemType.at(0)!.toUpperCase() + navItemType.slice(1) }}
-      </RouterLink>
-    </nav>
+        <span>There are no categories</span>
+        <RouterLink
+          :to="{name: 'categoriesNew'}"
+          class="btn btn-ghost"
+        >
+          <WlAddIcon />
+          New category
+        </RouterLink>
+      </div>
 
-    <WlCategoryMenu
-      v-if="isReady && categories.length > 0"
-      :categories
-    />
-
-    <div
-      v-else
-      class="flex flex-col justify-center items-center gap-2 h-25"
-    >
-      <span>There are no categories</span>
       <RouterLink
-        :to="{name: 'categoriesNew'}"
-        class="btn btn-ghost"
+        :to="{
+          name: 'categoriesNew',
+          query: { type }
+        }"
+        class="btn btn-primary btn-block mt-2"
       >
-        <WlAddIcon />
         New category
       </RouterLink>
-    </div>
-  </main>
+    </main>
+  </div>
 </template>
 
 <script lang="ts" setup>
