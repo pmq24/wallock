@@ -16,7 +16,7 @@ export default class CategoriesSyncService extends SimpleSyncService<CategoryRec
   }
 
   override getSyncUrl (): string {
-    return '/categories_sync/'
+    return '/categories_sync'
   }
 
   override async addRecords (records: CategoryRecord[]) {
@@ -36,8 +36,8 @@ export default class CategoriesSyncService extends SimpleSyncService<CategoryRec
     await this.categoryTable.bulkUpdate(recordUpdates)
   }
 
-  getRecoredsByHashes (hashes: string[]): Promise<CategoryRecord[]> {
-    return this.categoryTable.where('hash').anyOf(hashes).toArray()
+  async getRecoredsByHashes (hashes: string[]): Promise<CategoryRecord[]> {
+    return await this.categoryTable.where('hash').anyOf(hashes).toArray()
   }
 
   private readonly categoryTable: CategoryTable

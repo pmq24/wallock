@@ -9,6 +9,8 @@ import HashService from './sync/hashes/HashService'
 import SyncService from './sync/SyncService'
 import AuthService from './sync/AuthService'
 import RootFolderService from './sync/RootFolderService'
+import CategoriesSyncService from './sync/CategoriesSyncService'
+import WalletsSyncService from './sync/WalletsSyncService'
 
 export default class Api {
   constructor (opts: { dexieOpts?: DexieOptions } = {}) {
@@ -43,9 +45,12 @@ export default class Api {
       categoryService: this.categoryService,
       walletService: this.walletService,
     })
+
+    this.categorySyncService = new CategoriesSyncService({ authService: this.authService, categoryTable: this.dexie.categories })
+    this.walletsSyncService = new WalletsSyncService({ authService: this.authService, walletTable: this.dexie.wallets })
     this.syncService = new SyncService({
-      authService: this.authService,
-      categoryService: this.categoryService,
+      categorySyncService: this.categorySyncService,
+      walletsSyncService: this.walletsSyncService
     })
   }
 
@@ -54,6 +59,8 @@ export default class Api {
   public readonly authService: AuthService
   public readonly rootFolderService: RootFolderService
 
+  public readonly categorySyncService: CategoriesSyncService
+  public readonly walletsSyncService: WalletsSyncService
   public readonly syncService: SyncService
 
   public readonly categoryService: CategoryService

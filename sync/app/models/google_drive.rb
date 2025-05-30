@@ -34,6 +34,8 @@ class GoogleDrive
                     HASH_CSV_HEADERS
         when "categories.csv"
                     CATEGORIES_CSV_HEADERS
+        when "wallets.csv"
+                    WALLETS_CSV_HEADERS
         end
         csv << headers
       end

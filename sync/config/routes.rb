@@ -15,8 +15,15 @@ Rails.application.routes.draw do
 
   resource :categories_sync, controller: :categories_sync do
     member do
-      get :hash
+      get :pull_to_local
 
+      get :different_from_remote
+      post :push_to_remote
+    end
+  end
+
+  resource :wallets_sync, controller: :wallets_sync do
+    member do
       get :pull_to_local
 
       get :different_from_remote

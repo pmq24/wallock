@@ -1,12 +1,4 @@
 class CategoriesSyncController < ApplicationController
-  include UpdateHashCsv
-
-  def hash
-    hash_csv = google_drive.get_or_create_file_as_csv("hash.csv")
-    hash = hash_csv.find { |row| row["name"] == "categories" }&.hash
-    render(json: hash || "", status: :ok)
-  end
-
   def pull_to_local
     categories_to_pull = categories_sync.pull_to_local(local_hashes)
 
@@ -20,7 +12,7 @@ class CategoriesSyncController < ApplicationController
   end
 
   def push_to_remote
-    categories_sync.push_to_remote(push_to_remote_params[:categories])
+    categories_sync.push_to_remote(push_to_remote_params)
     render(status: :no_content)
   end
 
@@ -28,8 +20,8 @@ class CategoriesSyncController < ApplicationController
 
   def push_to_remote_params
     @push_to_remote_params ||= params
-      .require(:categories_sync)
-      .permit(categories: [ :id, :name, :type, :hash ])
+      .require(:_json)
+      .map { |params| params.permit([ :id, :name, :type, :hash ]) }
   end
 
   def local_hashes

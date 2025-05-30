@@ -1,50 +1,20 @@
-import type CategoryService from 'models/data/categories/CategoryService'
-import type AuthService from './AuthService'
+import CategoriesSyncService from './CategoriesSyncService'
+import type WalletsSyncService from './WalletsSyncService'
 
 export default class SyncService {
   constructor (params: {
-    authService: AuthService;
-    categoryService: CategoryService;
+    categorySyncService: CategoriesSyncService
+    walletsSyncService: WalletsSyncService
   }) {
-    this.authService = params.authService
-    this.categoryService = params.categoryService
+    this.categorySyncService = params.categorySyncService
+    this.walletsSyncService = params.walletsSyncService
   }
 
-  async syncCategories () {
-    const localHashes = await this.categoryService
-      .all()
-      .then((categories) => categories.map((c) => c.hash))
-    const categoriesToPull = await this.authService
-      .fetchSyncApp(
-        `/categories_sync/pull_to_local?hashes=${localHashes.join(' ')}`
-      )
-      .then(async (res) => res.json())
-    console.log(categoriesToPull)
-
-    const differentFromRemote = await this.authService
-      .fetchSyncApp(
-        `/categories_sync/different_from_remote?hashes=${localHashes.join(' ')}`
-      )
-      .then(async (res) => res.json())
-    console.log(differentFromRemote)
-
-    const categoriesToPush =
-      await this.categoryService.byHashes(differentFromRemote)
-
-    const res = await this.authService.fetchSyncApp(
-      '/categories_sync/push_to_remote',
-      {
-        method: 'POST',
-        body: JSON.stringify({ categories: categoriesToPush }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    )
-
-    console.log(res.status)
+  async sync () {
+    this.categorySyncService.sync()
+    this.walletsSyncService.sync()
   }
 
-  private readonly authService: AuthService
-  private readonly categoryService: CategoryService
+  private readonly categorySyncService: CategoriesSyncService
+  private readonly walletsSyncService: WalletsSyncService
 }

@@ -55,6 +55,6 @@ const rootFolderService = api.rootFolderService
 
 const { state: rootFolder, isReady: rootFolderIsReady } = useAsyncState(() => rootFolderService.get(), undefined)
 
-const { isLoading: syncing, execute: startSyncing } = useAsyncState(async () => { syncService.syncCategories() }, undefined, { immediate: false })
+const { isLoading: syncing, execute: startSyncing } = useAsyncState(async () => { syncService.sync() }, undefined, { immediate: false })
 
 </script>

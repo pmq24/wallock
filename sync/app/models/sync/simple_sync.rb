@@ -6,7 +6,9 @@ module Sync
 
     def pull_to_local(local_hashes)
       hashes_to_pull = remote_hashes - local_hashes
-      csv.filter { |row| row["hash"].in?(hashes_to_pull) }
+      csv
+        .filter { |row| row["hash"].in?(hashes_to_pull) }
+        .map(&:to_h)
     end
 
     def diff(local_hashes)
