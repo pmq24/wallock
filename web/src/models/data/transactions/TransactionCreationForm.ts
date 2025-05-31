@@ -60,6 +60,7 @@ export default class TransactionCreationForm {
   }
 
   set time (value: string) {
+    console.log(value)
     const parsed = dayjs(value)
 
     if (!parsed.isValid()) {

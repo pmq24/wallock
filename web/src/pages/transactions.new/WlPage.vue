@@ -93,12 +93,10 @@
           Time
         </legend>
 
-        <input
+        <WlTimeInput
           v-model="form.time"
-          step="1"
-          type="datetime-local"
-          class="input w-full"
-        >
+          class="w-full"
+        />
       </fieldset>
 
       <button
@@ -120,11 +118,13 @@ import { injectApi } from 'providers/api'
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { WlBackIcon } from 'components/icons'
+import WlTimeInput from 'components/WlTimeInput/WlTimeInput.vue'
 
 const router = useRouter()
 
 const api = injectApi()
 const transactionService = api.transactionService
+
 const form = reactive(await transactionService.createCreateForm())
 
 async function submitForm () {
