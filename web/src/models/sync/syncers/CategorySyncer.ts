@@ -1,22 +1,35 @@
-import type AuthService from './AuthService'
-import SimpleSyncService from './SimpleSyncService'
+import SimpleSyncer from './SimpleSyncer'
 import type { CategoryRecord, CategoryTable } from 'models/data/categories/dexie'
+import type SyncApp from '../SyncApp'
+import * as v from 'valibot'
+import Category from 'models/data/categories/Category'
 
-export default class CategoriesSyncService extends SimpleSyncService<CategoryRecord> {
+export default class CategorySyncer extends SimpleSyncer<CategoryRecord> {
   constructor (params: {
-    authService: AuthService,
+    syncApp: SyncApp,
     categoryTable: CategoryTable
   }) {
-    super({ authService: params.authService })
+    super({ syncApp: params.syncApp })
     this.categoryTable = params.categoryTable
+  }
+
+  override getSyncUrl (): string {
+    return '/categories_sync'
   }
 
   override async getAllLocalRecords () {
     return await this.categoryTable.toArray()
   }
 
-  override getSyncUrl (): string {
-    return '/categories_sync'
+  override checkRemoteRecordSchema (payload: unknown): CategoryRecord[] {
+    const schema = v.array(v.object({
+      id: v.pipe(v.string(), v.minLength(1)),
+      type: v.pipe(v.string(), v.values(Category.TYPES)),
+      name: v.pipe(v.string(), v.minLength(1)),
+      hash: v.pipe(v.string(), v.minLength(1)),
+    }))
+
+    return v.parse(schema, payload) as CategoryRecord[]
   }
 
   override async addRecords (records: CategoryRecord[]) {

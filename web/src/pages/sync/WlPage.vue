@@ -26,14 +26,6 @@
             the {{ rootFolder.name }} folder
             <WlOpenInNewTabIcon class="inline size-3 fill-primary" />
           </a>
-
-          <button
-            :disabled="syncing"
-            class="btn btn-primary btn-block mt-2"
-            @click="() => startSyncing()"
-          >
-            Sync now
-          </button>
         </section>
       </template>
     </template>
@@ -49,12 +41,8 @@ import WlGoogleLogInButton from './WlGoogleLogInButton.vue'
 import { useAsyncState } from '@vueuse/core'
 
 const api = injectApi()
-const syncService = api.syncService
 const authService = api.authService
 const rootFolderService = api.rootFolderService
 
 const { state: rootFolder, isReady: rootFolderIsReady } = useAsyncState(() => rootFolderService.get(), undefined)
-
-const { isLoading: syncing, execute: startSyncing } = useAsyncState(async () => { syncService.sync() }, undefined, { immediate: false })
-
 </script>

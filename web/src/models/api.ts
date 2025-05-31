@@ -6,21 +6,23 @@ import TransactionService from './data/transactions/TransactionService'
 import I18n from './i18n/I18n'
 import Hasher from './sync/hashes/Hasher'
 import HashService from './sync/hashes/HashService'
-import SyncService from './sync/SyncService'
 import AuthService from './sync/AuthService'
 import RootFolderService from './sync/RootFolderService'
-import CategoriesSyncService from './sync/CategoriesSyncService'
-import WalletsSyncService from './sync/WalletsSyncService'
+import SyncApp from './sync/SyncApp'
+import Syncer from './sync/Syncer'
+import CategorySyncer from './sync/syncers/CategorySyncer'
 
 export default class Api {
   constructor (opts: { dexieOpts?: DexieOptions } = {}) {
     this.dexie = createAppDexie(opts.dexieOpts)
 
     this.hasher = new Hasher()
-    this.authService = new AuthService()
+
+    this.syncApp = new SyncApp()
+    this.authService = new AuthService({ syncApp: this.syncApp })
 
     this.rootFolderService = new RootFolderService({
-      authService: this.authService,
+      syncApp: this.syncApp
     })
 
     this.i18n = new I18n()
@@ -46,11 +48,14 @@ export default class Api {
       walletService: this.walletService,
     })
 
-    this.categorySyncService = new CategoriesSyncService({ authService: this.authService, categoryTable: this.dexie.categories })
-    this.walletsSyncService = new WalletsSyncService({ authService: this.authService, walletTable: this.dexie.wallets })
-    this.syncService = new SyncService({
-      categorySyncService: this.categorySyncService,
-      walletsSyncService: this.walletsSyncService
+    this.categorySyncer = new CategorySyncer({
+      categoryTable: this.dexie.categories,
+      syncApp: this.syncApp
+    })
+
+    this.syncer = new Syncer({
+      categorySyncer: this.categorySyncer,
+      authService: this.authService,
     })
   }
 
@@ -59,9 +64,9 @@ export default class Api {
   public readonly authService: AuthService
   public readonly rootFolderService: RootFolderService
 
-  public readonly categorySyncService: CategoriesSyncService
-  public readonly walletsSyncService: WalletsSyncService
-  public readonly syncService: SyncService
+  public readonly syncApp: SyncApp
+  public readonly syncer: Syncer
+  public readonly categorySyncer: CategorySyncer
 
   public readonly categoryService: CategoryService
   public readonly transactionService: TransactionService

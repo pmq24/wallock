@@ -37,7 +37,7 @@
 </template>
 
 <script setup lang="ts">
-import { useAsyncState, useStorage } from '@vueuse/core'
+import { useAsyncState } from '@vueuse/core'
 import { ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { injectApi } from 'providers/api'
@@ -49,23 +49,22 @@ const api = injectApi()
 
 const { state, code } = route.query
 
-const { state: accessToken, isLoading, error } = useAsyncState(() => {
+const { isLoading, error } = useAsyncState(() => {
   return api.authService.handleAuthCallback({ state: state?.toString() ?? '', code: code?.toString() ?? '' })
 }, undefined)
 
 const failed = ref(false)
 
-watch([accessToken, isLoading, error], function ([accessToken, isLoading, error]) {
+watch([isLoading, error], function ([isLoading, error]) {
   if (isLoading) {
     return
   }
 
-  if (error || !accessToken?.success) {
+  if (error) {
     failed.value = true
     return
   }
 
-  useStorage('accessToken', accessToken.data)
   router.push({ name: 'sync' })
 })
 </script>

@@ -16,7 +16,13 @@ module Sync
     end
 
     def push_to_remote(records)
-      records.each { |record| csv << CSV::Row.new(columns.map(&:to_s), columns.map { |c| record[c] }) }
+      records.each do |record|
+        if record.values.length == 0 || record.values.any?(&:blank?)
+          raise "Invalid category record #{record}"
+        end
+
+        csv << CSV::Row.new(columns.map(&:to_s), columns.map { |c| record[c] })
+      end
 
       sorted = CSV::Table.new(csv.sort_by { |row| sort_csv_rows_by(row) })
 

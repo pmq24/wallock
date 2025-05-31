@@ -1,9 +1,14 @@
-import { createStandardError, createStandardSuccess } from 'models/common'
 import * as v from 'valibot'
-import { UnauthorizedError } from './errors'
+import type SyncApp from './SyncApp'
 
 export default class AuthService {
   static REDIRECT_URI = import.meta.env.VITE_BASE_URL + '/sync/auth-callback'
+
+  constructor (params: { syncApp: SyncApp }) {
+    this.syncApp = params.syncApp
+    this.addOnAccessTokenChangedListener((accessToken) => this.syncApp.setAccessToken(accessToken))
+    this.syncApp.addOnUnauthorizedErrorListener(() => window.localStorage.removeItem('accessToken'))
+  }
 
   get authUrl () {
     const syncBaseUrl: string = import.meta.env.VITE_SYNC_APP_BASE_URL
@@ -21,46 +26,33 @@ export default class AuthService {
       `&state=${state}` +
       `&redirect_uri=${AuthService.REDIRECT_URI}`
 
-    const res = await this.fetchSyncApp(endpoint, {
+    const res = await this.syncApp.fetch(endpoint, {
       credentials: 'include',
     })
-    const payload: unknown = await res.json()
+    const payload = this.checkAuthCallbackResponseSchema(res.payload)
+    window.localStorage.setItem('accessToken', payload.accessToken)
+    this.onAccessTokenChangedListeners.forEach(l => l(payload.accessToken))
+  }
 
+  addOnAccessTokenChangedListener (listener: (accessToken: string) => void) {
+    if (this.accessToken) {
+      listener(this.accessToken)
+    }
+    this.onAccessTokenChangedListeners.push(listener)
+  }
+
+  get accessToken () {
+    return window.localStorage.getItem('accessToken') ?? undefined
+  }
+
+  private checkAuthCallbackResponseSchema (payload: unknown) {
     const schema = v.object({
-      access_token: v.string(),
-    })
-    const validation = v.safeParse(schema, payload)
-    if (!validation.success) {
-      return createStandardError(v.flatten(validation.issues))
-    }
-
-    window.localStorage.setItem('accessToken', validation.output.access_token)
-    return createStandardSuccess(validation.output.access_token)
-  }
-
-  public async fetchSyncApp (
-    endpoint: string,
-    init: RequestInit | undefined = undefined
-  ) {
-    const res = await window.fetch(import.meta.env.VITE_SYNC_APP_BASE_URL + endpoint, {
-      ...init,
-      headers: {
-        ...(this.accessToken
-          ? { Authorization: `Bearer ${this.accessToken}` }
-          : {}),
-        ...init?.headers,
-      },
+      accessToken: v.string(),
     })
 
-    if (res.status === 401) {
-      window.localStorage.removeItem('accessToken')
-      throw new UnauthorizedError()
-    }
-
-    return res
+    return v.parse(schema, payload)
   }
 
-  private get accessToken () {
-    return window.localStorage.getItem('accessToken')
-  }
+  private readonly syncApp: SyncApp
+  private readonly onAccessTokenChangedListeners: ((accessToken: string) => void)[] = []
 }
