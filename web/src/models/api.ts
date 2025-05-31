@@ -11,6 +11,7 @@ import RootFolderService from './sync/RootFolderService'
 import SyncApp from './sync/SyncApp'
 import Syncer from './sync/Syncer'
 import CategorySyncer from './sync/syncers/CategorySyncer'
+import WalletSyncer from './sync/syncers/WalletSyncer'
 
 export default class Api {
   constructor (opts: { dexieOpts?: DexieOptions } = {}) {
@@ -53,9 +54,15 @@ export default class Api {
       syncApp: this.syncApp
     })
 
+    this.walletSyncer = new WalletSyncer({
+      walletTable: this.dexie.wallets,
+      syncApp: this.syncApp
+    })
+
     this.syncer = new Syncer({
       categorySyncer: this.categorySyncer,
       authService: this.authService,
+      walletSyncer: this.walletSyncer
     })
   }
 
@@ -67,6 +74,7 @@ export default class Api {
   public readonly syncApp: SyncApp
   public readonly syncer: Syncer
   public readonly categorySyncer: CategorySyncer
+  public readonly walletSyncer: WalletSyncer
 
   public readonly categoryService: CategoryService
   public readonly transactionService: TransactionService

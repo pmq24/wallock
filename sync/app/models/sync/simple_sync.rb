@@ -17,7 +17,7 @@ module Sync
 
     def push_to_remote(records)
       records.each do |record|
-        if record.values.length == 0 || record.values.any?(&:blank?)
+        if record.values.length == 0 || record.values.any?(&:nil?)
           raise "Invalid category record #{record}"
         end
 

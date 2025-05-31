@@ -8,6 +8,11 @@ project:
   description: Syncing the browser's IndexedDB with Google Drive
 
 tasks:
+  console:
+    command: bin/rails console
+    local: true
+    options:
+      interactive: true
   dev:
     command: bin/bundle e rdbg --open --nonstop -- bin/rails server --port 3200
     local: true
