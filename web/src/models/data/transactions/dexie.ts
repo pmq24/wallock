@@ -6,8 +6,12 @@ export type TransactionTable = EntityTable<TransactionRecord, 'id'>
 
 export type TransactionRecord = {
   id: string;
+
   amount: number;
-  categoryId: string;
   time: string;
+
+  categoryId: string;
   walletId: string;
+
+  hash: string;
 }

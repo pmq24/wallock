@@ -163,7 +163,7 @@ const { state: visibleMonths, isReady: visibleMonthsAreReady } = useAsyncState((
 
 const walletSelector = useTemplateRef<HTMLDialogElement>('wallet-selector')
 
-const query = transactionService.query()
+const query = transactionService.createQueryObject()
 const { state: transactions, isReady: transactionsAreReady, execute: refetchTransactions } = useAsyncState(() => query.execute(), [])
 
 const overview = computed(() => {

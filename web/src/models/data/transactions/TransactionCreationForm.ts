@@ -6,19 +6,24 @@ import type { TransactionTable } from 'models/data/transactions/dexie'
 import type Wallet from 'models/data/wallets/Wallet'
 import type WalletService from 'models/data/wallets/WalletService'
 import { nanoid } from 'nanoid'
+import type Hasher from 'models/sync/hashes/Hasher'
 
 export default class TransactionCreationForm {
   static async create (params: {
     transactionTable: TransactionTable;
     categoryService: CategoryService;
     walletService: WalletService;
+    hasher: Hasher,
+    onSuccess: (id: string) => void
   }) {
     const availableCategories = await params.categoryService.all()
     const availableWallets = await params.walletService.all()
     const form = new TransactionCreationForm({
+      hasher: params.hasher,
       transactionTable: params.transactionTable,
       availableCategories,
       availableWallets,
+      onSuccess: params.onSuccess
     })
     return form
   }
@@ -122,28 +127,38 @@ export default class TransactionCreationForm {
       walletId: this.walletId,
     }
 
-    const id = await this.transactionTable.add({ id: nanoid(), ...data })
+    const record = { id: nanoid(), ...data }
+    const hash = this.hasher.hashData(record)
+
+    const id = await this.transactionTable.add({ ...record, hash })
     this._submitting = false
+    this.onSuccess(id)
     return createStandardSuccess(id)
   }
 
   private constructor (params: {
+    hasher: Hasher,
     availableCategories: Category[];
     availableWallets: Wallet[];
     transactionTable: TransactionTable;
+    onSuccess: (id: string) => void
   }) {
+    this.hasher = params.hasher
     this.transactionTable = params.transactionTable
     this.availableCategories = params.availableCategories
     this.availableWallets = params.availableWallets
 
     this._categoryId = this.availableCategories.at(0)!.id
     this._walletId = this.availableWallets.at(0)!.id
+
+    this.onSuccess = params.onSuccess
   }
 
   readonly availableCategories: Category[]
   readonly availableWallets: Wallet[]
 
   private readonly transactionTable: TransactionTable
+  private readonly hasher: Hasher
 
   private _amount = 0
   private _time: string = dayjs().format()
@@ -151,4 +166,5 @@ export default class TransactionCreationForm {
   private _walletId: string = ''
 
   private _submitting = false
+  private readonly onSuccess: ((id: string) => void)
 }

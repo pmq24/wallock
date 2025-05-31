@@ -8,7 +8,7 @@ export class ValidationError<T extends object> extends Error {
 }
 
 export class NotFoundError extends Error {
-  constructor () {
-    super('NotFoundError')
+  constructor (resourceName: string, id: string) {
+    super(`Cannot find ${resourceName} with id ${id}`)
   }
 }

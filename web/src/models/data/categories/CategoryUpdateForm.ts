@@ -9,7 +9,7 @@ class CategoryUpdateForm {
     const record = await params.categoryTable.get(params.id)
 
     if (!record) {
-      throw new NotFoundError()
+      throw new NotFoundError('Category', params.id)
     }
 
     return new CategoryUpdateForm({

@@ -12,6 +12,7 @@ import SyncApp from './sync/SyncApp'
 import Syncer from './sync/Syncer'
 import CategorySyncer from './sync/syncers/CategorySyncer'
 import WalletSyncer from './sync/syncers/WalletSyncer'
+import TransactionHashService from './sync/syncers/transactions/TransactionHashService'
 
 export default class Api {
   constructor (opts: { dexieOpts?: DexieOptions } = {}) {
@@ -40,6 +41,12 @@ export default class Api {
       transactionTable: this.dexie.transactions,
       categoryService: this.categoryService,
       walletService: this.walletService,
+      hasher: this.hasher
+    })
+    this.transactionHashService = new TransactionHashService({
+      transactionHashTable: this.dexie.transactionHashes,
+      transactionService: this.transactionService,
+      hasher: this.hasher
     })
 
     this.hashes = new HashService({
@@ -78,6 +85,7 @@ export default class Api {
 
   public readonly categoryService: CategoryService
   public readonly transactionService: TransactionService
+  public readonly transactionHashService: TransactionHashService
   public readonly walletService: WalletService
 
   public readonly i18n: I18n

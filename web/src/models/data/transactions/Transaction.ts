@@ -8,12 +8,14 @@ export default class Transaction {
     time: string;
     category: Category;
     wallet: Wallet;
+    hash: string
   }) {
     this.id = params.id
-    this.time = params.time
     this.amount = params.amount
+    this.time = params.time
     this.category = params.category
     this.wallet = params.wallet
+    this.hash = params.hash
   }
 
   get netAmount () {
@@ -29,4 +31,5 @@ export default class Transaction {
   public readonly time: string
   public readonly category: Category
   public readonly wallet: Wallet
+  public readonly hash: string
 }

@@ -125,7 +125,7 @@ const router = useRouter()
 
 const api = injectApi()
 const transactionService = api.transactionService
-const form = reactive(await transactionService.creationForm())
+const form = reactive(await transactionService.createCreateForm())
 
 async function submitForm () {
   const { success } = await form.submit()
