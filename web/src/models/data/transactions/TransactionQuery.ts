@@ -87,6 +87,7 @@ class TransactionQuery {
           time: record.time,
           category: categories.find((c) => c.id === record.categoryId)!,
           wallet: wallets.find((w) => w.id === record.walletId)!,
+          hash: record.hash
         })
     )
   }

@@ -1,7 +1,6 @@
 import type TransactionService from 'models/data/transactions/TransactionService'
 import type { TransactionHashTable } from './dexie'
 import { NotFoundError } from 'models/data/errors'
-import { sortBy } from 'lodash'
 import type Hasher from 'models/sync/hashes/Hasher'
 
 export default class TransactionHashService {
@@ -21,12 +20,19 @@ export default class TransactionHashService {
 
     const transactionQuery = this.transactionService.createQueryObject()
     transactionQuery.filterByPeriod(month)
-    let transactionsInMonth = await transactionQuery.execute()
-    transactionsInMonth = sortBy(transactionsInMonth, ['time', 'amount'])
+    const transactionsInMonth = await transactionQuery.execute()
 
     const hash = this.hasher.hashDataCollection(transactionsInMonth)
-
     await this.transactionHashTable.put({ period: month, hash })
+
+    const year = transaction.time.slice(0, 4)
+    const months = await this.transactionHashTable.where('period').startsWith(year + '-').toArray()
+    const yearHash = this.hasher.hashDataCollection(months)
+    await this.transactionHashTable.put({ period: year, hash: yearHash })
+
+    const years = await this.transactionHashTable.where('period').between('0000', '9999').toArray()
+    const rootHash = this.hasher.hashDataCollection(years)
+    await this.transactionHashTable.put({ period: '', hash: rootHash })
   }
 
   private readonly transactionHashTable: TransactionHashTable

@@ -60,7 +60,6 @@ export default class TransactionCreationForm {
   }
 
   set time (value: string) {
-    console.log(value)
     const parsed = dayjs(value)
 
     if (!parsed.isValid()) {
@@ -122,16 +121,16 @@ export default class TransactionCreationForm {
   async submit () {
     this._submitting = true
     const data = {
+      id: nanoid(),
       amount: this.amount,
       categoryId: this.categoryId,
       time: this._time,
       walletId: this.walletId,
     }
 
-    const record = { id: nanoid(), ...data }
-    const hash = this.hasher.hashData(record)
+    const hash = this.hasher.hashData(data)
 
-    const id = await this.transactionTable.add({ ...record, hash })
+    const id = await this.transactionTable.add({ ...data, hash })
     this._submitting = false
     this.onSuccess(id)
     return createStandardSuccess(id)
