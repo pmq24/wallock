@@ -23,6 +23,7 @@ export default abstract class SimpleSyncer<T extends { id: string, hash: string 
 
     const { payload: pullToLocalPayload } = await this.syncApp
       .fetch(`${this.getSyncUrl()}/pull_to_local?hashes=${localHashes.join(' ')}`)
+    console.log(pullToLocalPayload)
     const recordsToPull = this.checkRemoteRecordSchema(pullToLocalPayload)
 
     if (recordsToPull.length > 0) {

@@ -30,4 +30,13 @@ Rails.application.routes.draw do
       post :push_to_remote
     end
   end
+
+  resource :transactions_sync, controller: :transactions_sync do
+    member do
+      get :pull_to_local
+
+      get :different_from_remote
+      post :push_to_remote
+    end
+  end
 end

@@ -57,7 +57,7 @@ async function makeDefault () {
     return
   }
 
-  await api.wallets.makeDefault(wallet.value?.id)
+  await api.walletService.makeDefault(wallet.value?.id)
   refetchWallet()
 }
 </script>

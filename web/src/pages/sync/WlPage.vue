@@ -23,7 +23,7 @@
             class="link link-primary"
             target="_blank"
           >
-            the {{ rootFolder.name }} folder
+            the {{ rootFolder.name }} folder!
             <WlOpenInNewTabIcon class="inline size-3 fill-primary" />
           </a>
         </section>
