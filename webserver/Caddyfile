@@ -2,10 +2,14 @@
 	http_port 3000
 }
 
-http://app-dev.wallock.xyz:3000 {
-	reverse_proxy localhost:3100
-}
+http://localhost:3000 {
+	encode
 
-http://sync-dev.wallock.xyz:3000 {
-	reverse_proxy localhost:3200
+	handle /api/* {
+		reverse_proxy localhost:3200
+	}
+
+	handle {
+		reverse_proxy localhost:3100
+	}
 }
