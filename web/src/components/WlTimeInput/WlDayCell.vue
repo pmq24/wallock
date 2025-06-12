@@ -1,14 +1,14 @@
 <template>
   <div class="size-fit">
     <label
-      :for="day.toString()"
+      :for="`day-${ value.format('YYYY-MM-DD') }`"
       :class="{ 'btn-ghost': !isToday && !isSelected, 'btn-primary': isSelected }"
       class="btn btn-square font-normal"
     >
       {{ day }}
     </label>
     <input
-      :id="day.toString()"
+      :id="`day-${ value.format('YYYY-MM-DD') }`"
       v-model="selectedTime"
       :value="value.format('YYYY-MM-DDTHH:mm:ss')"
       type="radio"

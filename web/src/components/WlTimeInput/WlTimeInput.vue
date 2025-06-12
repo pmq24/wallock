@@ -39,7 +39,7 @@
 
         <WlDayCell
           v-for="day in lastDay.date()"
-          :key="day"
+          :key="`${yearInView}-${monthInView}-${day}`"
           v-model="selectedTime"
           :year="yearInView"
           :month="monthInView"
