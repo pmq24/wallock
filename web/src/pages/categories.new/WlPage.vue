@@ -20,13 +20,13 @@
 
         <input
           v-model="data.name"
-          class="input w-full validator"
+          :class="nameError && 'input-error'"
           :disabled="isLoading"
-          :aria-invalid="nameError ? 'true' : undefined"
+          class="input w-full"
         >
         <span
           v-if="nameError"
-          class="validator-hint"
+          :class="nameError && 'text-error'"
         >{{ nameError }}</span>
       </fieldset>
 
@@ -37,9 +37,9 @@
 
         <select
           v-model="data.type"
-          class="select w-full"
+          :class="typeError && 'input-error'"
           :disabled="isLoading"
-          :aria-invalid="typeError ? 'true' : undefined"
+          class="input w-full"
         >
           <option value="expense">
             Expense
@@ -50,7 +50,7 @@
         </select>
         <span
           v-if="typeError"
-          class="validator-hint"
+          :class="typeError && 'text-error'"
         >{{ typeError }}</span>
       </fieldset>
 
@@ -93,7 +93,10 @@ async function submit () {
   isLoading.value = true
   const validation = await categoryService.create(data)
   errors.value = validation.errors
-  router.push({ name: 'categories' })
+
+  if (!errors.value) {
+    router.push({ name: 'categories' })
+  }
   isLoading.value = false
 }
 </script>
