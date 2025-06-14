@@ -12,49 +12,6 @@
         <h1 class="text-xl font-bold flex-1">
           Categories
         </h1>
-
-        <section class="dropdown dropdown-end">
-          <button
-            tabindex="0"
-            :class="isSyncing && 'btn-disabled animate-pulse'"
-            class="btn btn-square btn-ghost"
-          >
-            <WlSyncErrorIcon
-              v-if="syncError"
-              class="text-error"
-            />
-            <WlSyncIcon v-else />
-          </button>
-
-          <section
-            tabindex="0"
-            class="dropdown-content w-max p-4 shadow-md card flex flex-col gap-2"
-          >
-            <template v-if="syncError">
-              <template v-if="syncError instanceof UnauthorizedError">
-                Session has expired, please log in.
-
-                <RouterLink
-                  :to="{ name: 'sync'}"
-                  class="btn btn-primary"
-                >
-                  Log in
-                </RouterLink>
-              </template>
-
-              <span v-else>Something went wrong.</span>
-            </template>
-
-            <button
-              v-else
-              :class="isSyncing && 'btn-disabled'"
-              class="btn btn-primary"
-              @click="() => sync()"
-            >
-              {{ isSyncing ? "Syncing..." : "Sync now" }}
-            </button>
-          </section>
-        </section>
       </div>
 
       <nav class="tabs p-2">
@@ -108,17 +65,15 @@
 import Category from 'models/data/categories/Category'
 import { injectApi } from 'providers/api'
 import { useRoute } from 'vue-router'
-import { WlSyncIcon, WlSyncErrorIcon, WlBackIcon, WlAddIcon } from 'components/icons'
+import { WlBackIcon, WlAddIcon } from 'components/icons'
 import { ref, watch } from 'vue'
 import { useAsyncState } from '@vueuse/core'
 import WlCategoryMenu from './WlCategoryMenu.vue'
-import { UnauthorizedError } from 'models/sync/errors'
 
 const route = useRoute()
 
 const api = injectApi()
 const categoryService = api.categoryService
-const syncer = api.syncer
 
 const { state: categories, isReady, execute: refetchCategories } = useAsyncState(
   () => categoryService.all().then(categories => categories.filter(category => category.type === type.value)),
@@ -137,10 +92,4 @@ watch(() => route.query.type, async (newType) => {
 
   refetchCategories()
 }, { immediate: true })
-
-const {
-  execute: sync,
-  error: syncError,
-  isLoading: isSyncing
-} = useAsyncState(() => syncer.syncCategories(), undefined, { immediate: false })
 </script>

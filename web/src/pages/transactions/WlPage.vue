@@ -45,8 +45,6 @@
           </ul>
         </section>
       </dialog>
-
-      <WlSyncDropdown />
     </header>
 
     <main class="p-2 lg:w-xl lg:mx-auto flex flex-col gap-2">
@@ -152,7 +150,6 @@ import { useAsyncState } from '@vueuse/core'
 import { groupBy } from 'lodash'
 import { WlAddIcon, WlCloseIcon, WlUnfoldIcon, WlWalletIcon } from 'components/icons'
 import WlFormattedAmount from 'components/WlFormattedAmount.vue'
-import WlSyncDropdown from './WlSyncDropdown.vue'
 
 const router = useRouter()
 const route = useRoute()
