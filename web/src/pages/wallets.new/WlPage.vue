@@ -1,11 +1,6 @@
 <template>
   <header class="navbar lg:w-xl lg:mx-auto">
-    <button
-      class="btn btn-ghost btn-square"
-      @click="router.back"
-    >
-      <WlBackIcon />
-    </button>
+    <WlBackButton to-view="wallets" />
 
     <h1 class="text-xl font-bold flex-1">
       New Wallet
@@ -77,7 +72,7 @@ import WalletService from 'models/data/wallets/WalletService'
 import { injectApi } from 'providers/api'
 import { computed, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { WlBackIcon } from 'components/icons'
+import WlBackButton from 'components/WlBackButton.vue'
 
 const router = useRouter()
 const route = useRoute()

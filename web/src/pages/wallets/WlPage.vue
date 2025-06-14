@@ -1,11 +1,7 @@
 <template>
   <header class="navbar lg:w-xl lg:mx-auto">
-    <RouterLink
-      :to="{ name: 'settings' }"
-      class="btn btn-ghost btn-square"
-    >
-      <WlBackIcon />
-    </RouterLink>
+    <WlBackButton to-view="settings" />
+
     <h1 class="text-xl font-bold flex-1">
       Wallets
     </h1>
@@ -35,7 +31,7 @@
 <script lang="ts" setup>
 import { injectApi } from 'providers/api'
 import { useAsyncState } from '@vueuse/core'
-import { WlBackIcon } from 'components/icons'
+import WlBackButton from 'components/WlBackButton.vue'
 
 const api = injectApi()
 const { state: wallets } = useAsyncState(async () => api.walletService.all(), [])

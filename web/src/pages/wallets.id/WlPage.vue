@@ -1,11 +1,6 @@
 <template>
   <header class="navbar lg:w-xl lg:mx-auto">
-    <RouterLink
-      :to="{ name: 'wallets' }"
-      class="btn btn-ghost btn-square"
-    >
-      <WlBackIcon />
-    </RouterLink>
+    <WlBackButton to-view="wallets" />
 
     <h1 class="text-xl font-bold flex-1">
       {{
@@ -43,7 +38,7 @@
 
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
-import { WlBackIcon } from 'components/icons'
+import WlBackButton from 'components/WlBackButton.vue'
 import { injectApi } from 'providers/api'
 import { useAsyncState } from '@vueuse/core'
 

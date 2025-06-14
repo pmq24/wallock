@@ -1,11 +1,7 @@
 <template>
   <header class="navbar lg:w-xl lg:mx-auto gap-2">
-    <button
-      class="btn btn-ghost btn-square"
-      @click="router.back"
-    >
-      <WlBackIcon />
-    </button>
+    <WlBackButton to-view="categories" />
+
     <h1 class="text-xl font-bold flex-1">
       New Category
     </h1>
@@ -72,7 +68,7 @@
 import type CategoryService from 'models/data/categories/CategoryService'
 import { injectApi } from 'providers/api'
 import { computed, reactive, ref } from 'vue'
-import { WlBackIcon } from 'components/icons'
+import WlBackButton from 'components/WlBackButton.vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()

@@ -2,12 +2,7 @@
   <div class="flex flex-col max-h-[100dvh] min-h-[100dvh]">
     <header class="lg:w-xl lg:mx-auto">
       <div class="navbar gap-2">
-        <RouterLink
-          :to="{ name: 'settings'}"
-          class="btn btn-ghost btn-square"
-        >
-          <WlBackIcon />
-        </RouterLink>
+        <WlBackButton to-view="settings" />
 
         <h1 class="text-xl font-bold flex-1">
           Categories
@@ -63,9 +58,10 @@
 
 <script lang="ts" setup>
 import Category from 'models/data/categories/Category'
+import WlBackButton from 'components/WlBackButton.vue'
 import { injectApi } from 'providers/api'
 import { useRoute } from 'vue-router'
-import { WlBackIcon, WlAddIcon } from 'components/icons'
+import { WlAddIcon } from 'components/icons'
 import { ref, watch } from 'vue'
 import { useAsyncState } from '@vueuse/core'
 import WlCategoryMenu from './WlCategoryMenu.vue'
