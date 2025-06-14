@@ -20,11 +20,14 @@
         </legend>
         <input
           v-model="data.name"
-          class="input w-full validator"
+          :class="nameError && 'input-error'"
           :disabled="isLoading"
-          :aria-invalid="nameError ? 'true' : undefined"
+          class="input w-full"
         >
-        <span class="validator-hint">{{ nameError }}</span>
+        <span
+          v-if="nameError"
+          class="text-error"
+        >{{ nameError }}</span>
       </fieldset>
 
       <fieldset class="fieldset w-full">
@@ -33,12 +36,15 @@
         </legend>
         <input
           v-model="data.currencyCode"
-          class="input w-full validator"
-          list="currency-code-datalist"
+          :class="currencyCodeError && 'input-error'"
           :disabled="isLoading"
-          :aria-invalid="currencyCodeError ? 'true' : undefined"
+          list="currency-code-datalist"
+          class="input w-full"
         >
-        <span class="validator-hint">{{ currencyCodeError }}</span>
+        <span
+          v-if="currencyCodeError"
+          class="text-error"
+        >{{ currencyCodeError }}</span>
 
         <datalist id="currency-code-datalist">
           <option
@@ -91,6 +97,11 @@ async function submit () {
   isLoading.value = true
   const validation = await walletService.create(data)
   errors.value = validation.errors
+  isLoading.value = false
+
+  if (errors.value) {
+    return
+  }
 
   const redirectOnSuccess = route.query.redirectOnSuccess
   if (typeof redirectOnSuccess === 'string') {
@@ -98,6 +109,5 @@ async function submit () {
   } else {
     router.push({ name: 'wallets' })
   }
-  isLoading.value = false
 }
 </script>
