@@ -12,10 +12,10 @@
           v-for="navItem in navItems"
           :key="navItem.name"
         >
-          <RouterLink :to="{name: navItem.name}">
+          <WlLink :to="{name: navItem.name}">
             <component :is="navItem.icon" />
             {{ navItem.label }}
-          </RouterLink>
+          </WlLink>
         </li>
       </ul>
     </main>
@@ -25,8 +25,11 @@
 <script setup lang="ts">
 import { WlCategoryIcon, WlSyncIcon, WlWalletIcon } from 'components/icons'
 import WlMainNav from 'components/WlMainNav/WlMainNav.vue'
+import WlLink from 'components/WlLink.vue'
+import type { Component } from 'vue'
+import type { PageName } from 'pages/router'
 
-const navItems = [
+const navItems: { name: PageName, label: string, icon: Component }[] = [
   {
     name: 'categories',
     label: 'Categories',

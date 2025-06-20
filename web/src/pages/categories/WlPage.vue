@@ -10,7 +10,7 @@
       </div>
 
       <nav class="tabs p-2">
-        <RouterLink
+        <WlLink
           v-for="navItemType in ['expense', 'income']"
           :key="navItemType"
           :to="{ query: { type: navItemType } }"
@@ -19,7 +19,7 @@
           replace
         >
           {{ navItemType.at(0)!.toUpperCase() + navItemType.slice(1) }}
-        </RouterLink>
+        </WlLink>
       </nav>
     </header>
 
@@ -34,16 +34,16 @@
         class="flex flex-col justify-center items-center gap-2 h-25"
       >
         <span>There are no categories</span>
-        <RouterLink
+        <WlLink
           :to="{name: 'categoriesNew'}"
           class="btn btn-ghost"
         >
           <WlAddIcon />
           New category
-        </RouterLink>
+        </WlLink>
       </div>
 
-      <RouterLink
+      <WlLink
         :to="{
           name: 'categoriesNew',
           query: { type }
@@ -51,7 +51,7 @@
         class="btn btn-primary btn-block mt-2"
       >
         New category
-      </RouterLink>
+      </WlLink>
     </main>
   </div>
 </template>
@@ -65,6 +65,7 @@ import { WlAddIcon } from 'components/icons'
 import { ref, watch } from 'vue'
 import { useAsyncState } from '@vueuse/core'
 import WlCategoryMenu from './WlCategoryMenu.vue'
+import WlLink from 'components/WlLink.vue'
 
 const route = useRoute()
 

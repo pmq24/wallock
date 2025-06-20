@@ -19,12 +19,12 @@
       </li>
     </ul>
 
-    <RouterLink
-      :to="{ name: 'walletsNew', }"
+    <WlLink
+      :to="{ name: 'walletsNew' }"
       class="btn btn-primary btn-block mt-2"
     >
       New wallet
-    </RouterLink>
+    </WlLink>
   </main>
 </template>
 
@@ -32,6 +32,7 @@
 import { injectApi } from 'providers/api'
 import { useAsyncState } from '@vueuse/core'
 import WlBackButton from 'components/WlBackButton.vue'
+import WlLink from 'components/WlLink.vue'
 
 const api = injectApi()
 const { state: wallets } = useAsyncState(async () => api.walletService.all(), [])

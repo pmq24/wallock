@@ -4,9 +4,9 @@
       v-for="category in categories"
       :key="category.id"
     >
-      <RouterLink :to="{ name: 'categoriesIdEdit', params: { id: category.id } }">
+      <WlLink :to="{ name: 'categoriesIdEdit', params: { id: category.id } }">
         {{ category.shortName }}
-      </RouterLink>
+      </WlLink>
 
       <WlCategoryMenuItem
         :all-categories
@@ -19,6 +19,7 @@
 <script setup lang="ts">
 import type Category from 'models/data/categories/Category'
 import { computed } from 'vue'
+import WlLink from 'components/WlLink.vue'
 
 const { allCategories, parent } = defineProps<{
   allCategories: Category[]

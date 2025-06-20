@@ -18,10 +18,11 @@ import WlMainNavMobile from './WlMainNavMobile.vue'
 import WlMainNavDesktop from './WlMainNavDesktop.vue'
 import { WlSettingIcon, WlTransactionIcon, WlTransactionIconFilled } from 'components/icons'
 import WlSettingIconFilled from 'components/icons/WlSettingIconFilled.vue'
+import type { NavItem } from './common'
 
 const { activeBreakpoint } = useBreakpoints()
 
-const navItems = [
+const navItems: NavItem[] = [
   {
     name: 'transactions',
     label: 'Transactions',

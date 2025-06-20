@@ -1,11 +1,11 @@
 <template>
   <header class="navbar lg:w-xl lg:mx-auto">
-    <RouterLink
-      class="btn btn-ghost btn-square"
+    <WlLink
       :to="{ name: 'transactions' }"
+      class="btn btn-ghost btn-square"
     >
       <WlBackIcon />
-    </RouterLink>
+    </WlLink>
     <h1 class="text-xl font-bold flex-1">
       New Transaction
     </h1>
@@ -119,6 +119,7 @@ import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { WlBackIcon } from 'components/icons'
 import WlTimeInput from 'components/WlTimeInput/WlTimeInput.vue'
+import WlLink from 'components/WlLink.vue'
 
 const router = useRouter()
 

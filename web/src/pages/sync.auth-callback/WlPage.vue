@@ -21,12 +21,12 @@
           We have been notified and will look into this.
         </div>
 
-        <RouterLink
+        <WlLink
           :to="{ name: 'sync'}"
           class="btn btn-block"
         >
           Try again
-        </RouterLink>
+        </WlLink>
       </template>
 
       <template v-else>
@@ -41,6 +41,7 @@ import { useAsyncState } from '@vueuse/core'
 import { ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { injectApi } from 'providers/api'
+import WlLink from 'components/WlLink.vue'
 
 const router = useRouter()
 const route = useRoute()

@@ -38,9 +38,9 @@
               v-for="wallet in wallets"
               :key="wallet.id"
             >
-              <RouterLink :to="{ query: { ...route.query, walletId: wallet.id } }">
+              <WlLink :to="{ query: { ...route.query, walletId: wallet.id } }">
                 {{ wallet.name }}
-              </RouterLink>
+              </WlLink>
             </li>
           </ul>
         </section>
@@ -53,14 +53,14 @@
         class="overflow-x-auto"
       >
         <nav class="tabs">
-          <RouterLink
+          <WlLink
             v-for="month in visibleMonths"
             :key="month"
             :class="['tab', query.periodFilter === month && 'tab-active']"
             :to="{ query: { ...route.query, period: month } }"
           >
             {{ month }}
-          </RouterLink>
+          </WlLink>
         </nav>
       </div>
 
@@ -94,13 +94,13 @@
         class="flex flex-col justify-center items-center gap-2 h-25"
       >
         <span>There are no transaction</span>
-        <RouterLink
+        <WlLink
           :to="{name: 'transactionsNew'}"
           class="btn btn-ghost"
         >
           <WlAddIcon />
           New transaction
-        </RouterLink>
+        </WlLink>
       </div>
 
       <section
@@ -150,6 +150,7 @@ import { useAsyncState } from '@vueuse/core'
 import { groupBy } from 'lodash'
 import { WlAddIcon, WlCloseIcon, WlUnfoldIcon, WlWalletIcon } from 'components/icons'
 import WlFormattedAmount from 'components/WlFormattedAmount.vue'
+import WlLink from 'components/WlLink.vue'
 
 const router = useRouter()
 const route = useRoute()

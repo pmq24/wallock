@@ -18,63 +18,63 @@ const routes = [
     path: '/getting-started/categories',
     name: 'gettingStartedCategories',
     component: GettingStartedCategories,
-  },
+  } as const,
 
   {
     path: '/categories',
     name: 'categories',
     component: Categories,
-  },
+  } as const,
   {
     path: '/categories/new',
     name: 'categoriesNew',
     component: CategoriesNew,
-  },
+  } as const,
   {
     path: '/categories/:id/edit',
     name: 'categoriesIdEdit',
     component: CategoriesIdEdit,
-  },
+  } as const,
   {
     path: '/sync',
     name: 'sync',
     component: Sync,
-  },
+  } as const,
   {
     path: '/sync/auth-callback',
     name: 'syncAuthCallback',
     component: SyncAuthCallback,
-  },
+  } as const,
   {
     path: '/settings',
     name: 'settings',
     component: Settings,
-  },
+  } as const,
   {
     path: '/transactions',
     name: 'transactions',
     component: Transactions,
-  },
+  } as const,
   {
     path: '/transactions/new',
     name: 'transactionsNew',
     component: TransactionsNew,
-  },
+  } as const,
   {
     path: '/wallets',
     name: 'wallets',
     component: Wallets,
-  },
+  } as const,
   {
     path: '/wallets/:id',
     name: 'walletsId',
     component: WalletsId,
-  },
+  } as const,
   {
     path: '/wallets/new',
     name: 'walletsNew',
     component: WalletsNew,
-  },
+  } as const,
 ]
 
 const router = createRouter({
@@ -101,3 +101,5 @@ router.beforeEach(async (to) => {
 })
 
 export default router
+
+export type PageName = (typeof routes)[number]['name']

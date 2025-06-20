@@ -1,11 +1,11 @@
 <template>
   <header class="navbar lg:w-xl lg:mx-auto gap-2 mb-2">
-    <RouterLink
+    <WlLink
       :to="{ name: 'categories' }"
       class="btn btn-ghost btn-square"
     >
       <WlCloseIcon />
-    </RouterLink>
+    </WlLink>
 
     <h1 class="text-xl font-bold flex-1">
       Edit Category
@@ -38,12 +38,12 @@
       <h1>Category not found.</h1>
 
       <div class="flex justify-center items-center">
-        <RouterLink
+        <WlLink
           :to="{ name: 'categories' }"
           class="btn btn-sm btn-ghost"
         >
           Go back
-        </RouterLink>
+        </WlLink>
       </div>
     </section>
 
@@ -99,6 +99,7 @@ import { ValidationError } from 'models/data/errors'
 import { injectApi } from 'providers/api'
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import WlLink from 'components/WlLink.vue'
 
 const router = useRouter()
 const route = useRoute()

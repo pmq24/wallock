@@ -1,7 +1,8 @@
+import type { PageName } from 'pages/router'
 import type { Component } from 'vue'
 
 export type NavItem = {
-  name: string;
+  name: PageName;
   label: string;
   icons: {
     active: Component;

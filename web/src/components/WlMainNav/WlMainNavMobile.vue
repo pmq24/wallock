@@ -1,6 +1,6 @@
 <template>
   <nav class="dock fixed bottom-0 z-10">
-    <RouterLink
+    <WlLink
       v-for="{name, label, icons} in navItems"
       :key="name"
       :to="{ name: name }"
@@ -8,21 +8,22 @@
     >
       <component :is="icons[currentRoute.name === name ? 'active' : 'inactive']" />
       <span class="dock-label">{{ label }}</span>
-    </RouterLink>
+    </WlLink>
   </nav>
 
-  <RouterLink
+  <WlLink
     :to="{name: 'transactionsNew'}"
     class="btn btn-circle btn-primary btn-xl fixed bottom-20 right-4 z-10"
   >
     <WlAddIcon />
-  </RouterLink>
+  </WlLink>
 </template>
 
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
 import type { NavItem } from './common'
 import { WlAddIcon } from 'components/icons'
+import WlLink from 'components/WlLink.vue'
 
 const { navItems } = defineProps<{ navItems: NavItem[] }>()
 

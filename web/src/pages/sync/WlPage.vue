@@ -1,11 +1,11 @@
 <template>
   <header class="navbar lg:w-xl lg:mx-auto gap-2">
-    <RouterLink
+    <WlLink
       :to="{ name: 'settings'}"
       class="btn btn-ghost btn-square"
     >
       <WlBackIcon />
-    </RouterLink>
+    </WlLink>
     <h1 class="text-xl font-bold flex-1">
       Sync
     </h1>
@@ -39,6 +39,7 @@ import { WlBackIcon, WlOpenInNewTabIcon } from 'components/icons'
 import { injectApi } from 'providers/api'
 import WlGoogleLogInButton from './WlGoogleLogInButton.vue'
 import { useAsyncState } from '@vueuse/core'
+import WlLink from 'components/WlLink.vue'
 
 const api = injectApi()
 const authService = api.authService
