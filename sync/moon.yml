@@ -18,3 +18,8 @@ tasks:
     local: true
   lint:
     command: bin/bundle exec rubocop --autocorrect
+
+  pre-commit:
+    command: noop
+    deps:
+    - '~:lint'

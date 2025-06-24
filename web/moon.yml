@@ -8,10 +8,8 @@ project:
   description: The user-facing web application
 
 tasks:
-  dev:
-    command: npm run dev
-    local: true
-  lint:
-    command: npm run lint
-  lint-no-fix:
-    command: npm run lint-no-fix
+  pre-commit:
+    command: noop
+    deps:
+    - '~:lint'
+    - '~:typecheck'
