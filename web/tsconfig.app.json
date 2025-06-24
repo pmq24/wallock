@@ -1,4 +1,6 @@
+// For the app (browser environment)
 {
+	"$schema": "https://www.schemastore.org/tsconfig.json",
   "extends": "@vue/tsconfig/tsconfig.dom.json",
   "compilerOptions": {
 		"baseUrl": "./src",
@@ -11,5 +13,6 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"]
+  "include": ["src/**/*.ts", "src/**/*.vue"],
+	"exclude": ["node_modules"]
 }

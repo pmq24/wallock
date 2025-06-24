@@ -1,4 +1,6 @@
+// For Vite (node environment)
 {
+	"$schema": "https://www.schemastore.org/tsconfig.json",
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
     "target": "ES2022",
