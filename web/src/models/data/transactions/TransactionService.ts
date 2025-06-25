@@ -50,7 +50,7 @@ export default class TransactionService {
 
     if (!record) return undefined
 
-    const category = await this.categoryService.id(record.categoryId)
+    const category = await this.categoryService.getById(record.categoryId)
     if (!category) throw new NotFoundError('Category', record.categoryId)
     const wallet = await this.walletService.id(record.walletId)
     if (!wallet) throw new NotFoundError('Wallet', record.walletId)

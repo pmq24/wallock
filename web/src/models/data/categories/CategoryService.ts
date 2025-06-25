@@ -40,7 +40,7 @@ class CategoryService {
       .then((records) => records.map((record) => new Category(record)))
   }
 
-  async id (id: string) {
+  async getById (id: string) {
     return await this.categoryTable
       .get(id)
       .then((record) => (record ? new Category(record) : undefined))
