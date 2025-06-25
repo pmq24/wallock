@@ -43,7 +43,7 @@ class CategoryUpdateForm {
       for (let i = 0; i < groups.length - 1; i++) {
         const name = groups.slice(0, i).join('/')
 
-        const c = await this.categoryService.findByNameAndType(name, this.type)
+        const c = await this.categoryService.getByNameAndType(name, this.type)
         if (!c) {
           await this.categoryService.create({ name, type: this.type })
         }

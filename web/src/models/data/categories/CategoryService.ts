@@ -46,7 +46,7 @@ class CategoryService {
       .then((record) => (record ? new Category(record) : undefined))
   }
 
-  async findByNameAndType (name: string, type: Category.Type) {
+  async getByNameAndType (name: string, type: Category.Type) {
     const record = await this.categoryTable.get({ name, type })
     return record ? new Category(record) : undefined
   }
