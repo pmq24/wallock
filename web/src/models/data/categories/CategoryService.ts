@@ -32,14 +32,6 @@ class CategoryService {
     )
   }
 
-  async byHashes (hashes: string[]) {
-    return this.categoryTable
-      .where('hash')
-      .anyOf(hashes)
-      .toArray()
-      .then((records) => records.map((record) => new Category(record)))
-  }
-
   async getById (id: string) {
     return await this.categoryTable
       .get(id)
