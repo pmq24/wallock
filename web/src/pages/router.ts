@@ -88,7 +88,7 @@ router.beforeEach(async (to) => {
     return { name: 'walletsNew', query: { redirectOnSuccess: 'transactions' } }
   }
 
-  const noCategory = (await api.categoryService.all()).length === 0
+  const noCategory = (await api.categoryService.getAll()).length === 0
   if (
     to.name !== 'walletsNew' &&
     noCategory &&

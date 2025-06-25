@@ -16,7 +16,7 @@ export default class TransactionCreationForm {
     hasher: Hasher,
     onSuccess: (id: string) => void
   }) {
-    const availableCategories = await params.categoryService.all()
+    const availableCategories = await params.categoryService.getAll()
     const availableWallets = await params.walletService.all()
     const form = new TransactionCreationForm({
       hasher: params.hasher,

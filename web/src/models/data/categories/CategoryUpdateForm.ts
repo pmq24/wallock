@@ -31,7 +31,8 @@ class CategoryUpdateForm {
       this._isSubmitting = true
       this.name = CategoryService.standardizeName(this.name)
 
-      let names = await this.getAllNamesOfSameType()
+      let names
+      names = await this.getAllNamesOfSameType()
       names = names.filter(n => n !== this._oldName)
 
       if (names.includes(this.name)) {
@@ -55,7 +56,7 @@ class CategoryUpdateForm {
       })
 
       let subCategoriesToUpdate
-      subCategoriesToUpdate = await this.categoryService.all()
+      subCategoriesToUpdate = await this.categoryService.getAll()
       subCategoriesToUpdate = subCategoriesToUpdate
         .filter(c => c.name.startsWith(this._oldName + '/'))
         .map(c => ({
@@ -90,7 +91,7 @@ class CategoryUpdateForm {
   }
 
   private async getAllNamesOfSameType () {
-    const categories = await this.categoryService.all()
+    const categories = await this.categoryService.getAll()
     return categories.filter(c => c.type === this.type).map(c => c.name)
   }
 

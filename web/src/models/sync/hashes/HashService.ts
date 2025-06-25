@@ -25,7 +25,7 @@ export default class HashService {
   }
 
   async updateCategoriesHash () {
-    const categories = await this.categoryService.all()
+    const categories = await this.categoryService.getAll()
     const hash = this.hasher.hashDataCollection(categories)
     await this.hashTable.put({ name: 'categories', hash })
     await this.updateRootHash()

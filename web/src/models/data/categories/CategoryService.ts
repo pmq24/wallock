@@ -18,7 +18,7 @@ class CategoryService {
     this.hasher = params.hasher
   }
 
-  async all () {
+  async getAll () {
     return this.categoryTable.toArray().then((categoryRecords) =>
       categoryRecords
         .sort((a, b) => {

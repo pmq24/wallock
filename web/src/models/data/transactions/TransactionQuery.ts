@@ -77,7 +77,7 @@ class TransactionQuery {
     }
 
     const records = await collection.toArray()
-    const categories = await this.categoryService.all()
+    const categories = await this.categoryService.getAll()
     const wallets = await this.walletService.all()
     return records.map(
       (record) =>
