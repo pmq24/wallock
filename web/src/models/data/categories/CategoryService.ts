@@ -5,6 +5,7 @@ import { nanoid } from 'nanoid'
 import type { CategoryTable } from './dexie'
 import type Hasher from 'models/sync/hashes/Hasher'
 import CategoryUpdateForm from './CategoryUpdateForm'
+import CategoryCreator from './CategoryCreator'
 
 class CategoryService {
   static standardizeName (name: string) {
@@ -16,7 +17,15 @@ class CategoryService {
   constructor (params: { categoryTable: CategoryTable; hasher: Hasher }) {
     this.categoryTable = params.categoryTable
     this.hasher = params.hasher
+
+    this.creator = new CategoryCreator({
+      categoryService: this,
+      categoryTable: this.categoryTable,
+      hasher: this.hasher
+    })
   }
+
+  public readonly creator: CategoryCreator
 
   async getAll () {
     return this.categoryTable.toArray().then((categoryRecords) =>

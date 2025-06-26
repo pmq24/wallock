@@ -36,7 +36,9 @@ class CategoryUpdateForm {
       names = names.filter(n => n !== this._oldName)
 
       if (names.includes(this.name)) {
-        throw new ValidationError({ name: 'Already exists' })
+        const error = new ValidationError<CategoryUpdateForm.Data>()
+        error.set('name', 'Already exists')
+        throw error
       }
 
       const groups = this.name.split('/')

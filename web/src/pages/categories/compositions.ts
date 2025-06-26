@@ -9,7 +9,10 @@ export function useCategoriesByType (opts: { type: Ref<Category.Type> }) {
 
   const { state: categories, isReady, execute: refetchCategories } = useAsyncState(
     () => categoryService.getAll().then(categories => categories.filter(category => category.type === opts.type.value)),
-    []
+    [],
+    {
+      immediate: false
+    }
   )
 
   return { categories, isReady, refetchCategories }

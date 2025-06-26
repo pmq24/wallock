@@ -8,7 +8,7 @@
   </header>
 
   <main class="p-2 lg:w-xl lg:mx-auto">
-    <form @submit.prevent="submit">
+    <form @submit.prevent="() => submit()">
       <fieldset class="fieldset w-full">
         <legend class="fieldset-legend">
           Name
@@ -17,12 +17,11 @@
         <input
           v-model="data.name"
           :class="nameError && 'input-error'"
-          :disabled="isLoading"
           class="input w-full"
         >
         <span
           v-if="nameError"
-          :class="nameError && 'text-error'"
+          class="text-error"
         >{{ nameError }}</span>
       </fieldset>
 
@@ -34,7 +33,6 @@
         <select
           v-model="data.type"
           :class="typeError && 'input-error'"
-          :disabled="isLoading"
           class="input w-full"
         >
           <option value="expense">
@@ -46,53 +44,56 @@
         </select>
         <span
           v-if="typeError"
-          :class="typeError && 'text-error'"
+          class="text-error"
         >{{ typeError }}</span>
       </fieldset>
 
       <button
+        :disabled="!touched || !!error || isCreating"
         class="btn btn-primary btn-block mt-4"
-        :disabled="isLoading"
       >
         <span
-          v-if="isLoading"
+          v-if="isCreating"
           class="loading loading-spinner"
         />
-        Create
+        {{ isCreating ? "Creating..." : "Create" }}
       </button>
     </form>
   </main>
 </template>
 
 <script lang="ts" setup>
-import type CategoryService from 'models/data/categories/CategoryService'
-import { injectApi } from 'providers/api'
 import { computed, reactive, ref } from 'vue'
 import WlBackButton from 'components/WlBackButton.vue'
-import { useRouter } from 'vue-router'
+import { useCommon } from 'common'
+import { useAsyncState, watchDebounced } from '@vueuse/core'
+import type CategoryCreator from 'models/data/categories/CategoryCreator'
 
-const router = useRouter()
+const { api, router } = useCommon()
 
-const data = reactive<CategoryService.CreateData>({
-  name: '',
-  type: 'expense'
+const categoryCreator = api.categoryService.creator
+
+const data = reactive(categoryCreator.createInitialData())
+
+const touched = ref(false)
+
+const error = ref<CategoryCreator.Error>()
+const typeError = computed(() => error.value?.get('type'))
+const nameError = computed(() => error.value?.get('name'))
+watchDebounced(data, async () => {
+  error.value = await categoryCreator.getErrorIfInvalid(data)
+  touched.value = true
 })
 
-const isLoading = ref(false)
-
-const errors = ref<CategoryService.CreateErrors>()
-const nameError = computed(() => errors.value?.nested?.name?.at(0))
-const typeError = computed(() => errors.value?.nested?.type?.at(0))
-
-const categoryService = injectApi().categoryService
-async function submit () {
-  isLoading.value = true
-  const validation = await categoryService.create(data)
-  errors.value = validation.errors
-
-  if (!errors.value) {
-    router.push({ name: 'categories' })
+const {
+  execute: submit,
+  isLoading: isCreating,
+} = useAsyncState(
+  () => categoryCreator.submitOrThrow(data),
+  undefined,
+  {
+    immediate: false,
+    onSuccess: () => router.push({ name: 'categories' }),
   }
-  isLoading.value = false
-}
+)
 </script>

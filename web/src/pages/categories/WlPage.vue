@@ -66,11 +66,12 @@ import WlCategoryMenu from './WlCategoryMenu.vue'
 import WlLink from 'components/WlLink.vue'
 import { useCategoriesByType } from './compositions'
 
+const route = useRoute()
+
 const type = ref<Category.Type>('expense')
 
 const { categories, isReady, refetchCategories } = useCategoriesByType({ type })
 
-const route = useRoute()
 watch(() => route.query.type, async (newType) => {
   if (Category.TYPES.includes(newType as any)) {
     type.value = newType as Category.Type
