@@ -4,18 +4,15 @@ import CategoryService from './CategoryService'
 import * as v from 'valibot'
 import type { CategoryTable } from './dexie'
 import { createStandardError, createStandardSuccess } from 'models/common'
-import type Hasher from 'models/sync/hashes/Hasher'
 import { nanoid } from 'nanoid'
 
 class CategoryCreator {
   constructor (params: {
     categoryService: CategoryService,
     categoryTable: CategoryTable,
-    hasher: Hasher
   }) {
     this.categoryService = params.categoryService
     this.categoryTable = params.categoryTable
-    this.hasher = params.hasher
   }
 
   createInitialData () {
@@ -63,8 +60,7 @@ class CategoryCreator {
       name: CategoryService.standardizeName(data.name),
       type: data.type
     }
-    const hash = this.hasher.hashData(record)
-    await this.categoryTable.add({ ...record, hash })
+    await this.categoryTable.add(record)
 
     return createStandardSuccess(undefined)
   }
@@ -94,7 +90,6 @@ class CategoryCreator {
 
   private categoryService: CategoryService
   private categoryTable: CategoryTable
-  private hasher: Hasher
 }
 
 namespace CategoryCreator {

@@ -3,8 +3,6 @@ import GettingStartedCategories from './getting-started.categories/WlPage.vue'
 import Categories from './categories/WlPage.vue'
 import CategoriesNew from './categories.new/WlPage.vue'
 import CategoriesIdEdit from './categories.id.edit/WlPage.vue'
-import Sync from './sync/WlPage.vue'
-import SyncAuthCallback from './sync.auth-callback/WlPage.vue'
 import Settings from './settings/WlPage.vue'
 import Transactions from './transactions/WlPage.vue'
 import TransactionsNew from './transactions.new/WlPage.vue'
@@ -34,16 +32,6 @@ const routes = [
     path: '/categories/:id/edit',
     name: 'categoriesIdEdit',
     component: CategoriesIdEdit,
-  } as const,
-  {
-    path: '/sync',
-    name: 'sync',
-    component: Sync,
-  } as const,
-  {
-    path: '/sync/auth-callback',
-    name: 'syncAuthCallback',
-    component: SyncAuthCallback,
   } as const,
   {
     path: '/settings',

@@ -3,7 +3,6 @@ $schema: https://moonrepo.dev/schemas/workspace.json
 projects:
   webserver: webserver
   web: web
-  sync: sync
 
 vcs:
   defaultBranch: dev

@@ -3,12 +3,10 @@ import { createStandardError, createStandardSuccess } from 'models/common'
 import { nanoid } from 'nanoid'
 import Wallet from './Wallet'
 import type { WalletTable } from './dexie'
-import type Hasher from 'models/sync/hashes/Hasher'
 
 class WalletService {
-  constructor (params: { walletTable: WalletTable; hasher: Hasher }) {
+  constructor (params: { walletTable: WalletTable }) {
     this.walletTable = params.walletTable
-    this.hasher = params.hasher
   }
 
   async count () {
@@ -46,8 +44,7 @@ class WalletService {
       currencyCode: validation.output.currencyCode as Wallet.CurrencyCode,
       isDefault: (await this.count()) === 0,
     }
-    const hash = this.hasher.hashData(record)
-    const id = await this.walletTable.add({ ...record, hash })
+    const id = await this.walletTable.add(record)
 
     this.onChangeListeners.forEach((listener) => listener())
 
@@ -101,7 +98,6 @@ class WalletService {
   }
 
   private readonly walletTable: WalletTable
-  private readonly hasher: Hasher
 
   private onChangeListeners: WalletService.OnChangeListener[] = []
 }

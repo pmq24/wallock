@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import CategoryService from '../../CategoryService'
 import { descriptionFor, mockDexie } from 'models/test-common'
-import Hasher from 'models/sync/hashes/Hasher'
 import Category from '../../Category'
 
 describe(
@@ -12,11 +11,9 @@ describe(
 
     beforeEach(async () => {
       const dexie = mockDexie()
-      const hasher = new Hasher()
 
       service = new CategoryService({
         categoryTable: dexie.categories,
-        hasher,
       })
 
       const result = await service.create({

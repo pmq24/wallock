@@ -3,7 +3,6 @@ import * as v from 'valibot'
 import { createStandardError, createStandardSuccess } from 'models/common'
 import { nanoid } from 'nanoid'
 import type { CategoryTable } from './dexie'
-import type Hasher from 'models/sync/hashes/Hasher'
 import CategoryUpdateForm from './CategoryUpdateForm'
 import CategoryCreator from './CategoryCreator'
 
@@ -14,14 +13,12 @@ class CategoryService {
     return name.split('/').map(s => s.trim()).join('/')
   }
 
-  constructor (params: { categoryTable: CategoryTable; hasher: Hasher }) {
+  constructor (params: { categoryTable: CategoryTable }) {
     this.categoryTable = params.categoryTable
-    this.hasher = params.hasher
 
     this.creator = new CategoryCreator({
       categoryService: this,
       categoryTable: this.categoryTable,
-      hasher: this.hasher
     })
   }
 
@@ -72,8 +69,7 @@ class CategoryService {
       type: validation.output.type as Category.Type,
       name: validation.output.name,
     }
-    const hash = this.hasher.hashData(record)
-    const id = await this.categoryTable.add({ ...record, hash })
+    const id = await this.categoryTable.add(record)
 
     this.notifyOnChangeListener()
     return createStandardSuccess(id)
@@ -88,7 +84,6 @@ class CategoryService {
       id,
       categoryTable: this.categoryTable,
       categoryService: this,
-      hasher: this.hasher,
       onSuccess: () => this.notifyOnChangeListener()
 
     })
@@ -118,7 +113,6 @@ class CategoryService {
   }
 
   private readonly categoryTable: CategoryTable
-  private readonly hasher: Hasher
 
   private readonly onChangeListeners: CategoryService.OnChangeListener[] = []
 }

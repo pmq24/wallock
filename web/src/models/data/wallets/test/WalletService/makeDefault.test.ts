@@ -15,7 +15,6 @@ describe('WalletService - makeDefault', () => {
     })
     service = new WalletService({
       walletTable: api.dexie.wallets,
-      hasher: api.hasher,
     })
 
     let mockResult

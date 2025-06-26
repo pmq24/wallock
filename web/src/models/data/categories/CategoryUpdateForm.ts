@@ -1,11 +1,10 @@
-import type Hasher from 'models/sync/hashes/Hasher'
 import type { CategoryRecord, CategoryTable } from './dexie'
 import { NotFoundError, ValidationError } from 'models/data/errors'
 import type Category from './Category'
 import CategoryService from './CategoryService'
 
 class CategoryUpdateForm {
-  static async create (params: { id: string; categoryTable: CategoryTable; categoryService: CategoryService; hasher: Hasher, onSuccess?: () => void }) {
+  static async create (params: { id: string; categoryTable: CategoryTable; categoryService: CategoryService; onSuccess?: () => void }) {
     const record = await params.categoryTable.get(params.id)
 
     if (!record) {
@@ -16,7 +15,6 @@ class CategoryUpdateForm {
       record,
       categoryTable: params.categoryTable,
       categoryService: params.categoryService,
-      hasher: params.hasher,
       onSuccess: params.onSuccess
     })
   }
@@ -54,7 +52,6 @@ class CategoryUpdateForm {
       await this.categoryTable.update(this.id, {
         name: this.name,
         type: this.type,
-        hash: this.hasher.hashData({ id: this.id, name: this.name, type: this.type })
       })
 
       let subCategoriesToUpdate
@@ -79,10 +76,9 @@ class CategoryUpdateForm {
     return this._isSubmitting
   }
 
-  private constructor (params: { record: CategoryRecord; categoryTable: CategoryTable; categoryService: CategoryService; hasher: Hasher, onSuccess?: () => void }) {
+  private constructor (params: { record: CategoryRecord; categoryTable: CategoryTable; categoryService: CategoryService; onSuccess?: () => void }) {
     this.categoryTable = params.categoryTable
     this.categoryService = params.categoryService
-    this.hasher = params.hasher
     this.categoryService = params.categoryService
     this.onSuccess = params.onSuccess
 
@@ -99,7 +95,6 @@ class CategoryUpdateForm {
 
   private readonly categoryTable: CategoryTable
   private readonly categoryService: CategoryService
-  private readonly hasher: Hasher
   private readonly onSuccess?: () => void
 
   private _isSubmitting: boolean = false

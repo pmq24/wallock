@@ -16,7 +16,6 @@ describe('CategoryService - create', () => {
     dexie = api.dexie
     service = new CategoryService({
       categoryTable: api.dexie.categories,
-      hasher: api.hasher,
     })
   })
 

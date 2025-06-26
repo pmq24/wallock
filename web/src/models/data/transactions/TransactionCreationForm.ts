@@ -6,20 +6,17 @@ import type { TransactionTable } from 'models/data/transactions/dexie'
 import type Wallet from 'models/data/wallets/Wallet'
 import type WalletService from 'models/data/wallets/WalletService'
 import { nanoid } from 'nanoid'
-import type Hasher from 'models/sync/hashes/Hasher'
 
 export default class TransactionCreationForm {
   static async create (params: {
     transactionTable: TransactionTable;
     categoryService: CategoryService;
     walletService: WalletService;
-    hasher: Hasher,
     onSuccess: (id: string) => void
   }) {
     const availableCategories = await params.categoryService.getAll()
     const availableWallets = await params.walletService.all()
     const form = new TransactionCreationForm({
-      hasher: params.hasher,
       transactionTable: params.transactionTable,
       availableCategories,
       availableWallets,
@@ -128,22 +125,18 @@ export default class TransactionCreationForm {
       walletId: this.walletId,
     }
 
-    const hash = this.hasher.hashData(data)
-
-    const id = await this.transactionTable.add({ ...data, hash })
+    const id = await this.transactionTable.add(data)
     this._submitting = false
     this.onSuccess(id)
     return createStandardSuccess(id)
   }
 
   private constructor (params: {
-    hasher: Hasher,
     availableCategories: Category[];
     availableWallets: Wallet[];
     transactionTable: TransactionTable;
     onSuccess: (id: string) => void
   }) {
-    this.hasher = params.hasher
     this.transactionTable = params.transactionTable
     this.availableCategories = params.availableCategories
     this.availableWallets = params.availableWallets
@@ -158,7 +151,6 @@ export default class TransactionCreationForm {
   readonly availableWallets: Wallet[]
 
   private readonly transactionTable: TransactionTable
-  private readonly hasher: Hasher
 
   private _amount = 0
   private _time: string = dayjs().format()

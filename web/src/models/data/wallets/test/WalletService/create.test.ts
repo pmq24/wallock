@@ -15,7 +15,6 @@ describe('WalletService - create', () => {
     dexie = api.dexie
     service = new WalletService({
       walletTable: dexie.wallets,
-      hasher: api.hasher,
     })
   })
 

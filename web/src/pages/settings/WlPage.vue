@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { WlCategoryIcon, WlSyncIcon, WlWalletIcon } from 'components/icons'
+import { WlCategoryIcon, WlWalletIcon } from 'components/icons'
 import WlMainNav from 'components/WlMainNav/WlMainNav.vue'
 import WlLink from 'components/WlLink.vue'
 import type { Component } from 'vue'
@@ -39,10 +39,6 @@ const navItems: { name: PageName, label: string, icon: Component }[] = [
     name: 'wallets',
     label: 'Wallets',
     icon: WlWalletIcon
-  }, {
-    name: 'sync',
-    label: 'Sync',
-    icon: WlSyncIcon
   }
 ]
 </script>

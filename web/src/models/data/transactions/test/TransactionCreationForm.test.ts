@@ -24,18 +24,16 @@ describe('TransactionCreationForm', () => {
 
     const categoryService = new CategoryService({
       categoryTable: dexie.categories,
-      hasher: api.hasher,
     })
     await mockCategories(categoryService)
 
-    const walletService = new WalletService({ walletTable: dexie.wallets, hasher: api.hasher })
+    const walletService = new WalletService({ walletTable: dexie.wallets })
     await mockWallets(walletService)
 
     form = await TransactionCreationForm.create({
       transactionTable: dexie.transactions,
       categoryService,
       walletService,
-      hasher: api.hasher,
       onSuccess: () => {}
     })
   })

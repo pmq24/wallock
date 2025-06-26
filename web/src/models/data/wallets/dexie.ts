@@ -1,7 +1,7 @@
 import type { EntityTable } from 'dexie'
 import type Wallet from './Wallet'
 
-export const WALLET_TABLE_INDICES = 'id, &name, &hash'
+export const WALLET_TABLE_INDICES = 'id, &name'
 
 export type WalletTable = EntityTable<WalletRecord, 'id'>
 
@@ -10,5 +10,4 @@ export type WalletRecord = {
   name: string;
   currencyCode: Wallet.CurrencyCode;
   isDefault: boolean;
-  hash: string;
 }

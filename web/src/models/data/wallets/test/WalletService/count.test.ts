@@ -12,7 +12,6 @@ describe('WalletService - count', () => {
     })
     service = new WalletService({
       walletTable: api.dexie.wallets,
-      hasher: api.hasher,
     })
   })
 

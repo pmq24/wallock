@@ -1,6 +1,6 @@
 import type { EntityTable } from 'dexie'
 
-export const TRANSACTION_TABLE_INDICES = 'id, time, categoryId, walletId, hash'
+export const TRANSACTION_TABLE_INDICES = 'id, time, categoryId, walletId'
 
 export type TransactionTable = EntityTable<TransactionRecord, 'id'>
 
@@ -12,6 +12,4 @@ export type TransactionRecord = {
 
   categoryId: string;
   walletId: string;
-
-  hash: string;
 }
