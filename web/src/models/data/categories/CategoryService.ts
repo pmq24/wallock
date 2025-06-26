@@ -32,15 +32,22 @@ class CategoryService {
     )
   }
 
-  async getById (id: string) {
-    return await this.categoryTable
-      .get(id)
-      .then((record) => (record ? new Category(record) : undefined))
+  async getByType (type: Category.Type) {
+    let records
+    records = await this.getAll()
+    records = records.filter(r => r.type === type)
+    return records.map(r => new Category(r))
   }
 
   async getByNameAndType (name: string, type: Category.Type) {
     const record = await this.categoryTable.get({ name, type })
     return record ? new Category(record) : undefined
+  }
+
+  async getById (id: string) {
+    return await this.categoryTable
+      .get(id)
+      .then((record) => (record ? new Category(record) : undefined))
   }
 
   async create (data: CategoryService.CreateData) {

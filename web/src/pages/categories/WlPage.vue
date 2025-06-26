@@ -59,26 +59,18 @@
 <script lang="ts" setup>
 import Category from 'models/data/categories/Category'
 import WlBackButton from 'components/WlBackButton.vue'
-import { injectApi } from 'providers/api'
 import { useRoute } from 'vue-router'
 import { WlAddIcon } from 'components/icons'
 import { ref, watch } from 'vue'
-import { useAsyncState } from '@vueuse/core'
 import WlCategoryMenu from './WlCategoryMenu.vue'
 import WlLink from 'components/WlLink.vue'
-
-const route = useRoute()
-
-const api = injectApi()
-const categoryService = api.categoryService
-
-const { state: categories, isReady, execute: refetchCategories } = useAsyncState(
-  () => categoryService.getAll().then(categories => categories.filter(category => category.type === type.value)),
-  []
-)
+import { useCategoriesByType } from './compositions'
 
 const type = ref<Category.Type>('expense')
 
+const { categories, isReady, refetchCategories } = useCategoriesByType({ type })
+
+const route = useRoute()
 watch(() => route.query.type, async (newType) => {
   if (Category.TYPES.includes(newType as any)) {
     type.value = newType as Category.Type
