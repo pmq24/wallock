@@ -2,7 +2,7 @@
 	http_port 3000
 }
 
-http://localhost:3000 {
+{$ADDRESS} {
 	encode
 
 	handle {

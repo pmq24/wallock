@@ -3,7 +3,9 @@ services:
     container_name: walock-webserver
     build: ./webserver
     ports:
-    - "3000:3000"
+    - "443:443"
+    environment:
+      ADDRESS: wallock.xyz
   web:
     container_name: wallock-web
     build: 

@@ -4,6 +4,8 @@ services:
     build: ./webserver
     ports:
     - "3000:3000"
+    environment:
+      ADDRESS: http://localhost:3000
   web:
     container_name: wallock-web
     build: 
