@@ -1,0 +1,10 @@
+{
+	http_port 3000
+}
+
+:3000 {
+	encode
+	root * ./dist/
+	try_files {path} /index.html
+	file_server
+}

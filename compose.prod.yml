@@ -1,0 +1,11 @@
+services:
+  webserver:
+    container_name: walock-webserver
+    build: ./webserver
+    ports:
+    - "3000:3000"
+  web:
+    container_name: wallock-web
+    build: 
+      context: ./web
+      target: prod

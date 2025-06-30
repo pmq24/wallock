@@ -13,3 +13,10 @@ tasks:
     deps:
     - '~:lint'
     - '~:typecheck'
+
+  build:
+    inputs:
+    - ./**/*
+    outputs:
+    - ./dist/
+
