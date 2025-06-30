@@ -3,6 +3,9 @@ import neostandard from 'neostandard'
 import vue from 'eslint-plugin-vue'
 
 export default [
+  {
+    ignores: ['dist/']
+  },
   ...neostandard({
     files: ['./**/*.vue'],
     filesTs: ['./**/*.vue'],
