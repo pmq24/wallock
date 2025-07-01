@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 @plugin "daisyui";
@@ -7,6 +8,7 @@
   default: false;
   prefersdark: false;
   color-scheme: "light";
+	logs: true;
   --color-base-100: oklch(100% 0 0);
   --color-base-200: oklch(93% 0 0);
   --color-base-300: oklch(86% 0 0);
@@ -27,7 +29,8 @@
   --color-warning-content: oklch(0% 0 0);
   --color-error: oklch(71.76% 0.221 22.18);
   --color-error-content: oklch(0% 0 0);
-  --radius-selector: 2rem;
+	--font-sans: '"Outfit", system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"';
+	--radius-selector: 2rem;
   --radius-field: 2rem;
   --radius-box: 1rem;
   --size-selector: 0.25rem;
