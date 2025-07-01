@@ -6,8 +6,22 @@ services:
     - "3000:3000"
     environment:
       ADDRESS: http://localhost:3000
+    develop:
+      watch:
+        - action: sync
+          target: ./
+          path: ./
   web:
     container_name: wallock-web
     build: 
       context: ./web
       target: dev
+    develop:
+      watch:
+        - action: sync
+          path: ./web/
+          target: /app/
+          ignore:
+          - node_modules/
+        - action: rebuild
+          path: ./package.json

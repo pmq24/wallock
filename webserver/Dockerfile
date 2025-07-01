@@ -5,4 +5,4 @@ WORKDIR /app/
 COPY ./Caddyfile ./
 
 EXPOSE 3000/tcp
-ENTRYPOINT caddy run
+ENTRYPOINT caddy run --watch

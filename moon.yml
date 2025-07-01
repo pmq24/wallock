@@ -1,0 +1,10 @@
+$schema: https://moonrepo.dev/schemas/workspace.json
+
+tasks:
+  dev:
+    command: >
+      docker
+        compose
+          --file=compose.dev.yml
+        up
+          --watch
