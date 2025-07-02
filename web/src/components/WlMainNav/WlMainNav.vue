@@ -18,13 +18,21 @@
 import { useBreakpoints } from 'common'
 import WlMainNavMobile from './WlMainNavMobile.vue'
 import WlMainNavDesktop from './WlMainNavDesktop.vue'
-import { WlSettingIcon, WlTransactionIcon, WlTransactionIconFilled } from 'components/icons'
+import { WlHomeIcon, WlHomeIconFilled, WlSettingIcon, WlTransactionIcon, WlTransactionIconFilled } from 'components/icons'
 import WlSettingIconFilled from 'components/icons/WlSettingIconFilled.vue'
 import type { NavItem } from './common'
 
 const { activeBreakpoint } = useBreakpoints()
 
 const navItems: NavItem[] = [
+  {
+    name: 'home',
+    label: 'Home',
+    icons: {
+      active: WlHomeIconFilled,
+      inactive: WlHomeIcon
+    }
+  },
   {
     name: 'transactions',
     label: 'Transactions',

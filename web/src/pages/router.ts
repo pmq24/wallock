@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import GettingStartedCategories from './getting-started.categories/WlPage.vue'
+import Home from './home/WlPage.vue'
 import Categories from './categories/WlPage.vue'
 import CategoriesNew from './categories.new/WlPage.vue'
 import CategoriesIdEdit from './categories.id.edit/WlPage.vue'
@@ -16,6 +17,12 @@ const routes = [
     path: '/getting-started/categories',
     name: 'gettingStartedCategories',
     component: GettingStartedCategories,
+  } as const,
+
+  {
+    path: '/',
+    name: 'home',
+    component: Home
   } as const,
 
   {
