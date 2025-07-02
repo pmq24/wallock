@@ -1,9 +1,16 @@
 <template>
-  <span :class="['font-mono', amount === 0 ? false : amount > 0 ? 'text-success' : 'text-error']">{{ api.i18n.number(amount) }}</span>
+  <span
+    :class="amount === 0 ? false : amount > 0 ? 'text-success' : 'text-error'"
+    class="font-mono"
+  >
+    {{ api.i18n.number(amount) }}
+  </span>
 </template>
 
 <script setup lang="ts">
-import { injectApi } from 'providers/api'
+import { useCommon } from 'common'
+
 const { amount } = defineProps<{ amount: number }>()
-const api = injectApi()
+
+const { api } = useCommon()
 </script>

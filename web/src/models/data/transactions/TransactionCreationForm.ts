@@ -12,7 +12,6 @@ export default class TransactionCreationForm {
     transactionTable: TransactionTable;
     categoryService: CategoryService;
     walletService: WalletService;
-    onSuccess: (id: string) => void
   }) {
     const availableCategories = await params.categoryService.getAll()
     const availableWallets = await params.walletService.all()
@@ -20,7 +19,6 @@ export default class TransactionCreationForm {
       transactionTable: params.transactionTable,
       availableCategories,
       availableWallets,
-      onSuccess: params.onSuccess
     })
     return form
   }
@@ -127,7 +125,6 @@ export default class TransactionCreationForm {
 
     const id = await this.transactionTable.add(data)
     this._submitting = false
-    this.onSuccess(id)
     return createStandardSuccess(id)
   }
 
@@ -135,7 +132,6 @@ export default class TransactionCreationForm {
     availableCategories: Category[];
     availableWallets: Wallet[];
     transactionTable: TransactionTable;
-    onSuccess: (id: string) => void
   }) {
     this.transactionTable = params.transactionTable
     this.availableCategories = params.availableCategories
@@ -143,8 +139,6 @@ export default class TransactionCreationForm {
 
     this._categoryId = this.availableCategories.at(0)!.id
     this._walletId = this.availableWallets.at(0)!.id
-
-    this.onSuccess = params.onSuccess
   }
 
   readonly availableCategories: Category[]
@@ -158,5 +152,4 @@ export default class TransactionCreationForm {
   private _walletId: string = ''
 
   private _submitting = false
-  private readonly onSuccess: ((id: string) => void)
 }

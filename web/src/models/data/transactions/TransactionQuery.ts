@@ -1,10 +1,10 @@
 import dayjs from 'dayjs'
-import type { TransactionTable } from 'models/data/transactions/dexie'
+import type { TransactionRecord, TransactionTable } from 'models/data/transactions/dexie'
 import Transaction from './Transaction'
 import type CategoryService from 'models/data/categories/CategoryService'
 import type WalletService from 'models/data/wallets/WalletService'
-import { createStandardError, createStandardSuccess } from 'models/common'
 import type Wallet from 'models/data/wallets/Wallet'
+import type { Collection, InsertType } from 'dexie'
 
 class TransactionQuery {
   constructor (params: {
@@ -17,97 +17,88 @@ class TransactionQuery {
     this.walletService = params.walletService
   }
 
-  filterByPeriod (period: TransactionQuery.PeriodFilter | undefined) {
-    if (!period) {
-      this._period = undefined
-      return createStandardSuccess(undefined)
-    }
+  async query (condition: TransactionQuery.QueryCondition) {
+    let transactions
+    transactions = await this.createInitialQuery(condition)
+    transactions = this.queryByPeriod(transactions, condition)
+    const records = await transactions.toArray()
 
-    if (TransactionQuery.MONTH_PERIOD_FILTER_REGEX.test(period)) {
-      this._period = period
-      return createStandardSuccess(period)
-    }
-
-    return createStandardError('Invalid period filter')
-  }
-
-  get periodFilter () {
-    return this._period
-  }
-
-  async filterByWallet (id: string | undefined) {
-    if (!id) {
-      this._wallet = undefined
-      return createStandardSuccess(undefined)
-    }
-
-    const wallets = await this.walletService.all()
-    const wallet = wallets.find((w) => w.id === id)
-    if (wallet) {
-      this._wallet = wallet
-      return createStandardSuccess(wallet.id)
-    }
-
-    return createStandardError('Wallet not found')
-  }
-
-  get walletFilter () {
-    return this._wallet
-  }
-
-  async execute () {
-    const queryObject = {} as Record<string, any>
-    if (this._wallet) {
-      queryObject['walletId'] = this._wallet.id
-    }
-
-    let collection
-    if (Object.keys(queryObject).length > 0) {
-      collection = this.transactionTable.where(queryObject)
+    if (!records.length) {
+      return []
     } else {
-      collection = this.transactionTable.toCollection()
-    }
+      const categories = await this.categoryService.getAll()
+      const wallets = await this.walletService.all()
 
-    if (this._period) {
-      collection = collection.filter(
+      return records.map(
         (record) =>
-          this.startTimeFilter! <= record.time &&
-          record.time <= this.endTimeFilter!
+          new Transaction({
+            id: record.id,
+            amount: record.amount,
+            time: record.time,
+            category: categories.find((c) => c.id === record.categoryId)!,
+            wallet: wallets.find((w) => w.id === record.walletId)!,
+          })
       )
     }
-
-    const records = await collection.toArray()
-    const categories = await this.categoryService.getAll()
-    const wallets = await this.walletService.all()
-    return records.map(
-      (record) =>
-        new Transaction({
-          id: record.id,
-          amount: record.amount,
-          time: record.time,
-          category: categories.find((c) => c.id === record.categoryId)!,
-          wallet: wallets.find((w) => w.id === record.walletId)!,
-        })
-    )
   }
 
-  private get startTimeFilter () {
-    if (!this._period) {
-      return undefined
-    } else if (TransactionQuery.MONTH_PERIOD_FILTER_REGEX.test(this._period)) {
-      return dayjs(`${this._period}-01`).startOf('month').format()
+  private async createInitialQuery (condition: TransactionQuery.QueryCondition) {
+    const q = {} as Record<string, any>
+
+    if (condition.walletId) {
+      const wallets = await this.getAllWallets()
+      if (wallets.find(w => w.id === condition.walletId)) {
+        q.walletId = condition.walletId
+      } else {
+        console.warn(`Wallet not found: ${condition.walletId}. Falling back to all wallets.`)
+      }
+    }
+
+    if (Object.keys(q).length) {
+      return this.transactionTable.where(q)
     } else {
-      return undefined
+      return this.transactionTable.toCollection()
     }
   }
 
-  private get endTimeFilter () {
-    if (!this._period) {
-      return undefined
-    } else if (TransactionQuery.MONTH_PERIOD_FILTER_REGEX.test(this._period)) {
-      return dayjs(`${this._period}-01`).endOf('month').format()
+  private queryByPeriod (
+    transactions: Collection<TransactionRecord, string, InsertType<TransactionRecord, 'id'>>,
+    condition: TransactionQuery.QueryCondition
+  ) {
+    const period = condition.period
+
+    if (!period) {
+      return transactions
+    } else if (period === 'to-today') {
+      const to = dayjs().endOf('day').format()
+      return transactions.filter((record) => record.time <= to)
+    } else if (period === 'future') {
+      const from = dayjs().add(1, 'month').startOf('month').format()
+      return transactions.filter((record) => from <= record.time)
+    } else if (TransactionQuery.MONTH_PERIOD_FILTER_REGEX.test(period)) {
+      const today = dayjs().endOf('month').format()
+
+      const firstDayOfMonth = dayjs(`${period}-01`)
+      const from = firstDayOfMonth.startOf('month').format()
+
+      const tempTo = firstDayOfMonth.endOf('month').format()
+      const to = tempTo < today ? tempTo : today
+      return transactions.filter((record) => from <= record.time && record.time <= to)
     } else {
-      return undefined
+      console.warn(`Unknown period filter: ${period}. Falling back to the current month.`)
+      const today = dayjs()
+      const from = today.startOf('month').format()
+      const to = today.endOf('day').format()
+      return transactions.filter((record) => from <= record.time && record.time <= to)
+    }
+  }
+
+  private async getAllWallets () {
+    if (this._wallets) {
+      return this._wallets
+    } else {
+      this._wallets = await this.walletService.all()
+      return this._wallets
     }
   }
 
@@ -117,12 +108,14 @@ class TransactionQuery {
   private readonly categoryService: CategoryService
   private readonly walletService: WalletService
 
-  private _period: TransactionQuery.PeriodFilter | undefined
-  private _wallet: Wallet | undefined
+  private _wallets: Wallet[] | undefined
 }
 
 namespace TransactionQuery {
-  export type PeriodFilter = string
+  export type QueryCondition = {
+    period?: string
+    walletId?: string
+  }
 }
 
 export default TransactionQuery

@@ -1,9 +1,7 @@
 <template>
   <WlMainNav>
     <header class="navbar lg:w-xl lg:mx-auto gap-2">
-      <h1 class="flex-grow-1">
-        Transactions
-      </h1>
+      <WlPageTitle class="grow" />
 
       <button
         v-if="walletsAreReady"
@@ -11,7 +9,11 @@
         @click="() => walletSelector?.showModal()"
       >
         <WlWalletIcon />
-        {{ query.walletFilter?.name }}
+        {{
+          route.query.walletId
+            ? wallets.find(w => w.id === route.query.walletId)?.name
+            : wallets.find(w => w.isDefault)?.name
+        }}
         <WlUnfoldIcon class="size-4" />
       </button>
       <dialog
@@ -48,21 +50,7 @@
     </header>
 
     <main class="p-2 lg:w-xl lg:mx-auto flex flex-col gap-2">
-      <div
-        v-if="visibleMonthsAreReady"
-        class="overflow-x-auto"
-      >
-        <nav class="tabs">
-          <WlLink
-            v-for="month in visibleMonths"
-            :key="month"
-            :class="['tab', query.periodFilter === month && 'tab-active']"
-            :to="{ query: { ...route.query, period: month } }"
-          >
-            {{ month }}
-          </WlLink>
-        </nav>
-      </div>
+      <WlMonthTabs />
 
       <section class="card bg-base-200 shadow-sm">
         <div class="card-body">
@@ -141,31 +129,25 @@
 </template>
 
 <script lang="ts" setup>
-import dayjs from 'dayjs'
-import { injectApi } from 'providers/api'
 import WlMainNav from 'components/WlMainNav/WlMainNav.vue'
-import { useRoute, useRouter } from 'vue-router'
 import { computed, useTemplateRef, watch } from 'vue'
 import { useAsyncState } from '@vueuse/core'
 import { groupBy } from 'lodash'
 import { WlAddIcon, WlCloseIcon, WlUnfoldIcon, WlWalletIcon } from 'components/icons'
 import WlFormattedAmount from 'components/WlFormattedAmount.vue'
 import WlLink from 'components/WlLink.vue'
+import WlMonthTabs from './WlMonthTabs.vue'
+import { useCommon } from 'common'
+import { useTransactions } from './compositions'
+import WlPageTitle from './WlPageTitle.vue'
 
-const router = useRouter()
-const route = useRoute()
+const { api, route } = useCommon()
 
-const api = injectApi()
-const transactionService = api.transactionService
 const walletService = api.walletService
-
 const { state: wallets, isReady: walletsAreReady } = useAsyncState(() => walletService.all(), [])
-const { state: visibleMonths, isReady: visibleMonthsAreReady } = useAsyncState(() => transactionService.visibleMonths(), [])
-
 const walletSelector = useTemplateRef<HTMLDialogElement>('wallet-selector')
 
-const query = transactionService.createQueryObject()
-const { state: transactions, isReady: transactionsAreReady, execute: refetchTransactions } = useAsyncState(() => query.execute(), [])
+const { transactions, transactionsAreReady, refetchTransactions } = useTransactions()
 
 const overview = computed(() => {
   return [
@@ -186,25 +168,13 @@ const overview = computed(() => {
 })
 
 const transactionsGroupedByDay = computed(() => [...Object.entries(groupBy(transactions.value, (t) => t.time.slice(0, 10)))].reverse())
+
 const balancesByDay = computed(
   () => transactionsGroupedByDay.value.reduce((acc, [day, transactions]) =>
     acc.set(day, transactions.reduce((acc, t) => acc + t.netAmountFloat, 0))
   , new Map<string, number>()))
 
-watch(() => [route.query.period, route.query.walletId, walletsAreReady], async ([period, walletId]) => {
-  let result
-
-  result = query.filterByPeriod(String(period))
-  if (!result.success) {
-    const currentMonth = dayjs().format('YYYY-MM')
-    router.push({ query: { ...route.query, period: currentMonth } })
-  }
-
-  result = await query.filterByWallet(String(walletId))
-  if (!result.success) {
-    router.push({ query: { ...route.query, walletId: wallets.value.find(w => w.isDefault)?.id } })
-  }
-
+watch(() => [route.query, walletsAreReady], async () => {
   refetchTransactions()
   walletSelector.value?.close()
 }, { immediate: true })

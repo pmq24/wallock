@@ -34,7 +34,6 @@ describe('TransactionCreationForm', () => {
       transactionTable: dexie.transactions,
       categoryService,
       walletService,
-      onSuccess: () => {}
     })
   })
 
