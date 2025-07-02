@@ -1,14 +1,16 @@
 <template>
-  <WlMainNavMobile
-    v-if="activeBreakpoint === ''"
-    :nav-items
-  />
-  <WlMainNavDesktop
-    v-else
-    :nav-items
-  />
-  <div class="mb-30 lg:mb-0">
+  <div v-if="activeBreakpoint === ''">
     <slot />
+    <WlMainNavMobile :nav-items />
+  </div>
+  <div
+    v-else
+    class="flex w-screen"
+  >
+    <WlMainNavDesktop :nav-items />
+    <div class="grow mb-30 lg:mb-0">
+      <slot />
+    </div>
   </div>
 </template>
 
