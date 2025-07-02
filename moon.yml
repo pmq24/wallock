@@ -8,3 +8,9 @@ tasks:
           --file=compose.dev.yml
         up
           --watch
+  prod:
+    command: >
+      docker
+        compose
+          --file=compose.prod.yml
+        up
