@@ -1,0 +1,12 @@
+{
+	"$schema": "https://www.schemastore.org/web-manifest-combined.json",
+	"name": "Wallock",
+	"icons": [
+		{
+			"src": "favicon.svg",
+			"sizes": "192x192 512x512"
+		}
+	],
+	"display": "standalone",
+	"start_url": "/"
+}
