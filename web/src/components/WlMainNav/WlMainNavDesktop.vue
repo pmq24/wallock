@@ -1,14 +1,24 @@
 <template>
-  <nav class="flex flex-col gap-4 z-10">
+  <nav class="flex flex-col gap-4 z-10 p-2 min-h-screen">
+    <WlLink
+      :to="{ name: 'home' }"
+      class="h-8 w-fit p-1"
+    >
+      <img
+        src="/public/logo/primary.svg"
+        class="size-full"
+      >
+    </WlLink>
+
     <WlLink
       :to="{ name: 'transactionsNew' }"
-      class="btn btn-lg btn-primary m-2"
+      class="btn btn-primary w-fit"
     >
       <WlAddIcon />
       New transaction
     </WlLink>
 
-    <ul class="menu h-full w-56">
+    <ul class="menu h-full w-60">
       <li
         v-for="{name, label, icons} in navItems"
         :key="name"
