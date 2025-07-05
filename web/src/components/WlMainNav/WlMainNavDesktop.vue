@@ -10,13 +10,7 @@
       >
     </WlLink>
 
-    <WlLink
-      :to="{ name: 'transactionsNew' }"
-      class="btn btn-primary w-fit"
-    >
-      <WlAddIcon />
-      New transaction
-    </WlLink>
+    <WlNewTransactionDesktop />
 
     <ul class="menu h-full w-60">
       <li
@@ -39,9 +33,9 @@
 </template>
 
 <script setup lang="ts">
+import WlNewTransactionDesktop from './WlNewTransactionDesktop.vue'
 import { useRoute } from 'vue-router'
 import type { NavItem } from './common'
-import { WlAddIcon } from 'components/icons'
 import WlLink from 'components/WlLink.vue'
 
 const { navItems } = defineProps<{ navItems: NavItem[] }>()

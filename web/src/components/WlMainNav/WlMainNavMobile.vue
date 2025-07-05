@@ -11,19 +11,14 @@
     </WlLink>
   </nav>
 
-  <WlLink
-    :to="{name: 'transactionsNew'}"
-    class="btn btn-circle btn-primary btn-xl fixed bottom-20 right-4 z-10"
-  >
-    <WlAddIcon />
-  </WlLink>
+  <WlNewTransactionMobile class="fixed bottom-20 right-4" />
 </template>
 
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
 import type { NavItem } from './common'
-import { WlAddIcon } from 'components/icons'
 import WlLink from 'components/WlLink.vue'
+import WlNewTransactionMobile from './WlNewTransactionMobile.vue'
 
 const { navItems } = defineProps<{ navItems: NavItem[] }>()
 
