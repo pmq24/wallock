@@ -1,6 +1,6 @@
 services:
   webserver:
-    container_name: walock-webserver
+    container_name: wallock-webserver
     build: ./webserver
     ports:
     - "3000:3000"
@@ -9,8 +9,8 @@ services:
     develop:
       watch:
         - action: sync
-          target: ./
-          path: ./
+          path: ./webserver/
+          target: /app/
   web:
     container_name: wallock-web
     build: 
@@ -24,4 +24,11 @@ services:
           ignore:
           - node_modules/
         - action: rebuild
-          path: ./package.json
+          path: ./web/package.json
+  api:
+    container_name: wallock-api
+    build: ./api
+    develop:
+      watch:
+        - action: rebuild
+          path: ./api/

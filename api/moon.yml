@@ -1,0 +1,17 @@
+$schema: https://moonrepo.dev/schemas/workspace.json
+
+type: application
+language: go
+
+project:
+  name: API
+  description: The middleman server between Web and Goole Cloud Platform
+
+tasks:
+  format:
+    command: go fmt .
+
+  lint-fix:
+    command: noop
+    deps:
+    - '~:format'
