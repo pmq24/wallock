@@ -2,8 +2,9 @@ FROM node:24-alpine3.21 AS prepare
 
 RUN mkdir /app/
 WORKDIR /app/
-COPY ./ ./
+COPY ./package.json ./package-lock.json ./
 RUN npm clean-install
+COPY ./ ./
 
 
 

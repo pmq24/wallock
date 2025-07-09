@@ -11,7 +11,7 @@ func main() {
 	api := http.NewServeMux()
 
 	txnscanRouter := txnscan.NewRouter()
-	api.Handle("/transaction-scans/", http.StripPrefix("/transaction-scans", txnscanRouter))
+	api.Handle("/transaction-scans/", http.StripPrefix("/transaction-scans", txnscanRouter.Router))
 
 	r := http.NewServeMux()
 	r.Handle("/api/", http.StripPrefix("/api", api))
@@ -22,6 +22,8 @@ func main() {
 		Handler: reqLogMiddleware(r),
 	}
 	server.ListenAndServe()
+
+	txnscanRouter.Close()
 }
 
 func reqLogMiddleware(next http.Handler) http.Handler {

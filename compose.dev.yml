@@ -28,6 +28,7 @@ services:
   api:
     container_name: wallock-api
     build: ./api
+    env_file: ./api/.env
     develop:
       watch:
         - action: rebuild

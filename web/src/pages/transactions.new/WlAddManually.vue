@@ -100,15 +100,37 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive } from 'vue'
+import { reactive, watch } from 'vue'
 import WlTimeInput from 'components/WlTimeInput/WlTimeInput.vue'
 import { useCommon } from 'common'
 
-const { api, router } = useCommon()
+const { api, route, router } = useCommon()
 
 const transactionService = api.transactionService
 
 const form = reactive(await transactionService.createCreateForm())
+
+watch(() => [form, route.query], () => {
+  if (!form) return
+
+  const { amount, categoryId, walletId, time } = route.query
+
+  if (amount && !isNaN(+amount)) {
+    form.amount = +amount
+  }
+
+  if (categoryId && typeof categoryId === 'string') {
+    form.categoryId = categoryId
+  }
+
+  if (walletId && typeof walletId === 'string') {
+    form.walletId = walletId
+  }
+
+  if (time && typeof time === 'string') {
+    form.time = time
+  }
+})
 
 async function submitForm () {
   const { success } = await form.submit()
