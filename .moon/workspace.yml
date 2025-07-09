@@ -4,6 +4,7 @@ projects:
   root: .
   webserver: webserver
   web: web
+  api: api
 
 vcs:
   defaultBranch: dev

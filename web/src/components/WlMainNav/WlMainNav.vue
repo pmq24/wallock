@@ -5,14 +5,14 @@
   </div>
   <div
     v-else
-    class="flex"
+    class="flex justify-center gap-2"
   >
     <WlMainNavDesktop :nav-items />
     <!--
       Explain how min-w-0 prevent flex items from overflow:
       https://stackoverflow.com/questions/36230944/prevent-flex-items-from-overflowing-a-container
     -->
-    <div class="min-w-0 flex-auto mb-30 lg:mb-0">
+    <div class="min-w-0 max-w-3xl flex-auto mb-30 lg:mb-0">
       <slot />
     </div>
   </div>

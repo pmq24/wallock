@@ -5,7 +5,11 @@
 {$ADDRESS} {
 	encode
 
+	handle /api/* {
+		reverse_proxy http://wallock-api:3000
+	}
+
 	handle {
-		reverse_proxy http://web:3000
+		reverse_proxy http://wallock-web:3000
 	}
 }

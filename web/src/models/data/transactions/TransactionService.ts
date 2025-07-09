@@ -5,6 +5,7 @@ import TransactionQuery from './TransactionQuery'
 import type { TransactionTable } from './dexie'
 import Transaction from './Transaction'
 import { NotFoundError } from '../errors'
+import TransactionCreator from './TransactionCreator'
 
 export default class TransactionService {
   constructor (params: {
@@ -21,8 +22,14 @@ export default class TransactionService {
       categoryService: this.categoryService,
       walletService: this.walletService
     })
+
+    this.creator = new TransactionCreator({
+      categoryService: this.categoryService,
+      walletService: this.walletService
+    })
   }
 
+  readonly creator: TransactionCreator
   readonly query: TransactionQuery
 
   async findById (id: string) {

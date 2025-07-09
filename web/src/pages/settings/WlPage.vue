@@ -1,12 +1,12 @@
 <template>
   <WlMainNav>
-    <header class="navbar lg:w-xl lg:mx-auto gap-2">
+    <header class="navbar gap-2">
       <h1 class="text-xl font-bold flex-1">
         Settings
       </h1>
     </header>
 
-    <main class="p-2 lg:w-xl lg:mx-auto">
+    <main class="p-2">
       <ul class="menu menu-md w-full">
         <li
           v-for="navItem in navItems"

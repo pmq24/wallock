@@ -1,6 +1,6 @@
 <template>
   <WlMainNav>
-    <header class="navbar lg:w-xl lg:mx-auto gap-2">
+    <header class="navbar gap-2">
       <WlNavbarTitle>Home</WlNavbarTitle>
     </header>
   </WlMainNav>

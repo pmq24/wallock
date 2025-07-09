@@ -1,6 +1,6 @@
 <template>
   <WlMainNav>
-    <header class="navbar lg:w-xl lg:mx-auto gap-2">
+    <header class="navbar gap-2">
       <WlPageTitle class="grow" />
 
       <button
@@ -49,7 +49,7 @@
       </dialog>
     </header>
 
-    <main class="p-2 lg:w-xl lg:mx-auto flex flex-col gap-2">
+    <main class="p-2 flex flex-col gap-2">
       <WlMonthTabs />
 
       <section class="card bg-base-200 shadow-sm">

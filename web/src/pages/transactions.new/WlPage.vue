@@ -1,138 +1,35 @@
 <template>
-  <header class="navbar lg:w-xl lg:mx-auto">
+  <WlNavbarTitle class="navbar lg:w-xl lg:mx-auto">
     <WlLink
       :to="{ name: 'transactions' }"
       class="btn btn-ghost btn-square"
     >
       <WlBackIcon />
     </WlLink>
-    <h1 class="text-xl font-bold flex-1">
+
+    <WlNavbarTitle>
       New Transaction
-    </h1>
-  </header>
+    </WlNavbarTitle>
+  </WlNavbarTitle>
 
   <main class="p-2 lg:w-xl lg:mx-auto">
-    <form
-      id="new-transaction-form"
-      :disabled="form.submitting"
-      @submit.prevent="submitForm"
-    >
-      <fieldset class="fieldset w-full">
-        <legend class="fieldset-legend">
-          Wallet
-        </legend>
+    <WlMethodTabs />
 
-        <select
-          id="wallet-id-field"
-          v-model="form.walletId"
-          :disabled="form.submitting"
-          class="select w-full"
-        >
-          <option
-            v-for="wallet in form.availableWallets"
-            :key="wallet.id"
-            :value="wallet.id"
-          >
-            {{ wallet.name }}
-          </option>
-        </select>
-      </fieldset>
-
-      <fieldset class="fieldset w-full">
-        <legend class="fieldset-legend">
-          Amount
-        </legend>
-
-        <label
-          class="input input-lg w-full"
-          for="amount-field"
-        >
-          <span class="label">{{ form.wallet.currencyCode }}</span>
-
-          <output
-            for="amount-field wallet-id-field category-id-field"
-            name="net-amount"
-          >
-            {{ form.netAmount }}
-          </output>
-
-          <input
-            id="amount-field"
-            v-model="form.amount"
-            :disabled="form.submitting"
-            type="number"
-            inputmode="numeric"
-            class="h-0"
-          >
-        </label>
-      </fieldset>
-
-      <fieldset class="fieldset w-full">
-        <legend class="fieldset-legend">
-          Category
-        </legend>
-
-        <select
-          id="category-id-field"
-          v-model="form.categoryId"
-          :disabled="form.submitting"
-          class="select w-full"
-        >
-          <option
-            v-for="category in form.availableCategories"
-            :key="category.id"
-            :value="category.id"
-          >
-            {{ category.name }}
-          </option>
-        </select>
-      </fieldset>
-
-      <fieldset class="fieldset w-full">
-        <legend class="fieldset-legend">
-          Time
-        </legend>
-
-        <WlTimeInput
-          v-model="form.time"
-          class="w-full"
-        />
-      </fieldset>
-
-      <button
-        :disabled="form.submitting"
-        class="btn btn-primary btn-block mt-4"
-      >
-        <span
-          v-if="form.submitting"
-          class="loading loading-spinner"
-        />
-        Create
-      </button>
-    </form>
+    <WlAddManually v-show="method === 'manual'" />
+    <WlAddByScanImage v-show="method === 'scan-image'" />
   </main>
 </template>
 
 <script lang="ts" setup>
-import { injectApi } from 'providers/api'
-import { reactive } from 'vue'
-import { useRouter } from 'vue-router'
 import { WlBackIcon } from 'components/icons'
-import WlTimeInput from 'components/WlTimeInput/WlTimeInput.vue'
 import WlLink from 'components/WlLink.vue'
+import WlNavbarTitle from 'components/WlNavbarTitle.vue'
+import WlMethodTabs from './WlMethodTabs.vue'
+import WlAddManually from './WlAddManually.vue'
+import WlAddByScanImage from './WlAddByScanImage.vue'
+import { computed } from 'vue'
+import { useCommon } from 'common'
 
-const router = useRouter()
-
-const api = injectApi()
-const transactionService = api.transactionService
-
-const form = reactive(await transactionService.createCreateForm())
-
-async function submitForm () {
-  const { success } = await form.submit()
-
-  if (success) {
-    router.push({ name: 'transactions' })
-  }
-}
+const { route } = useCommon()
+const method = computed(() => route.query.method)
 </script>

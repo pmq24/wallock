@@ -19,6 +19,22 @@ class WalletService {
       .then((record) => (record ? new Wallet(record) : undefined))
   }
 
+  async getByName (name: string) {
+    const w = await this.walletTable.get({ name })
+    if (!w) {
+      return undefined
+    }
+
+    return new Wallet(w)
+  }
+
+  async getDefault () {
+    let w
+    w = await this.all()
+    w = w.find(w => w.isDefault)!
+    return new Wallet(w)
+  }
+
   async all () {
     return (await this.walletTable.toArray())
       .sort((w1, w2) => {
