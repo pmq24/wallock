@@ -5,16 +5,16 @@ import (
 	"net/http"
 )
 
-type TxnScanRouter struct {
+type Router struct {
 	Router *http.ServeMux
 	scanService *ScanService
 }
 
-func NewTxnScanRouter() *TxnScanRouter {
+func NewRouter() *Router {
 	router := http.NewServeMux()
 	scanService := NewScanService()
 
-	r := TxnScanRouter{
+	r := Router{
     Router: router,
     scanService: scanService,
   }
@@ -49,6 +49,6 @@ func NewTxnScanRouter() *TxnScanRouter {
 	return &r
 }
 
-func (r *TxnScanRouter) Close() {
+func (r *Router) Close() {
   r.scanService.Close()
 }

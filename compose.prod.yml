@@ -13,4 +13,7 @@ services:
       target: prod
   api:
     container_name: wallock-api
-    build: ./api
+    build:
+      context: ./api
+      target: prod
+    env_file: ./api/.env

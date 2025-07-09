@@ -27,7 +27,9 @@ services:
           path: ./web/package.json
   api:
     container_name: wallock-api
-    build: ./api
+    build:
+      context: ./api
+      target: dev
     env_file: ./api/.env
     develop:
       watch:
