@@ -11,3 +11,6 @@ services:
     build: 
       context: ./web
       target: prod
+  api:
+    container_name: wallock-api
+    build: ./api
