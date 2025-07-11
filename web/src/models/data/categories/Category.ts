@@ -1,12 +1,51 @@
+import { PanicError } from 'models/common'
 import type { CategoryRecord } from './dexie'
 
 class Category {
-  static TYPES = ['income', 'expense'] as const
+  static readonly TYPES = ['income', 'expense'] as const
 
-  constructor (record: CategoryRecord) {
-    this.id = record.id
-    this.name = record.name
-    this.type = record.type
+  constructor (opts: Category.ConstructorOpts) {
+    this.id = opts.id
+    this.name = opts.name
+    this.parentId = opts.parentId
+    this.parent = opts.parent
+  }
+
+  get fullName () {
+    if (this.isSystem) {
+      return this.name
+    }
+
+    const hierarchy = [this.name]
+
+    let category = this.parent
+    while (category) {
+      hierarchy.push(category.name)
+      category = category.parent
+    }
+
+    return hierarchy.reverse().join('/')
+  }
+
+  get type (): Category.Type {
+    let id
+
+    if (this.isSystem) {
+      id = this.id
+    } else {
+      let category = this.parent
+      while (category?.parent) {
+        category = category.parent
+      }
+
+      id = category?.id
+    }
+
+    switch (id) {
+      case 'income': return 'income'
+      case 'expense': return 'expense'
+      default: throw new PanicError('Root category has invalid type: ' + id)
+    }
   }
 
   get isExpense () {
@@ -17,21 +56,22 @@ class Category {
     return this.type === 'income'
   }
 
-  get shortName () {
-    return this.name.split('/').at(-1)
-  }
-
-  get parent () {
-    return this.name.split('/').slice(0, -1).join('/')
+  get isSystem () {
+    return this.parentId === ''
   }
 
   public readonly id: string
   public readonly name: string
-  public readonly type: Category.Type
+  public readonly parentId: string
+  public readonly parent?: Category
 }
 
 namespace Category {
-  export type Type = (typeof Category.TYPES)[number]
+  export type ConstructorOpts = CategoryRecord & {
+    parent: Category | undefined
+  }
+
+  export type Type = typeof Category.TYPES[number]
 }
 
 export default Category

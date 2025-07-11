@@ -1,132 +1,92 @@
 <template>
-  <header class="navbar lg:w-xl lg:mx-auto gap-2 mb-2">
-    <WlLink
-      :to="{ name: 'categories' }"
-      class="btn btn-ghost btn-square"
-    >
-      <WlCloseIcon />
-    </WlLink>
+  <header class="navbar lg:w-xl lg:mx-auto gap-2">
+    <WlBackButton to-view="categories" />
 
     <h1 class="text-xl font-bold flex-1">
       Edit Category
     </h1>
-
-    <button
-      form="category-update-form"
-      class="btn btn-primary"
-      :disabled="form?.isSubmitting"
-    >
-      Save
-    </button>
   </header>
 
   <main
-    v-if="isReady"
+    v-if="!isLoading"
     class="p-2 lg:w-xl lg:mx-auto"
   >
     <section
-      v-if="error"
+      v-if="!updateData?.updatable"
       class="alert alert-error"
     >
-      Something want wrong. Please try again later.
-    </section>
-
-    <section
-      v-if="!form"
-      class="flex flex-col justify-center items-center"
-    >
-      <h1>Category not found.</h1>
-
-      <div class="flex justify-center items-center">
-        <WlLink
-          :to="{ name: 'categories' }"
-          class="btn btn-sm btn-ghost"
-        >
-          Go back
-        </WlLink>
-      </div>
+      {{ updateData?.reason }}
     </section>
 
     <form
-      v-else
-      id="category-update-form"
-      @submit.prevent="submit"
+      v-if="updateData?.updatable"
+      @submit.prevent="() => submit()"
     >
-      <fieldset class="fieldset w-full">
-        <legend class="fieldset-legend">
-          Name
-        </legend>
+      <WlParentCategory
+        v-model="data.parentId"
+        :category-id-being-edited="id"
+        :error="errors?.messages.parentId"
+      />
 
-        <input
-          v-model="form.name"
-          :class="nameError && 'input-error'"
-          :disabled="form.isSubmitting"
-          class="input w-full"
-        >
-        <span
-          v-if="nameError"
-          class="text-error"
-        >{{ nameError }}</span>
-      </fieldset>
+      <WlNameInput
+        v-model="data.name"
+        :error="errors?.messages.name"
+      />
 
-      <fieldset class="fieldset w-full">
-        <legend class="fieldset-legend">
-          Type
-        </legend>
-
-        <select
-          v-model="form.type"
-          class="select w-full"
-          disabled
-        >
-          <option value="expense">
-            Expense
-          </option>
-          <option value="income">
-            Income
-          </option>
-        </select>
-      </fieldset>
+      <button
+        :disabled="isSubmitting"
+        class="btn btn-primary btn-block mt-4"
+      >
+        Update
+      </button>
     </form>
   </main>
 </template>
 
-<script setup lang="ts">
-import { useAsyncState } from '@vueuse/core'
-import { WlCloseIcon } from 'components/icons'
-import type CategoryUpdateForm from 'models/data/categories/CategoryUpdateForm'
+<script lang="ts" setup>
+import { computed, reactive, ref, shallowRef, watch } from 'vue'
+import WlBackButton from 'components/WlBackButton.vue'
+import { useCommon } from 'common'
+import { computedAsync, useAsyncState } from '@vueuse/core'
+import type CategoryCreator from 'models/data/categories/CategoryCreator'
 import { ValidationError } from 'models/data/errors'
-import { injectApi } from 'providers/api'
-import { computed, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import WlLink from 'components/WlLink.vue'
+import WlNameInput from './WlNameInput.vue'
+import WlParentCategory from './WlParentCategory.vue'
 
-const router = useRouter()
-const route = useRoute()
-const id = Array.isArray(route.params.id) ? (route.params.id.at(0) ?? '') : route.params.id
+const { api, router, route } = useCommon()
 
-const api = injectApi()
-const categoryService = api.categoryService
+const id = computed(() => Array.isArray(route.params.id) ? route.params.id.at(0)! : route.params.id)
 
-const { state: form, isReady, error } = useAsyncState(() => categoryService.createUpdateForm(id), undefined)
+const isLoading = shallowRef(false)
+const updateData = computedAsync(() => api.categoryService.updater.getUpdateData(id.value), null, isLoading)
 
-const errors = ref<ValidationError<CategoryUpdateForm.Data>>()
-const nameError = computed(() => errors.value?.messages.name)
+watch([updateData, isLoading], ([updateData, isLoading]) => {
+  if (isLoading) {
+    return
+  }
 
-async function submit () {
-  if (!form.value) return
+  data.name = updateData?.category?.name ?? ''
+  data.parentId = updateData?.category?.parentId ?? 'expense'
+})
 
+const data = reactive({
+  name: '',
+  parentId: 'expense'
+})
+
+const errors = ref<CategoryCreator.Error>()
+
+const { execute: submit, isLoading: isSubmitting } = useAsyncState(async () => {
   try {
-    await form.value.submit()
-
+    await api.categoryService.updater.update({ id: id.value, ...data })
+    errors.value = undefined
     router.push({ name: 'categories' })
   } catch (e: unknown) {
     if (e instanceof ValidationError) {
       errors.value = e
-      return
+    } else {
+      throw e
     }
-
-    throw e
   }
-}
+}, undefined, { immediate: false })
 </script>

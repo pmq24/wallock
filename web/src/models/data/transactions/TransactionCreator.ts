@@ -2,7 +2,6 @@ import { ValidationError } from 'models/data/errors'
 import type CategoryService from 'models/data/categories/CategoryService'
 import type WalletService from 'models/data/wallets/WalletService'
 import * as v from 'valibot'
-import Category from 'models/data/categories/Category'
 import dayjs from 'dayjs'
 
 export default class TransactionCreator {
@@ -23,13 +22,7 @@ export default class TransactionCreator {
 
     const data = await this.requestScanImage(imageBase64)
 
-    let category
-    if (data.category) {
-      category = (await this.categoryService.getByNameAndType(data.category, data.type as Category.Type))!
-    } else {
-      const categories = await this.categoryService.getByType(data.type as Category.Type)
-      category = categories.at(0)!
-    }
+    const categoryId = (await this.categoryService.getByFullName(data.category))?.id ?? ''
 
     let wallet
     if (data.wallet) {
@@ -41,7 +34,7 @@ export default class TransactionCreator {
     const time = dayjs(data.time)
     return {
       amount: data.amount,
-      categoryId: category.id,
+      categoryId,
       walletId: wallet.id,
       time: time.toISOString()
     } as const
@@ -50,7 +43,7 @@ export default class TransactionCreator {
   private async requestScanImage (imageBase64: string) {
     let categories
     categories = await this.categoryService.getAll()
-    categories = categories.map(c => c.name)
+    categories = categories.map(c => c.fullName)
 
     let wallets
     wallets = await this.walletService.all()
@@ -77,7 +70,6 @@ export default class TransactionCreator {
 
     const schema = v.object({
       amount: v.pipe(v.number(), v.minValue(1)),
-      type: v.pipe(v.string(), v.values(Category.TYPES)),
       category: v.optional(v.string(), ''),
       wallet: v.pipe(v.string()),
       time: v.pipe(v.string())
