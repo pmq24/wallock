@@ -2,6 +2,7 @@
   <ul class="menu flex-nowrap w-full">
     <WlCategoryMenuItem
       :all-categories="props.categories"
+      parent-id=""
     />
   </ul>
 </template>

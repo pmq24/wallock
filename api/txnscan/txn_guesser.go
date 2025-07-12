@@ -80,10 +80,8 @@ And here are my wallets
 I need to extract the following information:
 - The amount of the transaction, formatted as a positive number
 - The time of the transaction, in ISO format, but don't include the time zone.
-- The type of transaction, must be exactly either "expense" or "income", default to "expense" if you cannot determine it.
 - The category. Note that this field must be exactly one of the categories I listed above, or leave it empty if you are not confident.
 - The wallet. Note that this field be exactly one of the wallets I listed above, or leave it empty if you are not confident.
-- I only need to extract the first transaction in the text.
 
 Thank you for your help.`
 

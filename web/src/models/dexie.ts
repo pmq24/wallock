@@ -18,6 +18,13 @@ export function createAppDexie (opts?: DexieOptions) {
     wallets: WALLET_TABLE_INDICES,
   })
 
+  d.on('populate', async (transaction) => {
+    await transaction.table('categories').bulkAdd([
+      { id: 'income', name: 'Income', parentId: '' },
+      { id: 'expense', name: 'Expense', parentId: '' },
+    ])
+  })
+
   return d
 }
 

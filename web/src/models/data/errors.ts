@@ -1,6 +1,9 @@
 export class ValidationError<T extends object> extends Error {
-  constructor () {
+  constructor (messages?: { [field in keyof T]?: string | string[]; }) {
     super('ValidationError')
+    if (messages) {
+      this.setMultiple(messages)
+    }
   }
 
   setMultiple (errors?: { [field in keyof T]?: string | string[]; }) {

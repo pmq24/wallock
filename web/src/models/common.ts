@@ -13,3 +13,5 @@ export function createStandardError<T extends unknown> (errors: T) {
     errors,
   } as const
 }
+
+export class PanicError extends Error {}

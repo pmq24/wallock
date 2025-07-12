@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import GettingStartedCategories from './getting-started.categories/WlPage.vue'
 import Home from './home/WlPage.vue'
 import Categories from './categories/WlPage.vue'
 import CategoriesNew from './categories.new/WlPage.vue'
@@ -10,15 +9,8 @@ import TransactionsNew from './transactions.new/WlPage.vue'
 import Wallets from './wallets/WlPage.vue'
 import WalletsId from './wallets.id/WlPage.vue'
 import WalletsNew from './wallets.new/WlPage.vue'
-import { api } from 'providers/api'
 
 const routes = [
-  {
-    path: '/getting-started/categories',
-    name: 'gettingStartedCategories',
-    component: GettingStartedCategories,
-  } as const,
-
   {
     path: '/',
     name: 'home',
@@ -75,24 +67,6 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
-})
-
-router.beforeEach(async (to) => {
-  const walletsExist = (await api.walletService.count()) > 0
-  if (!walletsExist && to.name !== 'walletsNew') {
-    return { name: 'walletsNew', query: { redirectOnSuccess: 'transactions' } }
-  }
-
-  const noCategory = (await api.categoryService.getAll()).length === 0
-  if (
-    to.name !== 'walletsNew' &&
-    noCategory &&
-    to.name !== 'gettingStartedCategories'
-  ) {
-    return { name: 'gettingStartedCategories' }
-  }
-
-  return true
 })
 
 export default router

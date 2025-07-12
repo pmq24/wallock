@@ -1,101 +1,70 @@
 import { ValidationError } from 'models/data/errors'
-import Category from './Category'
 import CategoryService from './CategoryService'
-import * as v from 'valibot'
 import type { CategoryTable } from './dexie'
-import { createStandardError, createStandardSuccess } from 'models/common'
 import { nanoid } from 'nanoid'
+import * as v from 'valibot'
+import { ERRORS } from './constants'
 
 class CategoryCreator {
   constructor (params: {
     categoryService: CategoryService,
     categoryTable: CategoryTable,
+    onCreated: () => Promise<void>
   }) {
     this.categoryService = params.categoryService
     this.categoryTable = params.categoryTable
+    this.onCreateListener = params.onCreated
   }
 
-  createInitialData () {
-    return {
-      name: '',
-      type: 'expense' as Category.Type
-    }
-  }
+  async create (data: CategoryCreator.Data) {
+    await this.validate(data)
 
-  async getErrorIfInvalid (data: CategoryCreator.Data) {
-    let names
-    names = await this.categoryService.getByType(data?.type)
-    names = names.map(c => c.name)
+    data.name = data.name.trim()
 
-    const schema = v.object({
-      type: v.pipe(v.string(), v.values(Category.TYPES, "Must be either 'expense' or 'income'")),
-      name: v.pipe(v.string(), v.minLength(1, 'Required'), v.notValues(names, 'Already exists')),
+    await this.categoryTable.add({
+      id: nanoid(),
+      name: data.name,
+      parentId: data.parentId,
     })
 
-    const result = v.safeParse(schema, data)
-    if (!result.success) {
-      const error = new ValidationError<CategoryCreator.Data>()
-      const flattened = v.flatten(result.issues)
-      error.setMultiple(flattened.nested)
-      return error
-    }
+    await this.onCreateListener()
   }
 
-  async throwErrorIfInvalid (data: CategoryCreator.Data) {
-    const error = await this.getErrorIfInvalid(data)
-    if (error) throw error
-  }
+  private async validate (data: CategoryCreator.Data) {
+    const allCategories = await this.categoryService.getAll()
+    const ids = allCategories.map(c => c.id)
+    const siblingNames = allCategories.filter(c => c.parentId === data.parentId).map(c => c.name)
 
-  async submit (data: CategoryCreator.Data) {
-    const error = await this.getErrorIfInvalid(data)
+    const schema = v.object({
+      parentId: v.pipe(
+        v.string(),
+        v.values(ids, ERRORS.PARENT_DOESNT_EXIST)
+      ),
+      name: v.pipe(
+        v.string(),
+        v.minLength(1, ERRORS.NAME_IS_REQUIRED),
+        v.excludes('/', ERRORS.NAME_CANNOT_CONTAIN_SLASHES),
+        v.notValues(siblingNames, ERRORS.NAME_ALREADY_EXISTS)
+      )
+    })
 
-    if (error) {
-      return createStandardError(error)
+    const validation = v.safeParse(schema, data)
+    if (validation.success) {
+      return
     }
 
-    await this.createParentsIfNeeded(data)
-
-    const record = {
-      id: nanoid(),
-      name: CategoryService.standardizeName(data.name),
-      type: data.type
-    }
-    await this.categoryTable.add(record)
-
-    return createStandardSuccess(undefined)
-  }
-
-  async submitOrThrow (data: CategoryCreator.Data) {
-    const result = await this.submit(data)
-
-    if (result.success) {
-      return result.data
-    } else {
-      throw result.errors
-    }
-  }
-
-  private async createParentsIfNeeded (data: CategoryCreator.Data) {
-    const name = CategoryService.standardizeName(data.name)
-    const groups = name.split('/')
-    for (let i = 1; i < groups.length; i++) {
-      const name = groups.slice(0, i).join('/')
-
-      const category = await this.categoryService.getByNameAndType(name, data.type)
-      if (category) continue
-
-      await this.submitOrThrow({ type: data.type, name })
-    }
+    throw new ValidationError(v.flatten(validation.issues).nested)
   }
 
   private categoryService: CategoryService
   private categoryTable: CategoryTable
+  private onCreateListener: () => Promise<void>
 }
 
 namespace CategoryCreator {
   export type Data = {
-    type: Category.Type;
     name: string;
+    parentId: string;
   }
   export type Error = ValidationError<Data>
 }

@@ -4,28 +4,15 @@
       <div class="navbar gap-2">
         <WlBackButton to-view="settings" />
 
-        <h1 class="text-xl font-bold flex-1">
+        <WlNavbarTitle>
           Categories
-        </h1>
+        </WlNavbarTitle>
       </div>
-
-      <nav class="tabs p-2">
-        <WlLink
-          v-for="navItemType in ['expense', 'income']"
-          :key="navItemType"
-          :to="{ query: { type: navItemType } }"
-          :class="type === navItemType && 'tab-active'"
-          class="tab"
-          replace
-        >
-          {{ navItemType.at(0)!.toUpperCase() + navItemType.slice(1) }}
-        </WlLink>
-      </nav>
     </header>
 
     <main class="p-2 lg:w-xl lg:mx-auto flex-auto overflow-y-auto">
       <WlCategoryMenu
-        v-if="isReady && categories.length > 0"
+        v-if="!isLoading && categories.length > 0"
         :categories
       />
 
@@ -33,21 +20,11 @@
         v-else
         class="flex flex-col justify-center items-center gap-2 h-25"
       >
-        <span>There are no categories</span>
-        <WlLink
-          :to="{name: 'categoriesNew'}"
-          class="btn btn-ghost"
-        >
-          <WlAddIcon />
-          New category
-        </WlLink>
+        There are no categories
       </div>
 
       <WlLink
-        :to="{
-          name: 'categoriesNew',
-          query: { type }
-        }"
+        :to="{ name: 'categoriesNew' }"
         class="btn btn-primary btn-block mt-2"
       >
         New category
@@ -57,29 +34,16 @@
 </template>
 
 <script lang="ts" setup>
-import Category from 'models/data/categories/Category'
 import WlBackButton from 'components/WlBackButton.vue'
-import { useRoute } from 'vue-router'
-import { WlAddIcon } from 'components/icons'
-import { ref, watch } from 'vue'
 import WlCategoryMenu from './WlCategoryMenu.vue'
 import WlLink from 'components/WlLink.vue'
-import { useCategoriesByType } from './compositions'
+import { useAsyncState } from '@vueuse/core'
+import { useCommon } from 'common'
+import WlNavbarTitle from 'components/WlNavbarTitle.vue'
 
-const route = useRoute()
+const { api } = useCommon()
 
-const type = ref<Category.Type>('expense')
-
-const { categories, isReady, refetchCategories } = useCategoriesByType({ type })
-
-watch(() => route.query.type, async (newType) => {
-  if (Category.TYPES.includes(newType as any)) {
-    type.value = newType as Category.Type
-  } else {
-    window.history.replaceState({}, '', '/categories?type=expense')
-    type.value = 'expense'
-  }
-
-  refetchCategories()
-}, { immediate: true })
+const { state: categories, isLoading } = useAsyncState(async () => {
+  return await api.categoryService.getAll()
+}, [])
 </script>

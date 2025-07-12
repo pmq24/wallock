@@ -4,13 +4,23 @@
       v-for="category in categories"
       :key="category.id"
     >
-      <WlLink :to="{ name: 'categoriesIdEdit', params: { id: category.id } }">
-        {{ category.shortName }}
+      <div
+        v-if="category.isSystem"
+        class="tooltip tooltip-bottom"
+        data-tip="This is a system category and cannot be edited"
+      >
+        {{ category.name }}
+      </div>
+      <WlLink
+        v-else
+        :to="{ name: 'categoriesIdEdit', params: { id: category.id } }"
+      >
+        {{ category.name }}
       </WlLink>
 
       <WlCategoryMenuItem
         :all-categories
-        :parent="parent ? [parent, category.shortName].join('/') : category.shortName"
+        :parent-id="category.id"
       />
     </li>
   </ul>
@@ -21,10 +31,10 @@ import type Category from 'models/data/categories/Category'
 import { computed } from 'vue'
 import WlLink from 'components/WlLink.vue'
 
-const { allCategories, parent } = defineProps<{
+const { allCategories, parentId } = defineProps<{
   allCategories: Category[]
-  parent?: string
+  parentId: string
 }>()
 
-const categories = computed(() => allCategories.filter(category => category.parent === (parent ?? '')))
+const categories = computed(() => allCategories.filter(category => category.parentId === parentId))
 </script>
