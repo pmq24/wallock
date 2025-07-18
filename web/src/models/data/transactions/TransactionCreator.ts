@@ -4,7 +4,7 @@ import type WalletService from 'models/data/wallets/WalletService'
 import * as v from 'valibot'
 import dayjs from 'dayjs'
 
-export default class TransactionCreator {
+class TransactionCreator {
   constructor (params: {
     categoryService: CategoryService,
     walletService: WalletService
@@ -13,7 +13,7 @@ export default class TransactionCreator {
     this.walletService = params.walletService
   }
 
-  async scanImage (imageBase64: string) {
+  async scanImage (imageBase64: string): Promise<TransactionCreator.ScanResult> {
     if (!imageBase64) {
       const e = new ValidationError<{ imageBase64: string }>()
       e.set('imageBase64', 'Required')
@@ -86,3 +86,14 @@ export default class TransactionCreator {
   private readonly categoryService: CategoryService
   private readonly walletService: WalletService
 }
+
+namespace TransactionCreator {
+  export type ScanResult = {
+    amount: number;
+    categoryId: string;
+    walletId: string;
+    time: string;
+  }
+}
+
+export default TransactionCreator
