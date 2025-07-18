@@ -1,7 +1,6 @@
 import dayjs from 'dayjs'
 import type Category from 'models/data/categories/Category'
 import type CategoryService from 'models/data/categories/CategoryService'
-import { createStandardSuccess } from 'models/common'
 import type { TransactionTable } from 'models/data/transactions/dexie'
 import type Wallet from 'models/data/wallets/Wallet'
 import type WalletService from 'models/data/wallets/WalletService'
@@ -13,143 +12,213 @@ export default class TransactionCreationForm {
     categoryService: CategoryService;
     walletService: WalletService;
   }) {
-    const availableCategories = await params.categoryService.getAll()
-    const availableWallets = await params.walletService.all()
+    const categories = await params.categoryService.getAll()
+    const wallets = await params.walletService.all()
+
     const form = new TransactionCreationForm({
       transactionTable: params.transactionTable,
-      availableCategories,
-      availableWallets,
+      categories,
+      wallets,
     })
     return form
   }
 
-  set amount (value: number) {
+  getCategories () {
+    return this.categories
+  }
+
+  getWallets () {
+    return this.wallets
+  }
+
+  setAmount (value: number) {
+    this.amountTouched = true
     const parsed = parseInt(value.toString().replace('.', ''))
 
-    if (isNaN(parsed)) {
-      this._amount = 0
-      return
+    if (isNaN(parsed) || parsed < 0) {
+      this.amount = 0
+      this.amountError = 'Amount must be positive'
+    } else {
+      this.amountError = ''
+      this.amount = parsed
     }
 
-    if (parsed < 0) {
-      this._amount = 0
-      return
+    return this
+  }
+
+  getAmount () {
+    return this.amount
+  }
+
+  getAmountError () {
+    if (this.amountTouched) {
+      return this.amountError
+    } else {
+      return ''
     }
-
-    this._amount = parsed
   }
 
-  get amount () {
-    return this._amount
-  }
+  getNetAmount () {
+    const currencyDivisor = this.wallet?.currencyDivisor ?? 1
+    const netAmount = this.amount / currencyDivisor
+    const formatted = netAmount.toFixed(this.wallet?.currency.decimalDigits ?? 0)
 
-  get netAmount () {
-    const netAmount = this.amount / this.wallet.currencyDivisor
-    const formatted = netAmount.toFixed(this.wallet.currency.decimalDigits)
-
-    if (this.category.type === 'expense') {
+    if (this.category?.type === 'expense') {
       return '-' + formatted
     } else {
       return formatted
     }
   }
 
-  set time (value: string) {
+  setTime (value: string) {
     const parsed = dayjs(value)
 
     if (!parsed.isValid()) {
-      this._time = dayjs().format()
-      return
+      this.time = dayjs().format()
+    } else {
+      this.time = parsed.format()
     }
 
-    this._time = parsed.format()
+    return this
   }
 
-  get time () {
-    return this._time
+  getTime () {
+    return this.time
   }
 
-  set categoryId (value: string) {
-    const selectedCategory = this.availableCategories.find(
-      (c) => c.id === value
-    )
+  setCategoryId (value: string) {
+    this.categoryTouched = true
+    this.category = this.categories.find((c) => c.id === value)
 
-    if (!selectedCategory) {
-      this._categoryId = this.availableCategories.at(0)!.id
-      return
+    if (this.category) {
+      this.categoryError = ''
+    } else {
+      this.categoryError = 'Category is required'
     }
 
-    this._categoryId = selectedCategory.id
+    return this
   }
 
-  get categoryId () {
-    return this._categoryId
+  getCategoryId () {
+    return this.category?.id
   }
 
-  get category () {
-    return this.availableCategories.find((c) => c.id === this.categoryId)!
+  getCategory () {
+    return this.category
   }
 
-  set walletId (value: string) {
-    const selectedWallet = this.availableWallets.find((w) => w.id === value)
+  getCategoryError () {
+    if (this.categoryTouched) {
+      return this.categoryError
+    } else {
+      return ''
+    }
+  }
 
-    if (!selectedWallet) {
-      this._walletId = this.availableWallets.at(0)!.id
-      return
+  setWalletId (value: string) {
+    this.walletTouched = true
+    this.wallet = this.wallets.find(w => w.id === value)
+
+    if (this.wallet) {
+      this.walletError = ''
+    } else {
+      this.walletError = 'Wallet is required'
     }
 
-    this._walletId = selectedWallet.id
+    return this
   }
 
-  get walletId () {
-    return this._walletId
+  getWalletId () {
+    return this.wallet?.id
   }
 
-  get wallet () {
-    return this.availableWallets.find((w) => w.id === this.walletId)!
+  getWallet () {
+    return this.wallet
   }
 
-  get submitting () {
-    return this._submitting
+  getWalletError () {
+    if (this.walletTouched) {
+      return this.walletError
+    } else {
+      return ''
+    }
   }
 
-  async submit () {
-    this._submitting = true
-    const data = {
-      id: nanoid(),
-      amount: this.amount,
-      categoryId: this.categoryId,
-      time: this._time,
-      walletId: this.walletId,
+  markAsTouched () {
+    this.amountTouched = true
+    this.categoryTouched = true
+    this.walletTouched = true
+  }
+
+  isValid () {
+    this.markAsTouched()
+    return !this.getAmountError() && !this.getCategoryError() && !this.getWalletError()
+  }
+
+  getIsCreate () {
+    return this.isCreated
+  }
+
+  async create () {
+    if (this.isValid()) {
+      const data = {
+        id: nanoid(),
+        amount: this.amount,
+        categoryId: this.category!.id,
+        time: this.time,
+        walletId: this.wallet!.id,
+      }
+
+      await this.transactionTable.add(data)
+
+      this.isCreated = true
     }
 
-    const id = await this.transactionTable.add(data)
-    this._submitting = false
-    return createStandardSuccess(id)
+    return this
   }
 
   private constructor (params: {
-    availableCategories: Category[];
-    availableWallets: Wallet[];
+    categories: Category[];
+    wallets: Wallet[];
     transactionTable: TransactionTable;
   }) {
     this.transactionTable = params.transactionTable
-    this.availableCategories = params.availableCategories
-    this.availableWallets = params.availableWallets
+    this.categories = params.categories
+    this.wallets = params.wallets
 
-    this._categoryId = this.availableCategories.at(0)!.id
-    this._walletId = this.availableWallets.at(0)!.id
+    this.amountTouched = false
+    this.categoryTouched = false
+    this.walletTouched = false
+
+    this.amount = 0
+    this.wallet = this.wallets.at(0)
+    this.category = this.categories.find(c => c.fullName === 'Expense')
+
+    this.amountError = 'Amount must be positive'
+    this.walletError = this.wallet ? '' : 'Wallet is required'
+    this.categoryError = this.category ? '' : 'Category is required'
+
+    this.isCreated = false
   }
-
-  readonly availableCategories: Category[]
-  readonly availableWallets: Wallet[]
 
   private readonly transactionTable: TransactionTable
 
-  private _amount = 0
-  private _time: string = dayjs().format()
-  private _categoryId: string = ''
-  private _walletId: string = ''
+  readonly categories: Category[]
+  readonly wallets: Wallet[]
 
-  private _submitting = false
+  private amount: number
+  private amountTouched: boolean
+  private amountError: string
+
+  private time = dayjs().format()
+
+  private category: Category | undefined
+  private categoryTouched: boolean
+  private categoryError: string
+
+  private wallet: Wallet | undefined
+  private walletTouched: boolean
+  private walletError: string
+
+  private isCreated: boolean
 }
