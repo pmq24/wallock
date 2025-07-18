@@ -1,5 +1,5 @@
 <template>
-  <nav class="flex flex-col gap-4 z-10 p-2 min-h-screen">
+  <nav class="flex flex-col gap-4 z-10 p-2">
     <WlLink
       :to="{ name: 'home' }"
       class="h-8 w-fit p-1"
@@ -10,7 +10,13 @@
       >
     </WlLink>
 
-    <WlNewTransactionDesktop />
+    <WlLink
+      :to="{ name: 'transactionsNew' }"
+      class="btn btn-primary w-fit"
+    >
+      <WlAddIcon />
+      New Transaction
+    </WlLink>
 
     <ul class="menu h-full w-60">
       <li
@@ -33,10 +39,10 @@
 </template>
 
 <script setup lang="ts">
-import WlNewTransactionDesktop from './WlNewTransactionDesktop.vue'
 import { useRoute } from 'vue-router'
 import type { NavItem } from './common'
 import WlLink from 'components/WlLink.vue'
+import { WlAddIcon } from 'components/icons'
 
 const { navItems } = defineProps<{ navItems: NavItem[] }>()
 
