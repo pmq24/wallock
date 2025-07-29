@@ -8,5 +8,7 @@ project:
 
 tasks:
   dev:
-    command: caddy run --watch
-    local: true
+    command: echo "Run ./dev.sh instead" && exit 1
+  
+  lint:
+    command: caddy fmt --overwrite

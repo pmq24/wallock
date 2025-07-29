@@ -1,8 +1,10 @@
 {
-	http_port 3000
+	log {
+		format console
+	}
 }
 
-{$ADDRESS} {
+{$HOST} {
 	encode
 
 	handle /api/* {

@@ -1,7 +1,6 @@
 $schema: https://moonrepo.dev/schemas/workspace.json
 
 projects:
-  root: .
   webserver: webserver
   web: web
   api: api

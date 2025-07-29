@@ -4,5 +4,5 @@ RUN mkdir /app/
 WORKDIR /app/
 COPY ./Caddyfile ./
 
-EXPOSE 3000/tcp
+EXPOSE 443/tcp
 ENTRYPOINT caddy run --watch

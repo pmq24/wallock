@@ -3,9 +3,9 @@ services:
     container_name: wallock-webserver
     build: ./webserver
     ports:
-    - "3000:3000"
+    - 443:443
     environment:
-      ADDRESS: http://localhost:3000
+      HOST: localhost
     develop:
       watch:
         - action: sync
