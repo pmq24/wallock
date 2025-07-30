@@ -1,0 +1,4 @@
+secrets:
+- ./api/secrets/*
+- ./api/.env.prod
+- .env.prod

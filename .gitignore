@@ -3,5 +3,6 @@
 .moon/docker
 
 .env
+.env.prod
 
 kpkey.*
