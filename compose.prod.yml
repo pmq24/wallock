@@ -1,19 +1,26 @@
 services:
   webserver:
+    extends:
+      file: compose.yml
+      service: webserver
     container_name: walock-webserver
-    build: ./webserver
-    ports:
-    - "443:443"
     environment:
-      ADDRESS: wallock.xyz
+      HOST: wallock.xyz
+    develop: null
   web:
-    container_name: wallock-web
+    extends:
+      file: compose.yml
+      service: web
     build: 
       context: ./web
       target: prod
+    develop: null
   api:
-    container_name: wallock-api
+    extends:
+      file: compose.yml
+      service: api
     build:
       context: ./api
       target: prod
     env_file: ./api/.env
+    develop: null

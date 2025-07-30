@@ -1,0 +1,5 @@
+secrets:
+- ./api/secrets/*
+- ./api/.env
+- ./web/.env
+- .env

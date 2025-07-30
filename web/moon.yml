@@ -8,6 +8,9 @@ project:
   description: The user-facing web application
 
 tasks:
+  dev:
+    command: echo "Run ./dev.sh instead" && exit 1
+
   pre-commit:
     command: noop
     deps:

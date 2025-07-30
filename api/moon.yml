@@ -8,6 +8,9 @@ project:
   description: The middleman server between Web and Goole Cloud Platform
 
 tasks:
+  dev:
+    command: echo "Run ./dev.sh instead" && exit 1
+
   format:
     command: go fmt .
 
