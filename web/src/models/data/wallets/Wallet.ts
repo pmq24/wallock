@@ -1,38 +1,25 @@
-import CURRENCIES from './consts/CURRENCIES'
-import type { WalletRecord } from './dexie'
+import * as Currencies from './currencies'
 
-class Wallet {
-  static CURRENCIES = CURRENCIES
-  static CURRENCY_CODES = CURRENCIES.map((c) => c.code)
+export default class Wallet {
+  constructor (opts: WalletCreationOpts) {
+    this.id = opts.id
+    this.name = opts.name
 
-  constructor (params: WalletRecord) {
-    this.id = params.id
-    this.name = params.name
-    this.currencyCode = params.currencyCode
-    this.isDefault = params.isDefault
+		const currency = Currencies.fromCode(opts.currencyCode)
+		if (!currency) {
+			throw new Error(`Unsupported currency code: ${opts.currencyCode}`)
+		}
+		this.currency = currency
   }
 
-  get currency (): Wallet.Currency {
-    return (this.cachedCurrency ??= CURRENCIES.find(
-      (currency) => currency.code === this.currencyCode
-    ))!
-  }
-
-  get currencyDivisor () {
-    return 10 ** this.currency.decimalDigits
-  }
-
-  public readonly id: string
-  public readonly name: string
-  public readonly currencyCode: Wallet.CurrencyCode
-  public readonly isDefault: boolean
-
-  private cachedCurrency: Wallet.Currency | undefined = undefined
+  readonly id: string
+  readonly name: string
+  readonly currency: Currencies.Currency
 }
 
-namespace Wallet {
-  export type Currency = (typeof CURRENCIES)[number]
-  export type CurrencyCode = Currency['code']
+type WalletCreationOpts = {
+	id: string;
+	name: string;
+	currencyCode: Currencies.Code;
 }
 
-export default Wallet

@@ -1,3 +1,4 @@
+// https://gist.github.com/ksafranski/2973986
 const currenciesData = {
   JOD: {
     symbol: 'JD',
@@ -1019,3 +1020,4 @@ export function fromCode(code: Code): Currency | undefined {
 	}
 }
 
+export const CODES = Object.keys(currenciesData);

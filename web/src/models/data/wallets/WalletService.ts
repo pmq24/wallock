@@ -1,11 +1,12 @@
+import * as AppDexie from '@/models/dexie'
+import * as Currencies from "./currencies"
 import * as v from 'valibot'
 import { createStandardError, createStandardSuccess } from 'models/common'
 import { nanoid } from 'nanoid'
 import Wallet from './Wallet'
-import type { WalletTable } from './dexie'
 
-class WalletService {
-  constructor (params: { walletTable: WalletTable }) {
+export class WalletService {
+  constructor (params: { walletTable: AppDexie.WalletTable }) {
     this.walletTable = params.walletTable
   }
 
@@ -101,22 +102,10 @@ class WalletService {
       ),
       currencyCode: v.pipe(
         v.string(),
-        v.values(Wallet.CURRENCY_CODES, 'Invalid currency code')
+        v.values(Currencies.CODES, 'Invalid currency code')
       ),
     })
   }
 
-  private readonly walletTable: WalletTable
+  private readonly walletTable: AppDexie.WalletTable
 }
-
-namespace WalletService {
-  export type CreateData = {
-    name: string;
-    currencyCode: Wallet.CurrencyCode;
-  }
-  export type CreateErrors = v.FlatErrors<
-    Awaited<ReturnType<WalletService['getSchema']>>
-  >
-}
-
-export default WalletService
