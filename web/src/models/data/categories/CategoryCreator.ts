@@ -13,7 +13,6 @@ class CategoryCreator {
   }) {
     this.categoryService = params.categoryService
     this.categoryTable = params.categoryTable
-    this.onCreateListener = params.onCreated
   }
 
   async create (data: CategoryCreator.Data) {
@@ -26,8 +25,6 @@ class CategoryCreator {
       name: data.name,
       parentId: data.parentId,
     })
-
-    await this.onCreateListener()
   }
 
   private async validate (data: CategoryCreator.Data) {
@@ -58,7 +55,6 @@ class CategoryCreator {
 
   private categoryService: CategoryService
   private categoryTable: CategoryTable
-  private onCreateListener: () => Promise<void>
 }
 
 namespace CategoryCreator {

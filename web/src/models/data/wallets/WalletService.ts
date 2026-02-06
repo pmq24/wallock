@@ -62,13 +62,7 @@ class WalletService {
     }
     const id = await this.walletTable.add(record)
 
-    this.onChangeListeners.forEach((listener) => listener())
-
     return createStandardSuccess(id)
-  }
-
-  addOnChangeListener (listener: WalletService.OnChangeListener) {
-    this.onChangeListeners.push(listener)
   }
 
   async makeDefault (id: string) {
@@ -91,7 +85,6 @@ class WalletService {
       })
     }
     await this.walletTable.update(id, { isDefault: true })
-    this.onChangeListeners.forEach((listener) => listener())
     return createStandardSuccess(await this.id(id))
   }
 
@@ -114,8 +107,6 @@ class WalletService {
   }
 
   private readonly walletTable: WalletTable
-
-  private onChangeListeners: WalletService.OnChangeListener[] = []
 }
 
 namespace WalletService {
@@ -126,7 +117,6 @@ namespace WalletService {
   export type CreateErrors = v.FlatErrors<
     Awaited<ReturnType<WalletService['getSchema']>>
   >
-  export type OnChangeListener = () => void
 }
 
 export default WalletService

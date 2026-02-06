@@ -10,7 +10,6 @@ class CategoryUpdater {
   }) {
     this.categoryService = params.categoryService
     this.categoryTable = params.categoryTable
-    this.onUpdateListener = params.onUpdated
   }
 
   async getUpdateData (id?: string) {
@@ -48,8 +47,6 @@ class CategoryUpdater {
       name: data.name,
       parentId: data.parentId,
     })
-
-    await this.onUpdateListener()
   }
 
   async validate (data: CategoryUpdater.Data) {
@@ -112,7 +109,6 @@ class CategoryUpdater {
 
   private categoryService: CategoryService
   private categoryTable: CategoryTable
-  private onUpdateListener: () => Promise<void>
 }
 
 namespace CategoryUpdater {
