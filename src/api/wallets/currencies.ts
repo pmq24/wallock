@@ -1002,7 +1002,7 @@ const data = Object.freeze({
 })
 
 export type Code = string
-export const CODES: Code[] = Object.keys(data)
+export const CODES: Code[] = Object.keys(data).sort()
 
 export type Currency = Readonly<{
   code: Code
@@ -1013,7 +1013,7 @@ export type Currency = Readonly<{
 export function fromCode(code: Code): Currency | undefined {
   if (code in data) {
     const typedCode = code as Code
-    const currencyData = data[typedCode as any as keyof typeof data]
+    const currencyData = data[typedCode as keyof typeof data]
 
     return Object.freeze({
       code: currencyData.code,
@@ -1021,7 +1021,6 @@ export function fromCode(code: Code): Currency | undefined {
       minorUnit: 10 ** -currencyData.decimal_digits,
     })
   } else {
-    return undefined;
+    return undefined
   }
 }
-
