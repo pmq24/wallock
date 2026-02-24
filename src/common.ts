@@ -1,4 +1,4 @@
-import { useI18n } from 'vue-i18n'
+import { useTranslation } from 'i18next-vue'
 import * as ApiProvider from '@/api-provider'
 
 export function useCommon() {
@@ -8,13 +8,13 @@ export function useCommon() {
 }
 
 export function useScopedTranslate(scope: string) {
-  const i18nInstance = useI18n()
+  const { t } = useTranslation()
 
   return function (key: string, count?: number) {
     if (count !== undefined) {
-      return i18nInstance.t(`${scope}.${key}`, count)
+      return t(`${scope}.${key}`, { count })
     } else {
-      return i18nInstance.t(`${scope}.${key}`)
+      return t(`${scope}.${key}`)
     }
   }
 }

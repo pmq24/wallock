@@ -2,8 +2,9 @@ import { createApp } from 'vue'
 import App from './app.vue'
 import router from './pages'
 
-import { createI18n } from 'vue-i18n'
-import en from '@/i18n/en'
+import i18n from '@/i18n'
+import i18nextVue from 'i18next-vue'
+
 import * as v from 'valibot'
 import '@/i18n/valibot-en'
 v.setGlobalConfig({ lang: 'en' })
@@ -11,19 +12,7 @@ v.setGlobalConfig({ lang: 'en' })
 import * as ApiProvider from '@/api-provider'
 
 const app = createApp(App)
-
 app.use(router)
-
-const i18n = createI18n({
-  locale: 'en',
-  fallbackLocale: 'en',
-  messages: {
-    en,
-  },
-})
-
-app.use(i18n)
-
+app.use(i18nextVue, { i18next: i18n })
 app.provide(ApiProvider.KEY, ApiProvider.singleton)
-
 app.mount('#app')

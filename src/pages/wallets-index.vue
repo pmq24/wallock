@@ -1,7 +1,7 @@
 <template>
-  <Ui.AppHeader :title="st('modelName', 2)" left="back">
+  <Ui.AppHeader :title="st('name', 2)" left="back">
     <template #right>
-      <NewWalletDialog />
+      <NewWalletDialog @created="reload()" />
     </template>
   </Ui.AppHeader>
 
@@ -10,7 +10,10 @@
       <li v-for="wallet in wallets" :key="wallet.id" class="list-row">
         <a>
           <div class="flex items-center gap-2">
-            <span>{{ wallet.name }}</span>
+            <div>
+              <div>{{ wallet.name }}</div>
+              <div class="text-xs">{{ wallet.currency.code }}</div>
+            </div>
           </div>
         </a>
       </li>
@@ -24,10 +27,12 @@ import * as Ui from '@/ui'
 import { useAsyncState } from '@vueuse/core'
 import NewWalletDialog from './wallets.index/new-wallet-dialog.vue'
 
-const { api } = Common.useCommon()
+const {
+  api: {
+    wallets: { fetcher: walletFetcher },
+  },
+} = Common.useCommon()
 const st = Common.useScopedTranslate('wallets')
 
-const walletRepo = api.wallets
-
-const { state: wallets } = useAsyncState(() => walletRepo.fetch(), undefined)
+const { state: wallets, execute: reload } = useAsyncState(() => walletFetcher.all(), undefined)
 </script>

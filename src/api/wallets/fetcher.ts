@@ -16,5 +16,16 @@ export default class Fetcher {
     return new Wallet(record)
   }
 
+  async allNames() {
+    return (await this.walletTable.orderBy('name').uniqueKeys()) as string[]
+  }
+
+  async all() {
+    let records
+    records = await this.walletTable.toArray()
+    records = records.map((record) => new Wallet(record))
+    return records
+  }
+
   private walletTable: Db.WalletTable
 }

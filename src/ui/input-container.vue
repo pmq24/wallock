@@ -1,9 +1,9 @@
 <template>
-  <div class="flex flex-col gap-1">
-    <label class="label" :for="props.labelFor">{{ props.label }}</label>
+  <fieldset class="fieldset">
+    <legend class="fieldset-legend">{{ props.label }}</legend>
     <slot />
-    <span v-if="props.error" class="text-error text-sm">{{ props.error }}</span>
-  </div>
+    <p v-if="props.error" class="label text-error">{{ props.error }}</p>
+  </fieldset>
 </template>
 
 <script setup lang="ts">

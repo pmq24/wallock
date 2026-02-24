@@ -18,11 +18,12 @@
     "@tailwindcss/vite": "^4.1.18",
     "@vueuse/core": "^14.2.1",
     "dexie": "^4.3.0",
+    "i18next": "^25.8.9",
+    "i18next-vue": "^5.4.0",
     "primeicons": "^7.0.0",
     "tailwindcss": "^4.1.18",
     "valibot": "^1.2.0",
     "vue": "^3.5.28",
-    "vue-i18n": "^11.2.8",
     "vue-router": "^4.6.4"
   },
   "devDependencies": {

@@ -3,38 +3,38 @@
     <i class="pi pi-plus" />
   </button>
 
-  <dialog ref="new-wallet-dialog" closedby="any" class="modal">
-    <form @submit.prevent="save()" class="modal-box">
+  <dialog ref="new-wallet-dialog" class="modal modal-bottom sm:modal-middle">
+    <form @submit.prevent="save()" class="modal-box sm:h-auto">
       <header class="mb-6">
         <h2>{{ st('newForm.title') }}</h2>
       </header>
 
-      <div class="flex flex-col gap-6">
+      <div class="flex flex-col gap-2">
         <Ui.InputContainer
-          :label="st('name')"
+          :label="st('props.name.label')"
           label-for="name"
           :error="result?.error?.nested?.name?.at(0)"
         >
           <input
-            v-model="walletCreator.name"
-            :placeholder="st('newForm.name.placeholder')"
+            v-model="data.name"
+            :placeholder="st('props.name.placeholder')"
             name="name"
-            id="name"
             autocomplete="off"
             class="input w-full"
+            :class="{ 'input-error': result?.error?.nested?.name?.at(0) }"
           />
         </Ui.InputContainer>
 
         <Ui.InputContainer
-          :label="st('currency')"
+          :label="st('props.currency.label')"
           label-for="currencyCode"
           :error="result?.error?.nested?.currencyCode?.at(0)"
         >
           <select
-            v-model="walletCreator.currencyCode"
+            v-model="data.currencyCode"
             name="currencyCode"
-            id="currencyCode"
             class="select w-full"
+            :class="{ 'select-error': result?.error?.nested?.currencyCode?.at(0) }"
           >
             <option v-for="code in Currencies.CODES" :key="code" :value="code">
               {{ code }} ({{ Currencies.fromCode(code)!.symbol }})
@@ -59,19 +59,36 @@ import { ref, useTemplateRef } from 'vue'
 import * as Common from '@/common'
 import * as Currencies from '@/api/wallets/currencies'
 import * as Ui from '@/ui'
+import * as Wallets from '@/api/wallets'
 import { useAsyncState } from '@vueuse/core'
+
+const emit = defineEmits<{
+  (e: 'created', wallet: Wallets.Wallet): void
+}>()
 
 const dialog = useTemplateRef('new-wallet-dialog')
 
 const {
-  api: { wallets },
+  api: { wallets: { creator: walletCreator } },
 } = Common.useCommon()
 const st = Common.useScopedTranslate('wallets')
 
-const walletCreator = ref(wallets.creator())
+const data = ref<Wallets.Creator.CreateData>({
+  name: '',
+  currencyCode: "USD",
+})
+
 const { state: result, execute: save } = useAsyncState(
-  () => walletCreator.value.save(),
+  () => walletCreator.create(data.value),
   undefined,
-  { immediate: false },
+  {
+    immediate: false,
+    onSuccess(result) {
+      if (result?.ok) {
+        dialog.value?.close()
+        emit('created', result.wallet)
+      }
+    },
+  },
 )
 </script>
