@@ -1,10 +1,10 @@
-function forceObject<T extends Record<string, unknown>>(v: unknown) {
-  return typeof v === 'object' && v !== null ? v as T : {} as Partial<T>
+namespace Util {
+  export type Result<TData, TError> =
+    | Readonly<{ ok: true; data: TData }>
+    | Readonly<{ ok: false; error: TError }>
 }
 
 const Util = {
-  forceObject,
 }
+
 export default Util
-
-

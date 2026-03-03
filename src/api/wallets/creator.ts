@@ -3,6 +3,7 @@ import type Fetcher from './fetcher'
 import * as v from 'valibot'
 import * as Currencies from './currencies';
 import i18n from '@/i18n'
+import Util from '@/api/util'
 
 class Creator {
   constructor(opts: { walletTable: Db.WalletTable; fetcher: Fetcher }) {
@@ -10,7 +11,7 @@ class Creator {
     this.fetcher = opts.fetcher
   }
 
-  async validate(data: Creator.CreateData) {
+  async validate(data: Creator.CreateData): Promise<Util.Result<Creator.CreateData, Creator.CreateError>> {
     const names = await this.fetcher.allNames()
 
     const schema = v.object({
@@ -24,11 +25,16 @@ class Creator {
     })
 
     const result = v.safeParse(schema, data)
-    if (result.success) {
-      return { ok: true, data: result.output } as const
-    } else {
+    if (!result.success) {
       const error = v.flatten(result.issues)
-      return { ok: false, error } as const
+      return {
+        ok: false,
+        error: {
+          name: error.nested?.name,
+        }
+      } as const
+    } else {
+      return { ok: true, data: result.output } as const
     }
   }
 
@@ -39,7 +45,6 @@ class Creator {
       const id = await this.walletTable.add({
         id: Date.now(),
         name: d.name,
-        currencyCode: d.currencyCode,
       })
 
       const wallet = (await this.fetcher.byId(id))!
@@ -57,8 +62,9 @@ class Creator {
 namespace Creator {
   export type CreateData = {
     name: string
-    currencyCode: string
   }
+
+  export type CreateError = Record<keyof CreateData, string[] | undefined>
 }
 
 export default Creator

@@ -11,9 +11,6 @@ export default class Creator {
   }
 
   async validate(obj: CreateObject) {
-    const o = Util.forceObject<CreateObject>(obj)
-
-    if
   }
 }
 

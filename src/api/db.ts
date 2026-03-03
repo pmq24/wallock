@@ -31,7 +31,6 @@ export type WalletTable = Dexie.Table<Wallet, number>
 export type Wallet = {
   id: number
   name: string
-  currencyCode: string
 }
 
 export type CategoryTable = Dexie.Table<Category, number>
