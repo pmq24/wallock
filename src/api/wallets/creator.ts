@@ -1,9 +1,17 @@
 import * as Db from '@/api/db'
 import type Fetcher from './fetcher'
 import * as v from 'valibot'
-import * as Currencies from './currencies';
 import i18n from '@/i18n'
 import Util from '@/api/util'
+import type { Wallet } from '.'
+
+namespace Creator {
+  export type CreateData = {
+    name: string
+  }
+
+  export type CreateError = Record<keyof CreateData, string | undefined>
+}
 
 class Creator {
   constructor(opts: { walletTable: Db.WalletTable; fetcher: Fetcher }) {
@@ -21,7 +29,6 @@ class Creator {
         v.minLength(1),
         v.notValues(names, i18n.t('wallets.props.name.errors.alreadyExists')),
       ),
-      currencyCode: v.pipe(v.string(), v.trim(), v.values(Currencies.CODES)),
     })
 
     const result = v.safeParse(schema, data)
@@ -29,42 +36,39 @@ class Creator {
       const error = v.flatten(result.issues)
       return {
         ok: false,
+        data: undefined,
         error: {
-          name: error.nested?.name,
+          name: error.nested?.name?.at(0)
         }
       } as const
     } else {
-      return { ok: true, data: result.output } as const
+      return {
+        ok: true,
+        data: result.output,
+        error: undefined,
+      } as const
     }
   }
 
-  async create(data: Creator.CreateData) {
+  async create(data: Creator.CreateData): Promise<Util.Result<Wallet, Creator.CreateError>> {
     const { ok, data: d, error } = await this.validate(data)
 
-    if (ok) {
-      const id = await this.walletTable.add({
-        id: Date.now(),
-        name: d.name,
-      })
-
-      const wallet = (await this.fetcher.byId(id))!
-
-      return { ok: true, wallet } as const
-    } else {
-      return { ok: false, error } as const
+    if (!ok) {
+      return { ok: false, error, data: undefined } as const
     }
+
+    const id = await this.walletTable.add({
+      id: Date.now(),
+      name: d.name,
+    })
+
+    const wallet = (await this.fetcher.byId(id))!
+
+    return { ok: true, data: wallet, error: undefined } as const
   }
 
   private readonly walletTable: Db.WalletTable
   private readonly fetcher: Fetcher
-}
-
-namespace Creator {
-  export type CreateData = {
-    name: string
-  }
-
-  export type CreateError = Record<keyof CreateData, string[] | undefined>
 }
 
 export default Creator

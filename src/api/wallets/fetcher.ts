@@ -1,5 +1,5 @@
 import * as Db from '@/api/db'
-import Wallet from './wallet'
+import { Wallet } from '.'
 
 export default class Fetcher {
   constructor(opts: { walletTable: Db.WalletTable }) {
