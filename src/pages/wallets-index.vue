@@ -12,7 +12,6 @@
           <div class="flex items-center gap-2">
             <div>
               <div>{{ wallet.name }}</div>
-              <div class="text-xs">{{ wallet.currency.code }}</div>
             </div>
           </div>
         </a>

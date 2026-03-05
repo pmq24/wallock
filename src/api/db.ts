@@ -18,6 +18,8 @@ export class Db extends Dexie {
         { id: 100, name: 'Expense', readonly: true },
         { id: 200, name: 'Income', readonly: true },
       ])
+
+      await this.wallets.add({ id: 100, name: 'Main wallet' })
     })
   }
 
